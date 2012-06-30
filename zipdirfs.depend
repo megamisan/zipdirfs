@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1341065804 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
+	"NameSearchTree.h"
+	<string>
+	<iostream>
+	<dirent.h>
+	<stdio.h>
+	<stddef.h>
+	<unistd.h>
+
+1341067235 /home/pierrick/Projects/zipdirfs/include//NameSearchTree.h
+	"NameSearchTreeNodes.h"
+	"NameSearchWalker.h"
+	"NotFoundException.h"
+	"stream_indent.h"
+	<string.h>
+	<ostream>
+
+1341000216 /home/pierrick/Projects/zipdirfs/include//NotFoundException.h
+	<exception>
+
+1341001841 /home/pierrick/Projects/zipdirfs/include//stream_indent.h
+	<ostream>
+
+1341000220 source:/home/pierrick/Projects/zipdirfs/src/NotFoundException.cpp
+	"NotFoundException.h"
+
+1340995816 source:/home/pierrick/Projects/zipdirfs/src/stream_indent.cpp
+	"stream_indent.h"
+	<string>
+
+1341059473 /home/pierrick/Projects/zipdirfs/include//NameSearchTreeNodes.h
+	"stream_indent.h"
+	<ostream>
+
+1341066416 /home/pierrick/Projects/zipdirfs/include//NameSearchWalker.h
+	"NameSearchTreeNodes.h"
+	<iterator>
+	<deque>
+

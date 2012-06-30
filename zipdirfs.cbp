@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="zipdirfs" />
+		<Option platforms="Unix;Mac;" />
+		<Option pch_mode="2" />
+		<Option default_target="Test" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/zipdirfs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/zipdirfs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Test">
+				<Option output="bin/Test/zipdirfs" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Test/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="/media/Backup/Server/Nipponsei/" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="/home/pierrick/Projects/zipdirfs/include/" />
+		</Compiler>
+		<Unit filename="include/DirectoryNode.h" />
+		<Unit filename="include/NameSearchTree.h" />
+		<Unit filename="include/NameSearchTreeNodes.h" />
+		<Unit filename="include/NameSearchWalker.h" />
+		<Unit filename="include/NotFoundException.h" />
+		<Unit filename="include/SystemDirectoryFactory.h" />
+		<Unit filename="include/stream_indent.h" />
+		<Unit filename="main.cpp">
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="maintest.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="src/NotFoundException.cpp" />
+		<Unit filename="src/stream_indent.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
