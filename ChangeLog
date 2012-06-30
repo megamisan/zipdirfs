@@ -1,0 +1,3 @@
+2012-06-30 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	* Initial import
+	* Feature: Index tree to speed up directory entry lookup
