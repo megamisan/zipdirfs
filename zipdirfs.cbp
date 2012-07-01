@@ -50,6 +50,8 @@
 		</Compiler>
 		<Linker>
 			<Add library="fuse" />
+			<Add library="zip" />
+			<Add library="z" />
 		</Linker>
 		<Unit filename="include/DefaultPermission.h" />
 		<Unit filename="include/DirectoryNode.h" />
@@ -64,6 +66,10 @@
 		<Unit filename="include/NotFoundException.h" />
 		<Unit filename="include/SystemDirectoryFactory.h" />
 		<Unit filename="include/SystemDirectoryTime.h" />
+		<Unit filename="include/ZipEntry.h" />
+		<Unit filename="include/ZipFile.h" />
+		<Unit filename="include/ZipIterator.h" />
+		<Unit filename="include/ZipRootFactory.h" />
 		<Unit filename="include/entry_definitions.h" />
 		<Unit filename="include/stream_indent.h" />
 		<Unit filename="main.cpp">
@@ -76,6 +82,9 @@
 		<Unit filename="src/EntryFactory.cpp" />
 		<Unit filename="src/LinkTime.cpp" />
 		<Unit filename="src/NotFoundException.cpp" />
+		<Unit filename="src/ZipEntry.cpp" />
+		<Unit filename="src/ZipFile.cpp" />
+		<Unit filename="src/ZipIterator.cpp" />
 		<Unit filename="src/stream_indent.cpp" />
 		<Extensions>
 			<code_completion />
