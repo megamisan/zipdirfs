@@ -47,8 +47,11 @@ bool ownedValues = false
 class NameSearchTree
 {
 public:
-	typedef void(*free)(ValueType &value);
+	typedef void(*free)(ValueType value);
 	typedef NameSearchWalker<ValueType> iterator;
+	typedef NameSearchTreeNodes::NodeBase<ValueType> nodebase_type;
+	typedef NameSearchTreeNodes::Node<ValueType> node_type;
+	typedef NameSearchTreeNodes::Leaf<ValueType> leaf_type;
 	/** Default constructor */
 	NameSearchTree() : root(NULL), freeFunction(NULL), count(0) {}
 	NameSearchTree(free freeFunction) : root(NULL), freeFunction(freeFunction), count(0) {}
@@ -57,19 +60,25 @@ public:
 	{
 		this->recursiveDelete(this->root);
 	}
+	void clear()
+	{
+		nodebase_type *oldroot = this->root;
+		this->root = NULL;
+		this->recursiveDelete(oldroot);
+	}
 	bool isset(const char *name) const throw(NotFoundException)
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> *node = this->findNode(name);
+		nodebase_type *node = this->findNode(name);
 		return ((node != NULL) && (node->isLeaf()));
 	}
 	ValueType &get(const char *name) const throw(NotFoundException)
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> *node = this->findNode(name);
+		nodebase_type *node = this->findNode(name);
 		if ((node == NULL) || (!node->isLeaf()))
 		{
 			throw NotFoundException();
 		}
-		return static_cast<NameSearchTreeNodes::Leaf<ValueType>*>(node)->value;
+		return static_cast<leaf_type*>(node)->value;
 	}
 	bool add(const char *name, ValueType &value)
 	{
@@ -93,13 +102,13 @@ public:
 	friend std::ostream& operator << <>(std::ostream&, const NameSearchTree<ValueType>&);
 protected:
 private:
-	NameSearchTreeNodes::NodeBase<ValueType> *root;
+	nodebase_type *root;
 	free freeFunction;
 	int count;
 
-	void recursiveDelete(NameSearchTreeNodes::NodeBase<ValueType> *node)
+	void recursiveDelete(nodebase_type *node)
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> *previous;
+		nodebase_type *previous;
 		while (node != NULL)
 		{
 			delete[] node->name;
@@ -107,21 +116,21 @@ private:
 			{
 				if (ownedValues && (freeFunction != NULL))
 				{
-					this->freeFunction(static_cast<NameSearchTreeNodes::Leaf<ValueType>*>(node)->value);
+					this->freeFunction(static_cast<leaf_type*>(node)->value);
 				}
 			}
 			else
 			{
-				this->recursiveDelete(static_cast<NameSearchTreeNodes::Node<ValueType>*>(node)->child);
+				this->recursiveDelete(static_cast<node_type*>(node)->child);
 			}
 			previous = node;
 			node = node->next;
 			delete previous;
 		}
 	}
-	NameSearchTreeNodes::NodeBase<ValueType> * findNode(const char *name)
+	nodebase_type * findNode(const char *name) const
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> *where = this->root;
+		nodebase_type *where = this->root;
 		while (where != NULL)
 		{
 			int match = this->matchStart(name, where->name);
@@ -135,7 +144,7 @@ private:
 				{
 					if (!where->isLeaf())
 					{
-						where = static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child;
+						where = static_cast<node_type*>(where)->child;
 						name += match;
 					}
 					else
@@ -143,13 +152,16 @@ private:
 						where = NULL;
 					}
 				}
-				else if (!where->isLeaf())
+				else
 				{
-					if ((static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child != NULL) &&
-							(static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child->name[0] == 0) &&
-							(static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child->isLeaf()))
+					if (!where->isLeaf())
 					{
-						where = static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child;
+						if ((static_cast<node_type*>(where)->child != NULL) &&
+								(static_cast<node_type*>(where)->child->name[0] == 0) &&
+								(static_cast<node_type*>(where)->child->isLeaf()))
+						{
+							where = static_cast<node_type*>(where)->child;
+						}
 					}
 					break;
 				}
@@ -165,7 +177,7 @@ private:
 	 * Searches what in where.
 	 * @return int n>0 => what is the start of where. n<=0 => (-n) is the number of matching character.
 	 */
-	int matchStart(const char *where, const char *what)
+	int matchStart(const char *where, const char *what) const
 	{
 		int index = 0;
 		while ((*what != 0) && (*where != 0) && (*what == *where))
@@ -182,9 +194,9 @@ private:
 	}
 	bool addNode(const char *name, ValueType &value)
 	{
-#define CONSUME_LEVEL(chars) parent = where; where = &(static_cast<NameSearchTreeNodes::Node<ValueType>*>(*where)->child); name += (chars)
-		NameSearchTreeNodes::NodeBase<ValueType> **parent = NULL;
-		NameSearchTreeNodes::NodeBase<ValueType> **where = &this->root;
+#define CONSUME_LEVEL(chars) parent = where; where = &(static_cast<node_type*>(*where)->child); name += (chars)
+		nodebase_type **parent = NULL;
+		nodebase_type **where = &this->root;
 		while (*where != NULL)
 		{
 			int match = this->matchStart(name, (*where)->name);
@@ -212,9 +224,9 @@ private:
 					}
 					else
 					{
-						if ((static_cast<NameSearchTreeNodes::Node<ValueType>*>(*where)->child != NULL) &&
-								(static_cast<NameSearchTreeNodes::Node<ValueType>*>(*where)->child->name[0] == 0) &&
-								(static_cast<NameSearchTreeNodes::Node<ValueType>*>(*where)->child->isLeaf()))
+						if ((static_cast<node_type*>(*where)->child != NULL) &&
+								(static_cast<node_type*>(*where)->child->name[0] == 0) &&
+								(static_cast<node_type*>(*where)->child->isLeaf()))
 						{
 							return false;
 						}
@@ -234,10 +246,10 @@ private:
 		this->createNode(name, value, parent);
 		return true;
 	}
-	void createNode(const char *name, ValueType value, NameSearchTreeNodes::NodeBase<ValueType> **parent)
+	void createNode(const char *name, ValueType value, nodebase_type **parent)
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> **where = NULL;
-		NameSearchTreeNodes::Leaf<ValueType> *newNode = new NameSearchTreeNodes::Leaf<ValueType>();
+		nodebase_type **where = NULL;
+		leaf_type *newNode = new leaf_type();
 		char *remaining = new char[strlen(name) + 1];
 		strcpy(remaining, name);
 		newNode->name = remaining;
@@ -248,7 +260,7 @@ private:
 		}
 		else
 		{
-			where = &(static_cast<NameSearchTreeNodes::Node<ValueType>*>(*parent)->child);
+			where = &(static_cast<node_type*>(*parent)->child);
 		}
 		while ((*where != NULL) && (strcmp((*where)->name, newNode->name) < 0))
 		{
@@ -258,9 +270,9 @@ private:
 		*where = newNode;
 		this->count++;
 	}
-	NameSearchTreeNodes::NodeBase<ValueType> *splitNode(NameSearchTreeNodes::NodeBase<ValueType> *which, int at)
+	nodebase_type *splitNode(nodebase_type *which, int at) const
 	{
-		NameSearchTreeNodes::Node<ValueType> *newNode = new NameSearchTreeNodes::Node<ValueType>();
+		node_type *newNode = new node_type();
 		newNode->next = which->next;
 		which->next = NULL;
 		char *tmp = new char[at + 1];
@@ -276,7 +288,7 @@ private:
 	}
 	bool removeNode(const char *name)
 	{
-		NameSearchTreeNodes::NodeBase<ValueType> **where = &this->root;
+		nodebase_type **where = &this->root;
 		while (*where != NULL)
 		{
 			int match = this->matchStart(name, (*where)->name);
@@ -290,7 +302,7 @@ private:
 				{
 					if (!(*where)->isLeaf())
 					{
-						where = &(static_cast<NameSearchTreeNodes::Node<ValueType>*>(*where)->child);
+						where = &(static_cast<node_type*>(*where)->child);
 						name += match;
 					}
 					else
@@ -300,11 +312,11 @@ private:
 				}
 				else if (!(*where)->isLeaf())
 				{
-					if ((static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child != NULL) &&
-							(static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child->name[0] == 0) &&
-							(static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child->isLeaf()))
+					if ((static_cast<node_type*>(*where)->child != NULL) &&
+							(static_cast<node_type*>(*where)->child->name[0] == 0) &&
+							(static_cast<node_type*>(*where)->child->isLeaf()))
 					{
-						where = static_cast<NameSearchTreeNodes::Node<ValueType>*>(where)->child;
+						where = &(static_cast<node_type*>(*where)->child);
 					}
 					else
 					{
@@ -316,9 +328,9 @@ private:
 					delete [] (*where)->name;
 					if (ownedValues && (freeFunction != NULL))
 					{
-						this->freeFunction(static_cast<NameSearchTreeNodes::Leaf<ValueType>*>(*where)->value);
+						this->freeFunction(static_cast<leaf_type*>(*where)->value);
 					}
-					NameSearchTreeNodes::NodeBase<ValueType> *next = (*where)->next;
+					nodebase_type *next = (*where)->next;
 					delete *where;
 					*where = next;
 					this->count--;

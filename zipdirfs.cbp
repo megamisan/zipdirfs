@@ -13,6 +13,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="/media/Backup/Server/Nipponsei/ /mediazip/ -d -o allow_other -o default_permissions" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -43,14 +44,21 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-D_FILE_OFFSET_BITS=64" />
+			<Add option="-DFUSE_USE_VERSION=27" />
 			<Add directory="/home/pierrick/Projects/zipdirfs/include/" />
 		</Compiler>
+		<Linker>
+			<Add library="fuse" />
+		</Linker>
+		<Unit filename="include/DefaultPermission.h" />
 		<Unit filename="include/DirectoryNode.h" />
 		<Unit filename="include/NameSearchTree.h" />
 		<Unit filename="include/NameSearchTreeNodes.h" />
 		<Unit filename="include/NameSearchWalker.h" />
 		<Unit filename="include/NotFoundException.h" />
 		<Unit filename="include/SystemDirectoryFactory.h" />
+		<Unit filename="include/SystemDirectoryTime.h" />
 		<Unit filename="include/stream_indent.h" />
 		<Unit filename="main.cpp">
 			<Option target="Debug" />

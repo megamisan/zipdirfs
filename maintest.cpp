@@ -19,6 +19,7 @@
  * $Id$
  */
 #include "NameSearchTree.h"
+#include "SystemDirectoryFactory.h"
 #include <string>
 #include <iostream>
 #include <dirent.h>
@@ -28,6 +29,7 @@
 
 int testTree(std::string &path);
 int testTreeIterator(std::string &path);
+int testDirectoryFactory(std::string &path);
 
 int main(int argc, char *argv[])
 {
@@ -36,8 +38,9 @@ int main(int argc, char *argv[])
 	{
 		path = argv[1];
 	}
-	return testTree(path);
+	// return testTree(path);
 	// return testTreeIterator(path);
+	return testDirectoryFactory(path);
 }
 
 int buildTree(std::string& path, NameSearchTree<int>& tree)
@@ -88,4 +91,20 @@ int testTreeIterator(std::string& path)
 		std::cout << *it << std::endl;
 	}
 	return res;
+}
+
+int fusefiller(void*, const char* name, const struct stat*, off_t)
+{
+	std::cout << name << std::endl;
+	return 0;
+}
+
+int testDirectoryFactory(std::string &path)
+{
+	SystemDirectoryFactory<> entry;
+	entry.setRealPath(path.c_str());
+	std::cout << "Real path " << entry.getRealPath() << std::endl;
+	fuse_file_info dummy;
+	entry.readdir(NULL, &fusefiller, 0, dummy);
+	return 0;
 }

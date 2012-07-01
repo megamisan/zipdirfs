@@ -21,15 +21,127 @@
 #ifndef SYSTEMDIRECTORYFACTORY_H
 #define SYSTEMDIRECTORYFACTORY_H
 
-class SystemDirectoryFactory
+#include "NameSearchTree.h"
+#include <fusekit/entry.h>
+#include <fusekit/no_lock.h>
+#include <fusekit/no_entry.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <stdio.h>
+#include <stddef.h>
+#include <iostream>
+
+template <class LockingPolicy = fusekit::no_lock>
+class SystemDirectoryFactory : public LockingPolicy
 {
+	typedef typename SystemDirectoryFactory<LockingPolicy>::lock lock;
+	typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
 		/** Default constructor */
-		SystemDirectoryFactory();
+		SystemDirectoryFactory() : entries(deleteEntry), lastUpdate(0) {};
 		/** Default destructor */
-		virtual ~SystemDirectoryFactory();
+		virtual ~SystemDirectoryFactory() {};
+		void setRealPath(const char* path)
+		{
+			if (!realPath.empty())
+			{
+				return;
+			}
+			char *absolute = realpath(path, NULL);
+			if (absolute != NULL)
+			{
+				realPath = absolute;
+				free(absolute);
+			}
+		}
+		std::string getRealPath() const { return this->realPath; }
+		fusekit::entry *find(const char *name) { this->checkSystem(); lock guard(*this); try { return entries.get(name); } catch (NotFoundException) { return NULL; } }
+		int size() { std::cout << "SystemDirectoryFactory::size" << std::endl; this->checkSystem(); lock guard(*this); return entries.size(); } //TODO: Count only directories. Internal value.
+		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &)
+		{
+			this->checkSystem();
+			lock guard(*this);
+			for (tree::iterator it = entries.begin(); it != entries.end(); it++)
+			{
+				filler(buf, it->c_str(), NULL, offset);
+			}
+			return 0;
+		}
+		inline time_t getLastUpdate() { return this->lastUpdate; }
 	protected:
 	private:
+		tree entries;
+		std::string realPath;
+		time_t lastUpdate;
+		static void deleteEntry(fusekit::entry* e) { if (e != NULL) delete e; }
+		void checkSystem()
+		{
+			struct stat pathinfo;
+			int res = stat(realPath.c_str(), &pathinfo);
+			if ((res != 0))
+			{
+				perror("SystemDirectoryFactory::checkSystem: stat");
+				std::cerr << "Real path " << realPath << std::endl;
+				return;
+			}
+			if (this->lastUpdate < pathinfo.st_mtime)
+			{
+				this->updateEntries();
+				this->lastUpdate = pathinfo.st_mtime;
+			}
+		}
+		void updateEntries()
+		{
+			lock guard(*this);
+			tree toRemove;
+			fusekit::entry *nullEntry = NULL;
+			for (tree::iterator it = entries.begin(); it != entries.end(); it++)
+			{
+				toRemove.add(it->c_str(), nullEntry);
+			}
+			DIR *folder = NULL;
+			folder = opendir(this->realPath.c_str());
+			if (folder == NULL)
+			{
+				perror("opendir");
+			}
+			else
+			{
+				int bufferLength = offsetof(dirent, d_name) + pathconf(this->realPath.c_str(), _PC_NAME_MAX) + 1;
+				char *buffer = new char[bufferLength];
+				dirent *dirEntry = reinterpret_cast<dirent*>(buffer);
+				dirent *result = NULL;
+				int res = readdir_r(folder, dirEntry, &result);
+				while ((!res) && (result))
+				{
+					toRemove.remove(result->d_name);
+					// if (entries.isset(entry->d_name))
+					// {
+					// 	// TODO: Check whether the entry type has changed.
+					// }
+					if (!entries.isset(result->d_name))
+					{
+						// TODO: Create entry from factory.
+						fusekit::entry *entry = new fusekit::no_entry();
+						entries.add(result->d_name, entry);
+					}
+					res = readdir_r(folder, dirEntry, &result);
+				}
+				if (res)
+				{
+					perror("readdir_r");
+				}
+				closedir(folder);
+				delete[] buffer;
+			}
+			for (tree::iterator it = toRemove.begin(); it != toRemove.end(); it++)
+			{
+				entries.remove(it->c_str());
+			}
+		}
 };
 
 #endif // SYSTEMDIRECTORYFACTORY_H

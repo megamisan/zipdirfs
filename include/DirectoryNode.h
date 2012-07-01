@@ -31,10 +31,10 @@ class DirectoryNode : public Factory
 {
 	public:
 		/** Default constructor */
-		DirectoryNode();
+		DirectoryNode() {};
 		/** Default destructor */
-		virtual ~DirectoryNode();
-		entry *find(const char *name)
+		virtual ~DirectoryNode() {};
+		fusekit::entry *find(const char *name)
 		{
 			return factory().find(name);
 		}
@@ -42,11 +42,11 @@ class DirectoryNode : public Factory
 		{
 			return factory().size() + 2;
 		}
-		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &)
+		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &finfo)
 		{
 			filler(buf, ".", NULL, offset);
 			filler(buf, "..", NULL, offset);
-			// TODO: factory's enumeration.
+			factory().readdir(buf, filler, offset, finfo);
 			return 0;
 		}
 		int mknod(const char *name, mode_t mode, dev_t type)

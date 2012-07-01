@@ -8,7 +8,7 @@
 	<stddef.h>
 	<unistd.h>
 
-1341067235 /home/pierrick/Projects/zipdirfs/include//NameSearchTree.h
+1341099277 /home/pierrick/Projects/zipdirfs/include//NameSearchTree.h
 	"NameSearchTreeNodes.h"
 	"NameSearchWalker.h"
 	"NotFoundException.h"
@@ -16,25 +16,74 @@
 	<string.h>
 	<ostream>
 
-1341000216 /home/pierrick/Projects/zipdirfs/include//NotFoundException.h
+1341078605 /home/pierrick/Projects/zipdirfs/include//NotFoundException.h
 	<exception>
 
-1341001841 /home/pierrick/Projects/zipdirfs/include//stream_indent.h
+1341078605 /home/pierrick/Projects/zipdirfs/include//stream_indent.h
 	<ostream>
 
-1341000220 source:/home/pierrick/Projects/zipdirfs/src/NotFoundException.cpp
+1341078605 source:/home/pierrick/Projects/zipdirfs/src/NotFoundException.cpp
 	"NotFoundException.h"
 
-1340995816 source:/home/pierrick/Projects/zipdirfs/src/stream_indent.cpp
+1341078605 source:/home/pierrick/Projects/zipdirfs/src/stream_indent.cpp
 	"stream_indent.h"
 	<string>
 
-1341059473 /home/pierrick/Projects/zipdirfs/include//NameSearchTreeNodes.h
+1341078605 /home/pierrick/Projects/zipdirfs/include//NameSearchTreeNodes.h
 	"stream_indent.h"
 	<ostream>
 
-1341066416 /home/pierrick/Projects/zipdirfs/include//NameSearchWalker.h
+1341078605 /home/pierrick/Projects/zipdirfs/include//NameSearchWalker.h
 	"NameSearchTreeNodes.h"
 	<iterator>
 	<deque>
+
+1341096563 source:/home/pierrick/Projects/zipdirfs/main.cpp
+	"SystemDirectoryFactory.h"
+	"SystemDirectoryTime.h"
+	"DefaultPermission.h"
+	"DirectoryNode.h"
+	<fusekit/daemon.h>
+	<fusekit/basic_directory.h>
+	<vector>
+	<iostream>
+	<algorithm>
+	<string.h>
+
+1341096957 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryFactory.h
+	"NameSearchTree.h"
+	<fusekit/entry.h>
+	<fusekit/no_lock.h>
+	<fusekit/no_entry.h>
+	<time.h>
+	<sys/stat.h>
+	<stdlib.h>
+	<unistd.h>
+	<dirent.h>
+	<stdio.h>
+	<stddef.h>
+	<iostream>
+
+1341088154 /home/pierrick/Projects/zipdirfs/include//DirectoryNode.h
+	<fusekit/entry.h>
+
+1341090250 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryTime.h
+	<time.h>
+
+1341089961 /home/pierrick/Projects/zipdirfs/include//DefaultPermission.h
+	<asm-generic/errno-base.h>
+
+1341096345 /home/pierrick/Projects/zipdirfs/include//debug_daemon.h
+	<unistd.h>
+	<sys/types.h>
+	<fuse.h>
+	<vector>
+	<sstream>
+	<iostream>
+	<fusekit/entry.h>
+	<fusekit/file_handle.h>
+	<fusekit/no_entry.h>
+	<fusekit/no_lock.h>
+	<fusekit/default_directory.h>
+	<fusekit/path.h>
 
