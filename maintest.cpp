@@ -33,6 +33,7 @@ int testTree(std::string &path);
 int testTreeIterator(std::string &path);
 int testDirectoryFactory(std::string &path);
 int testZipOpen(std::string &path);
+int testZipEnumeration(std::string &path);
 
 int main(int argc, char *argv[])
 {
@@ -44,7 +45,8 @@ int main(int argc, char *argv[])
 	// return testTree(path);
 	// return testTreeIterator(path);
 	// return testDirectoryFactory(path);
-	return testZipOpen(path);
+	// return testZipOpen(path);
+	// return testZipEnumeration(path);
 }
 
 int buildTree(std::string& path, NameSearchTree<int>& tree)
@@ -134,6 +136,48 @@ int testZipOpen(std::string &path)
 		return -1;
 	}
 	std::cout << path << " is a zip file." << std::endl;
+	zip_close(zipFile);
+	return 0;
+}
+
+int testZipEnumeration(std::string &path)
+{
+	int handle = open(path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
+	if (handle < 0)
+	{
+		perror("open");
+		return -1;
+	}
+	int error;
+	zip* zipFile = zip_fdopen(handle, 0, &error);
+	if (zipFile == NULL)
+	{
+		int len = zip_error_to_str(NULL, 0, error, errno);
+		char *message = new char[len + 1];
+		zip_error_to_str(message, 1024, error, errno);
+		std::cerr << "zip_fdopen: " << message << std::endl;
+		delete[] message;
+		close(handle);
+		return -1;
+	}
+	zip_int64_t numEntries = zip_get_num_entries(zipFile, 0);
+	struct zip_stat fileinfo;
+	for (zip_int64_t i = 0; i < numEntries; i++)
+	{
+		if (zip_stat_index(zipFile, i, 0, &fileinfo) != 0)
+		{
+			std::cerr << "Error at index " << i << std::endl;
+			continue;
+		}
+		if (fileinfo.valid & (ZIP_STAT_NAME | ZIP_STAT_SIZE | ZIP_STAT_MTIME))
+		{
+			std::cout << i << " " << fileinfo.name << " (" << fileinfo.size << ") @" << fileinfo.mtime << std::endl;
+		}
+		else
+		{
+			std::cerr << "Not all required information for entry " << i << std::endl;
+		}
+	}
 	zip_close(zipFile);
 	return 0;
 }

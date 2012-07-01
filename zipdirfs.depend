@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1341160445 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
+1341163164 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
 	"NameSearchTree.h"
 	"SystemDirectoryFactory.h"
 	<string>
@@ -49,7 +49,7 @@
 	<algorithm>
 	<string.h>
 
-1341161169 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryFactory.h
+1341162201 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryFactory.h
 	"NameSearchTree.h"
 	"EntryFactory.h"
 	<fusekit/entry.h>
@@ -87,7 +87,7 @@
 	<fusekit/default_directory.h>
 	<fusekit/path.h>
 
-1341161361 source:/home/pierrick/Projects/zipdirfs/src/EntryFactory.cpp
+1341162201 source:/home/pierrick/Projects/zipdirfs/src/EntryFactory.cpp
 	"EntryFactory.h"
 	"entry_definitions.h"
 	<sys/stat.h>
@@ -100,7 +100,7 @@
 	<dirent.h>
 	<string>
 
-1341161079 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
+1341162201 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
 	"DefaultPermission.h"
 	"SystemDirectoryFactory.h"
 	"SystemDirectoryTime.h"
@@ -131,9 +131,42 @@
 1341154271 /home/pierrick/Projects/zipdirfs/include//LinkBuffer.h
 	<fusekit/entry.h>
 
-1341161290 /home/pierrick/Projects/zipdirfs/include//ZipRootFactory.h
+1341170856 /home/pierrick/Projects/zipdirfs/include//ZipRootFactory.h
 	"NameSearchTree.h"
+	"ZipFile.h"
 	<fusekit/entry.h>
 	<fusekit/no_lock.h>
 	<time.h>
+
+1341170132 source:/home/pierrick/Projects/zipdirfs/src/ZipEntry.cpp
+	"ZipEntry.h"
+	"ZipFile.h"
+	"ZipIterator.h"
+
+1341170144 /home/pierrick/Projects/zipdirfs/include//ZipEntry.h
+	<time.h>
+	<stdint.h>
+
+1341170326 source:/home/pierrick/Projects/zipdirfs/src/ZipFile.cpp
+	"ZipFile.h"
+	"ZipEntry.h"
+	<iostream>
+	<fcntl.h>
+	<zip.h>
+	<errno.h>
+
+1341170262 /home/pierrick/Projects/zipdirfs/include//ZipFile.h
+	"ZipIterator.h"
+	<string>
+
+1341168472 /home/pierrick/Projects/zipdirfs/include//ZipIterator.h
+	<stdint.h>
+	<iterator>
+	<time.h>
+	<string>
+
+1341170352 source:/home/pierrick/Projects/zipdirfs/src/ZipIterator.cpp
+	"ZipIterator.h"
+	"ZipFile.h"
+	<zip.h>
 

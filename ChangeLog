@@ -8,6 +8,7 @@
 	* Fix: removed "." and ".." from generated directory listing.
 	* Comment: Use a patched version of fusekit (see: http://code.google.com/p/fusekit/issues/detail?id=1) for symlink support.
 	* Feature: Zip files are presented as folder. Without any content.
+	* Feature: Prepared zip file wrapper, its iterator and file entry wrapper.
 
 2012-06-30 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Initial import

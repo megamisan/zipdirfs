@@ -22,6 +22,7 @@
 #define ZIPROOTFACTORY_H
 
 #include "NameSearchTree.h"
+#include "ZipFile.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
 #include <time.h>
@@ -32,22 +33,21 @@ class ZipRootFactory : public LockingPolicy
 	typedef typename ZipRootFactory<LockingPolicy>::lock lock;
 	typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipRootFactory() {}
+		ZipRootFactory() : zipFile(NULL) {}
 		virtual ~ZipRootFactory() {}
 		void setZipFile(const char* path)
 		{
-			if (!zipFile.empty())
+			if (this->zipFile)
 			{
 				return;
 			}
 			char *absolute = realpath(path, NULL);
 			if (absolute != NULL)
 			{
-				zipFile = absolute;
+				this->zipFile = new ZipFile(absolute);
 				free(absolute);
 			}
 		}
-		std::string getZipFile() const { return this->zipFile; }
 		fusekit::entry *find(const char *name) { this->checkFile(); lock guard(*this); try { return entries.get(name); } catch (NotFoundException) { return NULL; } }
 		int size() { this->checkFile(); lock guard(*this); return entries.size(); } //TODO: Count only directories. Internal value.
 		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &)
@@ -64,7 +64,7 @@ class ZipRootFactory : public LockingPolicy
 	protected:
 	private:
 		tree entries;
-		std::string zipFile;
+		ZipFile *zipFile;
 		time_t lastUpdate;
 		void checkFile()
 		{
