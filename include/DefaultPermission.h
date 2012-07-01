@@ -16,19 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  *
- * $
+ * $Id$
  */
 #ifndef DEFAULTPERMISSION_H
 #define DEFAULTPERMISSION_H
 
 #include <asm-generic/errno-base.h>
+#include <sys/types.h>
 
 template <mode_t Permissions, class Derived>
 class DefaultPermission
 {
 	public:
 		DefaultPermission() {}
-		~DefaultPermission() {}
+		virtual ~DefaultPermission() {}
 		int access(int permission) { return (permission & (~Permissions)) ? -EACCES : 0; }
 		int chmod(mode_t) { return -EACCES; }
 		int mode() { return Permissions; }

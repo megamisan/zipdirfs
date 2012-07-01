@@ -22,6 +22,7 @@
 #define SYSTEMDIRECTORYFACTORY_H
 
 #include "NameSearchTree.h"
+#include "EntryFactory.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
 #include <fusekit/no_entry.h>
@@ -59,7 +60,7 @@ class SystemDirectoryFactory : public LockingPolicy
 		}
 		std::string getRealPath() const { return this->realPath; }
 		fusekit::entry *find(const char *name) { this->checkSystem(); lock guard(*this); try { return entries.get(name); } catch (NotFoundException) { return NULL; } }
-		int size() { std::cout << "SystemDirectoryFactory::size" << std::endl; this->checkSystem(); lock guard(*this); return entries.size(); } //TODO: Count only directories. Internal value.
+		int size() { this->checkSystem(); lock guard(*this); return entries.size(); } //TODO: Count only directories. Internal value.
 		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &)
 		{
 			this->checkSystem();
@@ -106,7 +107,8 @@ class SystemDirectoryFactory : public LockingPolicy
 			folder = opendir(this->realPath.c_str());
 			if (folder == NULL)
 			{
-				perror("opendir");
+				perror("SystemDirectoryFactory::updateEntries: opendir");
+				std::cerr << "Real path " << realPath << std::endl;
 			}
 			else
 			{
@@ -115,24 +117,27 @@ class SystemDirectoryFactory : public LockingPolicy
 				dirent *dirEntry = reinterpret_cast<dirent*>(buffer);
 				dirent *result = NULL;
 				int res = readdir_r(folder, dirEntry, &result);
+				fusekit::entry *holder = NULL;
 				while ((!res) && (result))
 				{
-					toRemove.remove(result->d_name);
-					// if (entries.isset(entry->d_name))
-					// {
-					// 	// TODO: Check whether the entry type has changed.
-					// }
-					if (!entries.isset(result->d_name))
+					if ((strcmp(result->d_name, ".") != 0) && (strcmp(result->d_name, "..") != 0)) // Skip special entries.
 					{
-						// TODO: Create entry from factory.
-						fusekit::entry *entry = new fusekit::no_entry();
-						entries.add(result->d_name, entry);
+						toRemove.remove(result->d_name);
+						// if (entries.isset(entry->d_name))
+						// {
+						// 	// TODO: Check whether the entry type has changed.
+						// }
+						if (!entries.isset(result->d_name))
+						{
+							entries.add(result->d_name, holder = EntryFactory::newEntry(result, this->realPath));
+						}
 					}
 					res = readdir_r(folder, dirEntry, &result);
 				}
 				if (res)
 				{
-					perror("readdir_r");
+					perror("SystemDirectoryFactory::checkSystem: readdir_r");
+					std::cerr << "Real path " << realPath << std::endl;
 				}
 				closedir(folder);
 				delete[] buffer;

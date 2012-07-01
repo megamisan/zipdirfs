@@ -1,10 +1,12 @@
-2012-06-31 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
-	* Feature: List the entries in a regular folder. The entries are not yet recognized.
+2012-07-01 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	* Feature: List the entries in a regular folder. The entries are identified as symlink or folder.
 	* Feature: stat reponse provides the underlying folder modification time.
 	* Feature: Permission model for each node type.
 	* Feature: Copy the fusermount behaviour when invalid parameters are encountered.
 	* Feature: Adds own usage information around the fuse one.
 	* Bug fix: NameSearchTree lookup was doing infinite loop.
+	* Fix: removed "." and ".." from generated directory listing.
+	* Comment: Use a patched version of fusekit (see: http://code.google.com/p/fusekit/issues/detail?id=1) for symlink support.
 
 2012-06-30 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Initial import

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  *
- * $
+ * $Id$
  */
 #ifndef SYSTEMDIRECTORYTIME_H
 #define SYSTEMDIRECTORYTIME_H
@@ -28,7 +28,7 @@ class SystemDirectoryTime
 {
 	public:
 		SystemDirectoryTime() : create(time(NULL)) {}
-		~SystemDirectoryTime() {}
+		virtual ~SystemDirectoryTime() {}
 		time_t modification_time() { return static_cast<Derived*>(this)->getLastUpdate(); }
 		time_t change_time() { return this->create; }
 		time_t access_time() { return static_cast<Derived*>(this)->getLastUpdate(); }

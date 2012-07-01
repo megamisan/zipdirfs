@@ -13,7 +13,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/media/Backup/Server/Nipponsei/ /mediazip/ -d -o allow_other -o default_permissions" />
+				<Option parameters="/media/Backup/Server/Nipponsei/ /mediazip/ -d -o allow_other" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -53,12 +53,18 @@
 		</Linker>
 		<Unit filename="include/DefaultPermission.h" />
 		<Unit filename="include/DirectoryNode.h" />
+		<Unit filename="include/EntryFactory.h" />
+		<Unit filename="include/LinkBuffer.h" />
+		<Unit filename="include/LinkFactory.h" />
+		<Unit filename="include/LinkNode.h" />
+		<Unit filename="include/LinkTime.h" />
 		<Unit filename="include/NameSearchTree.h" />
 		<Unit filename="include/NameSearchTreeNodes.h" />
 		<Unit filename="include/NameSearchWalker.h" />
 		<Unit filename="include/NotFoundException.h" />
 		<Unit filename="include/SystemDirectoryFactory.h" />
 		<Unit filename="include/SystemDirectoryTime.h" />
+		<Unit filename="include/entry_definitions.h" />
 		<Unit filename="include/stream_indent.h" />
 		<Unit filename="main.cpp">
 			<Option target="Debug" />
@@ -67,6 +73,8 @@
 		<Unit filename="maintest.cpp">
 			<Option target="Test" />
 		</Unit>
+		<Unit filename="src/EntryFactory.cpp" />
+		<Unit filename="src/LinkTime.cpp" />
 		<Unit filename="src/NotFoundException.cpp" />
 		<Unit filename="src/stream_indent.cpp" />
 		<Extensions>

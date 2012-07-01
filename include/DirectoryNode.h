@@ -38,6 +38,10 @@ class DirectoryNode : public Factory
 		{
 			return factory().find(name);
 		}
+		int target(char*, size_t)
+		{
+			return -EINVAL;
+		}
 		int links()
 		{
 			return factory().size() + 2;

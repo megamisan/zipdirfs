@@ -18,28 +18,14 @@
  *
  * $Id$
  */
-#include "SystemDirectoryFactory.h"
-#include "SystemDirectoryTime.h"
-#include "DefaultPermission.h"
-#include "DirectoryNode.h"
+#include "entry_definitions.h"
 #include <fusekit/daemon.h>
-// #include "debug_daemon.h"
-#include <fusekit/basic_directory.h>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 #include <string.h>
 
-template <class Derived> class RootDirectory : public DirectoryNode<SystemDirectoryFactory<>, Derived> {};
-typedef fusekit::basic_directory<RootDirectory, SystemDirectoryTime, DefaultDirectoryPermission> root_directory;
-typedef fusekit::daemon<root_directory> daemon_type;
-class debug_basic_directory : public root_directory
-{
-public:
-	fusekit::entry* child(const char* name) { std::cout << "entry::child: lookup " << name << std::endl; fusekit::entry* res = root_directory::child(name); std::cout << "entry::child: result " << res << std::endl; return res; }
-	int stat(struct stat& stbuf) { std::cout << "entry::stat" << std::endl; int res = root_directory::stat(stbuf); return res; }
-};
-//typedef fusekit::daemon<debug_basic_directory> daemon_type;
+typedef fusekit::daemon<system_directory> daemon_type;
 
 const char *getProgramName(const char* self);
 bool parseParameters(std::vector<const char*> &args, std::string &path);
@@ -52,17 +38,18 @@ int main(int argc, const char *argv[])
 	for (int i = 0; i < argc; i++) std::cerr << "args: " << argv[i] << std::endl;
 	std::string sourcePath;
 	std::vector<const char*> arguments(argv, argv + argc);
+	if (std::find_if(arguments.begin(), arguments.end(), isHelp) != arguments.end())
+	{
+		showUsage(argv[0]);
+		return 0;
+	}
 	if (!parseParameters(arguments, sourcePath))
 	{
 		const char *message = (sourcePath.empty()) ? ": missing originalpath argument" : ": missing mountpoint argument";
 		std::cerr << programName << message << std::endl;
 		return -1;
 	}
-	if (std::find_if(arguments.begin(), arguments.end(), isHelp) != arguments.end())
-	{
-		showUsage(argv[0]);
-		return 0;
-	}
+	if (sourcePath[sourcePath.size() - 1] == '/') sourcePath.erase(sourcePath.size() - 1);
 	char *fstype = new char[strlen(programName) + 9];
 	fstype[0] = 0;
 	strcat(fstype, "subtype=");
