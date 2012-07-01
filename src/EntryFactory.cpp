@@ -23,6 +23,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <zip.h>
 
 EntryFactory::EntryFactory()
 {
@@ -48,6 +49,32 @@ fusekit::entry* createDirectory(const std::string& realPath)
 	return entry;
 }
 
+bool isZipFile(const std::string& file)
+{
+	int handle = open(file.c_str(), O_RDONLY);
+	if (handle < 0)
+	{
+		perror("(EntryFactory)isZipFile: open");
+		return false;
+	}
+	int error;
+	zip* zipFile = zip_fdopen(handle, 0, &error);
+	if (zipFile == NULL)
+	{
+		close(handle);
+		return false;
+	}
+	zip_close(zipFile);
+	return true;
+}
+
+fusekit::entry* createZipRootDirectory(const std::string& zipFile)
+{
+	zip_root_directory *entry = new zip_root_directory();
+	entry->setZipFile(zipFile.c_str());
+	return entry;
+}
+
 /** @brief (one liner)
   *
   * (documentation goes here)
@@ -65,9 +92,9 @@ fusekit::entry* EntryFactory::newEntry(const dirent* dirEntry, const std::string
 		{
 			return createDirectory(realPath);
 		}
-		if (S_ISREG(fileinfo.st_mode))
+		if (S_ISREG(fileinfo.st_mode) && isZipFile(realPath))
 		{
-			// TODO: Zip file case.
+			return createZipRootDirectory(realPath);
 		}
 	}
 	return createLink(realPath);

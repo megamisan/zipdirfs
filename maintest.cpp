@@ -26,10 +26,13 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <unistd.h>
+#include <zip.h>
+#include <fcntl.h>
 
 int testTree(std::string &path);
 int testTreeIterator(std::string &path);
 int testDirectoryFactory(std::string &path);
+int testZipOpen(std::string &path);
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +43,8 @@ int main(int argc, char *argv[])
 	}
 	// return testTree(path);
 	// return testTreeIterator(path);
-	return testDirectoryFactory(path);
+	// return testDirectoryFactory(path);
+	return testZipOpen(path);
 }
 
 int buildTree(std::string& path, NameSearchTree<int>& tree)
@@ -106,5 +110,30 @@ int testDirectoryFactory(std::string &path)
 	std::cout << "Real path " << entry.getRealPath() << std::endl;
 	fuse_file_info dummy;
 	entry.readdir(NULL, &fusefiller, 0, dummy);
+	return 0;
+}
+
+int testZipOpen(std::string &path)
+{
+	int handle = open(path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
+	if (handle < 0)
+	{
+		perror("open");
+		return -1;
+	}
+	int error;
+	zip* zipFile = zip_fdopen(handle, 0, &error);
+	if (zipFile == NULL)
+	{
+		int len = zip_error_to_str(NULL, 0, error, errno);
+		char *message = new char[len + 1];
+		zip_error_to_str(message, 1024, error, errno);
+		std::cerr << "zip_fdopen: " << message << std::endl;
+		delete[] message;
+		close(handle);
+		return -1;
+	}
+	std::cout << path << " is a zip file." << std::endl;
+	zip_close(zipFile);
 	return 0;
 }

@@ -25,7 +25,6 @@
 #include "EntryFactory.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
-#include <fusekit/no_entry.h>
 #include <time.h>
 #include <sys/stat.h>
 #include <stdlib.h>

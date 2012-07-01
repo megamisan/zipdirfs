@@ -1,12 +1,15 @@
 # depslib dependency file v1.0
-1341065804 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
+1341160445 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
 	"NameSearchTree.h"
+	"SystemDirectoryFactory.h"
 	<string>
 	<iostream>
 	<dirent.h>
 	<stdio.h>
 	<stddef.h>
 	<unistd.h>
+	<zip.h>
+	<fcntl.h>
 
 1341102371 /home/pierrick/Projects/zipdirfs/include//NameSearchTree.h
 	"NameSearchTreeNodes.h"
@@ -38,7 +41,7 @@
 	<iterator>
 	<deque>
 
-1341152960 source:/home/pierrick/Projects/zipdirfs/main.cpp
+1341155335 source:/home/pierrick/Projects/zipdirfs/main.cpp
 	"entry_definitions.h"
 	<fusekit/daemon.h>
 	<vector>
@@ -46,12 +49,11 @@
 	<algorithm>
 	<string.h>
 
-1341153763 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryFactory.h
+1341161169 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryFactory.h
 	"NameSearchTree.h"
 	"EntryFactory.h"
 	<fusekit/entry.h>
 	<fusekit/no_lock.h>
-	<fusekit/no_entry.h>
 	<time.h>
 	<sys/stat.h>
 	<stdlib.h>
@@ -61,13 +63,13 @@
 	<stddef.h>
 	<iostream>
 
-1341149558 /home/pierrick/Projects/zipdirfs/include//DirectoryNode.h
+1341155336 /home/pierrick/Projects/zipdirfs/include//DirectoryNode.h
 	<fusekit/entry.h>
 
-1341150295 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryTime.h
+1341155336 /home/pierrick/Projects/zipdirfs/include//SystemDirectoryTime.h
 	<time.h>
 
-1341152721 /home/pierrick/Projects/zipdirfs/include//DefaultPermission.h
+1341155336 /home/pierrick/Projects/zipdirfs/include//DefaultPermission.h
 	<asm-generic/errno-base.h>
 	<sys/types.h>
 
@@ -85,19 +87,20 @@
 	<fusekit/default_directory.h>
 	<fusekit/path.h>
 
-1341152655 source:/home/pierrick/Projects/zipdirfs/src/EntryFactory.cpp
+1341161361 source:/home/pierrick/Projects/zipdirfs/src/EntryFactory.cpp
 	"EntryFactory.h"
 	"entry_definitions.h"
 	<sys/stat.h>
 	<unistd.h>
 	<stdio.h>
+	<zip.h>
 
 1341152261 /home/pierrick/Projects/zipdirfs/include//EntryFactory.h
 	<fusekit/entry.h>
 	<dirent.h>
 	<string>
 
-1341154304 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
+1341161079 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
 	"DefaultPermission.h"
 	"SystemDirectoryFactory.h"
 	"SystemDirectoryTime.h"
@@ -106,24 +109,31 @@
 	"LinkTime.h"
 	"LinkBuffer.h"
 	"LinkNode.h"
+	"ZipRootFactory.h"
 	<fusekit/basic_entry.h>
 	<fusekit/basic_directory.h>
 	<fusekit/no_buffer.h>
 
-1341150269 /home/pierrick/Projects/zipdirfs/include//LinkFactory.h
+1341155597 /home/pierrick/Projects/zipdirfs/include//LinkFactory.h
 	<fusekit/no_lock.h>
 	<string>
 
 1341150995 /home/pierrick/Projects/zipdirfs/include//LinkTime.h
 	<time.h>
 
-1341152382 /home/pierrick/Projects/zipdirfs/include//LinkNode.h
+1341155597 /home/pierrick/Projects/zipdirfs/include//LinkNode.h
 	<fusekit/entry.h>
 	<string.h>
 
-1341151003 source:/home/pierrick/Projects/zipdirfs/src/LinkTime.cpp
+1341155597 source:/home/pierrick/Projects/zipdirfs/src/LinkTime.cpp
 	"LinkTime.h"
 
 1341154271 /home/pierrick/Projects/zipdirfs/include//LinkBuffer.h
 	<fusekit/entry.h>
+
+1341161290 /home/pierrick/Projects/zipdirfs/include//ZipRootFactory.h
+	"NameSearchTree.h"
+	<fusekit/entry.h>
+	<fusekit/no_lock.h>
+	<time.h>
 

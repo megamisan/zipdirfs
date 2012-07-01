@@ -29,6 +29,7 @@
 #include "LinkTime.h"
 #include "LinkBuffer.h"
 #include "LinkNode.h"
+#include "ZipRootFactory.h"
 #include <fusekit/basic_entry.h>
 #include <fusekit/basic_directory.h>
 #include <fusekit/no_buffer.h>
@@ -38,6 +39,9 @@ typedef fusekit::basic_directory<SystemDirectory, SystemDirectoryTime, DefaultDi
 
 template <class Derived> class Link : public LinkNode<LinkFactory<>, Derived> {};
 typedef fusekit::basic_entry<LinkTime, DefaultLinkPermission, LinkBuffer, Link, S_IFLNK> wrapper_link;
+
+template <class Derived> class ZipRootDirectory : public DirectoryNode<ZipRootFactory<>, Derived> {};
+typedef fusekit::basic_directory<ZipRootDirectory, SystemDirectoryTime, DefaultDirectoryPermission> zip_root_directory;
 
 
 #endif // ENTRY_DEFINITIONS_H_INCLUDED
