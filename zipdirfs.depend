@@ -100,7 +100,7 @@
 	<dirent.h>
 	<string>
 
-1341162201 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
+1341269013 /home/pierrick/Projects/zipdirfs/include//entry_definitions.h
 	"DefaultPermission.h"
 	"SystemDirectoryFactory.h"
 	"SystemDirectoryTime.h"
@@ -110,8 +110,12 @@
 	"LinkBuffer.h"
 	"LinkNode.h"
 	"ZipRootFactory.h"
+	"ZipDirectoryFactory.h"
+	"ZipTime.h"
+	"ZipFileBuffer.h"
 	<fusekit/basic_entry.h>
 	<fusekit/basic_directory.h>
+	<fusekit/basic_file.h>
 	<fusekit/no_buffer.h>
 
 1341155597 /home/pierrick/Projects/zipdirfs/include//LinkFactory.h
@@ -131,7 +135,7 @@
 1341154271 /home/pierrick/Projects/zipdirfs/include//LinkBuffer.h
 	<fusekit/entry.h>
 
-1341170856 /home/pierrick/Projects/zipdirfs/include//ZipRootFactory.h
+1341268365 /home/pierrick/Projects/zipdirfs/include//ZipRootFactory.h
 	"NameSearchTree.h"
 	"ZipFile.h"
 	<fusekit/entry.h>
@@ -143,7 +147,7 @@
 	"ZipFile.h"
 	"ZipIterator.h"
 
-1341170144 /home/pierrick/Projects/zipdirfs/include//ZipEntry.h
+1341171459 /home/pierrick/Projects/zipdirfs/include//ZipEntry.h
 	<time.h>
 	<stdint.h>
 
@@ -155,11 +159,11 @@
 	<zip.h>
 	<errno.h>
 
-1341170262 /home/pierrick/Projects/zipdirfs/include//ZipFile.h
+1341171459 /home/pierrick/Projects/zipdirfs/include//ZipFile.h
 	"ZipIterator.h"
 	<string>
 
-1341168472 /home/pierrick/Projects/zipdirfs/include//ZipIterator.h
+1341171459 /home/pierrick/Projects/zipdirfs/include//ZipIterator.h
 	<stdint.h>
 	<iterator>
 	<time.h>
@@ -169,4 +173,27 @@
 	"ZipIterator.h"
 	"ZipFile.h"
 	<zip.h>
+
+1341268396 /home/pierrick/Projects/zipdirfs/include//ZipDirectoryFactory.h
+	"ZipWalker.h"
+	"ZipFile.h"
+	<fusekit/no_lock.h>
+	<fusekit/entry.h>
+	<string>
+
+1341268663 /home/pierrick/Projects/zipdirfs/include//ZipWalker.h
+	"ZipIterator.h"
+	<string>
+	<iterator>
+	<utility>
+
+1341267871 /home/pierrick/Projects/zipdirfs/include//ZipTime.h
+	<time.h>
+
+1341268882 /home/pierrick/Projects/zipdirfs/include//ZipFileBuffer.h
+	"ZipEntry.h"
+	<stdint.h>
+	<asm-generic/errno-base.h>
+	<fuse.h>
+	<time.h>
 

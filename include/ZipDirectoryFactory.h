@@ -18,36 +18,23 @@
  *
  * $Id$
  */
-#ifndef ZIPROOTACTORY_H
-#define ZIPROOTFACTORY_H
+#ifndef ZIPDIRECTORYFACTORY_H
+#define ZIPDIRECTORYFACTORY_H
 
-#include "NameSearchTree.h"
+#include "ZipWalker.h"
 #include "ZipFile.h"
-#include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
-#include <time.h>
+#include <fusekit/entry.h>
+#include <string>
 
 template <class LockingPolicy = fusekit::no_lock>
-class ZipRootFactory : public LockingPolicy
+class ZipDirectoryFactory : public LockingPolicy
 {
-	typedef typename ZipRootFactory<LockingPolicy>::lock lock;
+	typedef typename ZipDirectoryFactory<LockingPolicy>::lock lock;
 	typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipRootFactory() : entries(deleteEntry), zipFile(NULL), lastUpdate(0) {}
-		virtual ~ZipRootFactory() {}
-		void setZipFile(const char* path)
-		{
-			if (this->zipFile)
-			{
-				return;
-			}
-			char *absolute = realpath(path, NULL);
-			if (absolute != NULL)
-			{
-				this->zipFile = new ZipFile(absolute);
-				free(absolute);
-			}
-		}
+		ZipDirectoryFactory() : entries(deleteEntry), source(NULL), mtime(0) {}
+		virtual ~ZipDirectoryFactory() {}
 		fusekit::entry *find(const char *name) { this->checkFile(); lock guard(*this); try { return entries.get(name); } catch (NotFoundException) { return NULL; } }
 		int size() { this->checkFile(); lock guard(*this); return entries.size(); } //TODO: Count only directories. Internal value.
 		int readdir(void *buf, fuse_fill_dir_t filler, off_t offset, fuse_file_info &)
@@ -60,16 +47,25 @@ class ZipRootFactory : public LockingPolicy
 			}
 			return 0;
 		}
-		inline time_t getLastUpdate() { return this->lastUpdate; }
+		inline time_t getMTime() { return this->mtime; }
+		friend class ZipWalker;
 	protected:
 	private:
 		tree entries;
-		ZipFile *zipFile;
-		time_t lastUpdate;
+		std::string relativePath;
+		ZipFile *source;
+		time_t mtime;
+		void setDirectoryInfo(ZipFile *source, std::string relativePath, time_t mtime) { this->source = source; this->relativePath = relativePath; this->mtime = mtime; }
 		static void deleteEntry(fusekit::entry* e) { if (e != NULL) delete e; }
 		void checkFile()
 		{
+			lock guard(*this);
+			if (source != NULL)
+			{
+				// DO THINGS
+				source = NULL;
+			}
 		}
 };
 
-#endif // ZIPROOTFACTORY_H
+#endif // ZIPDIRECTORYFACTORY_H

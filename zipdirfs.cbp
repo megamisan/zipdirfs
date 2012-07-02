@@ -66,10 +66,14 @@
 		<Unit filename="include/NotFoundException.h" />
 		<Unit filename="include/SystemDirectoryFactory.h" />
 		<Unit filename="include/SystemDirectoryTime.h" />
+		<Unit filename="include/ZipDirectoryFactory.h" />
 		<Unit filename="include/ZipEntry.h" />
 		<Unit filename="include/ZipFile.h" />
+		<Unit filename="include/ZipFileBuffer.h" />
 		<Unit filename="include/ZipIterator.h" />
 		<Unit filename="include/ZipRootFactory.h" />
+		<Unit filename="include/ZipTime.h" />
+		<Unit filename="include/ZipWalker.h" />
 		<Unit filename="include/entry_definitions.h" />
 		<Unit filename="include/stream_indent.h" />
 		<Unit filename="main.cpp">
@@ -85,6 +89,7 @@
 		<Unit filename="src/ZipEntry.cpp" />
 		<Unit filename="src/ZipFile.cpp" />
 		<Unit filename="src/ZipIterator.cpp" />
+		<Unit filename="src/ZipWalker.cpp" />
 		<Unit filename="src/stream_indent.cpp" />
 		<Extensions>
 			<code_completion />
