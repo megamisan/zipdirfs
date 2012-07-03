@@ -1,7 +1,10 @@
 # depslib dependency file v1.0
-1341339004 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
+1341344822 source:/home/pierrick/Projects/zipdirfs/maintest.cpp
 	"zipdirfs/NameSearchTree.h"
 	"zipdirfs/SystemDirectoryFactory.h"
+	"zipdirfs/ZipFile.h"
+	"zipdirfs/ZipIterator.h"
+	"zipdirfs/ZipWalker.h"
 	<string>
 	<iostream>
 	<dirent.h>
@@ -25,10 +28,10 @@
 1341078605 /home/pierrick/Projects/zipdirfs/include/zipdirfs/stream_indent.h
 	<ostream>
 
-1341336534 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/NotFoundException.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/NotFoundException.cpp
 	"zipdirfs/NotFoundException.h"
 
-1341336178 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/stream_indent.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/stream_indent.cpp
 	"zipdirfs/stream_indent.h"
 	<string>
 
@@ -41,7 +44,7 @@
 	<iterator>
 	<deque>
 
-1341336336 source:/home/pierrick/Projects/zipdirfs/main.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/main.cpp
 	"zipdirfs/entry_definitions.h"
 	<fusekit/daemon.h>
 	<vector>
@@ -87,7 +90,7 @@
 	<fusekit/default_directory.h>
 	<fusekit/path.h>
 
-1341336505 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/EntryFactory.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/EntryFactory.cpp
 	"zipdirfs/EntryFactory.h"
 	"zipdirfs/entry_definitions.h"
 	<sys/stat.h>
@@ -142,7 +145,7 @@
 	<fusekit/no_lock.h>
 	<time.h>
 
-1341338775 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntry.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntry.cpp
 	"zipdirfs/ZipEntry.h"
 	"zipdirfs/ZipFile.h"
 	"zipdirfs/ZipEntryFileInfo.h"
@@ -151,7 +154,7 @@
 	<time.h>
 	<stdint.h>
 
-1341337966 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipFile.cpp
+1341343891 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipFile.cpp
 	"zipdirfs/ZipFile.h"
 	"zipdirfs/ZipEntry.h"
 	<iostream>
@@ -169,7 +172,7 @@
 	<time.h>
 	<string>
 
-1341336666 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipIterator.cpp
+1341344377 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipIterator.cpp
 	"zipdirfs/ZipIterator.h"
 	"zipdirfs/ZipFile.h"
 	<zip.h>
@@ -197,7 +200,7 @@
 	<fuse.h>
 	<time.h>
 
-1341336287 /home/pierrick/Projects/zipdirfs/include//zipdirfs/entry_definitions.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/entry_definitions.h
 	"zipdirfs/DefaultPermission.h"
 	"zipdirfs/SystemDirectoryFactory.h"
 	"zipdirfs/SystemDirectoryTime.h"
@@ -215,11 +218,11 @@
 	<fusekit/basic_file.h>
 	<fusekit/no_buffer.h>
 
-1341337876 /home/pierrick/Projects/zipdirfs/include//zipdirfs/DefaultPermission.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/DefaultPermission.h
 	<asm-generic/errno-base.h>
 	<sys/types.h>
 
-1341337521 /home/pierrick/Projects/zipdirfs/include//zipdirfs/SystemDirectoryFactory.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/SystemDirectoryFactory.h
 	"zipdirfs/NameSearchTree.h"
 	"zipdirfs/EntryFactory.h"
 	<fusekit/entry.h>
@@ -233,7 +236,7 @@
 	<stddef.h>
 	<iostream>
 
-1341337246 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchTree.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchTree.h
 	"zipdirfs/NameSearchTreeNodes.h"
 	"zipdirfs/NameSearchWalker.h"
 	"zipdirfs/NotFoundException.h"
@@ -241,19 +244,19 @@
 	<string.h>
 	<ostream>
 
-1341337324 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchTreeNodes.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchTreeNodes.h
 	"zipdirfs/stream_indent.h"
 	<ostream>
 
-1341335731 /home/pierrick/Projects/zipdirfs/include//zipdirfs/stream_indent.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/stream_indent.h
 	<ostream>
 
-1341337375 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchWalker.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NameSearchWalker.h
 	"zipdirfs/NameSearchTreeNodes.h"
 	<iterator>
 	<deque>
 
-1341335912 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NotFoundException.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/NotFoundException.h
 	<exception>
 
 1341336912 /home/pierrick/Projects/zipdirfs/include//zipdirfs/EntryFactory.h
@@ -261,13 +264,13 @@
 	<dirent.h>
 	<string>
 
-1341337554 /home/pierrick/Projects/zipdirfs/include//zipdirfs/SystemDirectoryTime.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/SystemDirectoryTime.h
 	<time.h>
 
-1341336896 /home/pierrick/Projects/zipdirfs/include//zipdirfs/DirectoryNode.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/DirectoryNode.h
 	<fusekit/entry.h>
 
-1341335989 /home/pierrick/Projects/zipdirfs/include//zipdirfs/LinkFactory.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/LinkFactory.h
 	<fusekit/no_lock.h>
 	<string>
 
@@ -277,59 +280,69 @@
 1341336954 /home/pierrick/Projects/zipdirfs/include//zipdirfs/LinkBuffer.h
 	<fusekit/entry.h>
 
-1341337010 /home/pierrick/Projects/zipdirfs/include//zipdirfs/LinkNode.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/LinkNode.h
 	<fusekit/entry.h>
 	<string.h>
 
-1341337822 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipRootFactory.h
+1341350263 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipRootFactory.h
 	"zipdirfs/NameSearchTree.h"
+	"zipdirfs/ZipWalker.h"
 	"zipdirfs/ZipFile.h"
 	<fusekit/entry.h>
 	<fusekit/no_lock.h>
 	<time.h>
 
-1341337662 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFile.h
+1341340701 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFile.h
 	"zipdirfs/ZipIterator.h"
 	<string>
 
-1341338730 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipIterator.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipIterator.h
 	"zipdirfs/ZipEntryFileInfo.h"
 	<stdint.h>
 	<iterator>
 	<string>
 
-1341337602 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipDirectoryFactory.h
+1341342884 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipDirectoryFactory.h
 	"zipdirfs/ZipWalker.h"
 	"zipdirfs/ZipFile.h"
 	<fusekit/no_lock.h>
 	<fusekit/entry.h>
 	<string>
 
-1341336269 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipWalker.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipWalker.h
 	"zipdirfs/ZipIterator.h"
 	<string>
 	<iterator>
 	<utility>
 
-1341337835 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipTime.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipTime.h
 	<time.h>
 
-1341337713 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFileBuffer.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFileBuffer.h
 	"zipdirfs/ZipEntry.h"
 	<stdint.h>
 	<asm-generic/errno-base.h>
 	<fuse.h>
 	<time.h>
 
-1341337639 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntry.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntry.h
 	<time.h>
 	<stdint.h>
 
-1341336516 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/LinkTime.cpp
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/LinkTime.cpp
 	"zipdirfs/LinkTime.h"
 
-1341338707 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntryFileInfo.h
+1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntryFileInfo.h
 	<stdint.h>
 	<string>
 	<time.h>
+
+1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntryFileInfo.cpp
+	"zipdirfs/ZipEntryFileInfo.h"
+
+1341346547 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipWalker.cpp
+	"zipdirfs/ZipWalker.h"
+	"zipdirfs/ZipFile.h"
+	"zipdirfs/entry_definitions.h"
+	<string.h>
 

@@ -1,6 +1,7 @@
 2012-07-03 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
-	* Feature: All zip representation classes created. Not yet usable.
+	* Feature: All zip representation classes created. Files cannot be read.
 	* Refactor: Put all classes in zipdirfs namespace.
+	* Feature: When building the root zip folder listing, the system automatically traverse any only one directory levels. For example, if we have a/b/c and a/b/d, instead of showing folder a, it will show the two files c and d.
 
 2012-07-01 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Feature: List the entries in a regular folder. The entries are identified as symlink, zipfile or folder.

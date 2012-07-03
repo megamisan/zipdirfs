@@ -37,6 +37,7 @@ namespace zipdirfs
 		ZipIterator begin();
 		ZipIterator end();
 		ZipEntry* getEntry (const ZipEntryFileInfo& fileinfo);
+		const std::string& getFilePath() const;
 		friend class ZipIterator;
 		friend class ZipEntry;
 	protected:

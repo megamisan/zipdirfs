@@ -35,7 +35,7 @@
 				<Option object_output="obj/Test/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/media/Backup/Server/Nipponsei/" />
+				<Option parameters="/media/Backup/Server/Nipponsei/\[#aznmp3\ \&amp;\ Nipponsei\]\ Juuousei\ OP\ -\ Deep\ in\ Your\ Heart\ \[320kbps\ x\ Scans\]\[Doumoto\ Kouichi\]\[2006.07.12\].zip" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -68,6 +68,7 @@
 		<Unit filename="include/zipdirfs/SystemDirectoryTime.h" />
 		<Unit filename="include/zipdirfs/ZipDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/ZipEntry.h" />
+		<Unit filename="include/zipdirfs/ZipEntryFileInfo.h" />
 		<Unit filename="include/zipdirfs/ZipFile.h" />
 		<Unit filename="include/zipdirfs/ZipFileBuffer.h" />
 		<Unit filename="include/zipdirfs/ZipIterator.h" />
@@ -87,6 +88,7 @@
 		<Unit filename="src/zipdirfs/LinkTime.cpp" />
 		<Unit filename="src/zipdirfs/NotFoundException.cpp" />
 		<Unit filename="src/zipdirfs/ZipEntry.cpp" />
+		<Unit filename="src/zipdirfs/ZipEntryFileInfo.cpp" />
 		<Unit filename="src/zipdirfs/ZipFile.cpp" />
 		<Unit filename="src/zipdirfs/ZipIterator.cpp" />
 		<Unit filename="src/zipdirfs/ZipWalker.cpp" />

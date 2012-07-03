@@ -27,7 +27,7 @@
 
 namespace zipdirfs
 {
-	ZipFile::ZipFile (const std::string& path) : path (path), zipFile (NULL)
+	ZipFile::ZipFile (const std::string& path) : path (path), zipFile (NULL), refCount(0)
 	{
 	}
 
@@ -120,5 +120,10 @@ namespace zipdirfs
 		{
 			::zip_close (zipFile);
 		}
+	}
+
+	const std::string& ZipFile::getFilePath() const
+	{
+		return this->path;
 	}
 }

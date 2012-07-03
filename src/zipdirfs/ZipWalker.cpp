@@ -20,6 +20,7 @@
  */
 #include "zipdirfs/ZipWalker.h"
 #include "zipdirfs/ZipFile.h"
+#include "zipdirfs/entry_definitions.h"
 #include <string.h>
 
 namespace zipdirfs
@@ -54,9 +55,43 @@ namespace zipdirfs
 	  */
 	void ZipWalker::advanceToNext()
 	{
-		while ( (begin != end) && (this->entry.second == NULL) )
+		while ( begin != end )
 		{
-			if (::strncmp (begin->name.c_str(), this->filterPath.c_str(), this->filterPath.size() ) == 0 );
+			if ( (this->filterPath.size() == 0) || (::strncmp (begin->name.c_str(), this->filterPath.c_str(), this->filterPath.size() ) == 0) )
+			{
+				std::string name (begin->name.substr (this->filterPath.size() ) );
+
+				if (name.size() > 0)
+				{
+					::size_t pos = name.find ('/');
+
+					if ( (pos == std::string::npos) || (pos + 1 == name.size() ) )
+					{
+						this->entry.first = name;
+
+						if (pos != std::string::npos)
+						{
+							this->entry.first.erase (pos);
+							zip_directory* dir = new zip_directory();
+							dir->setDirectoryInfo (zipFile, begin->name, begin->mtime);
+							this->entry.second = dir;
+						}
+						else
+						{
+							zip_file* file = new zip_file();
+							file->setFileInfo (this->zipFile->getEntry (*begin) );
+							this->entry.second = file;
+						}
+					}
+				}
+			}
+
+			if (this->entry.second != NULL)
+			{
+				break;
+			}
+
+			begin++;
 		}
 	}
 
@@ -120,6 +155,7 @@ namespace zipdirfs
 	  */
 	ZipWalker& ZipWalker::operator= (const ZipWalker& it)
 	{
+		this->zipFile = it.zipFile;
 		this->begin = it.begin;
 		this->end = it.end;
 		this->filterPath = it.filterPath;
@@ -131,7 +167,7 @@ namespace zipdirfs
 	  *
 	  * (documentation goes here)
 	  */
-	ZipWalker::ZipWalker (const ZipWalker& it) : begin (it.begin), end (it.end), filterPath (it.filterPath), entry (it.entry)
+	ZipWalker::ZipWalker (const ZipWalker& it) : zipFile (it.zipFile), begin (it.begin), end (it.end), filterPath (it.filterPath), entry (it.entry)
 	{
 	}
 

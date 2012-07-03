@@ -20,6 +20,9 @@
  */
 #include "zipdirfs/NameSearchTree.h"
 #include "zipdirfs/SystemDirectoryFactory.h"
+#include "zipdirfs/ZipFile.h"
+#include "zipdirfs/ZipIterator.h"
+#include "zipdirfs/ZipWalker.h"
 #include <string>
 #include <iostream>
 #include <dirent.h>
@@ -34,6 +37,8 @@ int testTreeIterator(std::string &path);
 int testDirectoryFactory(std::string &path);
 int testZipOpen(std::string &path);
 int testZipEnumeration(std::string &path);
+int testZipIterator(std::string &path);
+int testZipWalker(std::string &path);
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +52,8 @@ int main(int argc, char *argv[])
 	// return testDirectoryFactory(path);
 	// return testZipOpen(path);
 	// return testZipEnumeration(path);
+	// return testZipIterator(path);
+	return testZipWalker(path);
 }
 
 int buildTree(std::string& path, zipdirfs::NameSearchTree<int>& tree)
@@ -179,5 +186,28 @@ int testZipEnumeration(std::string &path)
 		}
 	}
 	zip_close(zipFile);
+	return 0;
+}
+
+int testZipIterator(std::string &path)
+{
+	zipdirfs::ZipFile file(path);
+	zipdirfs::ZipIterator end = file.end();
+	for (zipdirfs::ZipIterator it(file.begin()); it != end; it++)
+	{
+		std::cout << it->name << std::endl;
+	}
+	return 0;
+}
+
+int testZipWalker(std::string &path)
+{
+	zipdirfs::ZipFile file(path);
+	zipdirfs::ZipWalker end(&file, "", true);
+	for (zipdirfs::ZipWalker it(&file, "", false); it != end; it++)
+	{
+		std::cout << it->first << std::endl;
+		delete it->second;
+	}
 	return 0;
 }

@@ -71,7 +71,7 @@ namespace zipdirfs
 	  */
 	ZipIterator& ZipIterator::operator++()
 	{
-		this->position++;
+		this->advance();
 		return *this;
 	}
 

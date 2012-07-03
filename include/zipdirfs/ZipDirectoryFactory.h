@@ -94,10 +94,16 @@ namespace zipdirfs
 		{
 			lock guard (*this);
 
-			if (source != NULL)
+			if (this->source != NULL)
 			{
-				// DO THINGS
-				source = NULL;
+				ZipWalker it(this->source, this->relativePath, false);
+				ZipWalker end(this->source, this->relativePath, true);
+				for (; it != end; it++)
+				{
+					fusekit::entry *entry = it->second;
+					entries.add(it->first.c_str(), entry);
+				}
+				this->source = NULL;
 			}
 		}
 	};
