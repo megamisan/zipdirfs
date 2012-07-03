@@ -18,8 +18,8 @@
  *
  * $Id$
  */
-#include "NameSearchTree.h"
-#include "SystemDirectoryFactory.h"
+#include "zipdirfs/NameSearchTree.h"
+#include "zipdirfs/SystemDirectoryFactory.h"
 #include <string>
 #include <iostream>
 #include <dirent.h>
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	// return testZipEnumeration(path);
 }
 
-int buildTree(std::string& path, NameSearchTree<int>& tree)
+int buildTree(std::string& path, zipdirfs::NameSearchTree<int>& tree)
 {
 	DIR *folder = NULL;
 	folder = opendir(path.c_str());
@@ -82,7 +82,7 @@ int buildTree(std::string& path, NameSearchTree<int>& tree)
 
 int testTree(std::string& path)
 {
-	NameSearchTree<int> tree;
+	zipdirfs::NameSearchTree<int> tree;
 	int res = buildTree(path, tree);
 	std::cout << tree;
 	return res;
@@ -90,9 +90,9 @@ int testTree(std::string& path)
 
 int testTreeIterator(std::string& path)
 {
-	NameSearchTree<int> tree;
+	zipdirfs::NameSearchTree<int> tree;
 	int res = buildTree(path, tree);
-	for (NameSearchTree<int>::iterator it(tree.begin()); it != tree.end(); it++)
+	for (zipdirfs::NameSearchTree<int>::iterator it(tree.begin()); it != tree.end(); it++)
 	{
 		std::cout << *it << std::endl;
 	}
@@ -107,7 +107,7 @@ int fusefiller(void*, const char* name, const struct stat*, off_t)
 
 int testDirectoryFactory(std::string &path)
 {
-	SystemDirectoryFactory<> entry;
+	zipdirfs::SystemDirectoryFactory<> entry;
 	entry.setRealPath(path.c_str());
 	std::cout << "Real path " << entry.getRealPath() << std::endl;
 	fuse_file_info dummy;

@@ -18,14 +18,14 @@
  *
  * $Id$
  */
-#include "entry_definitions.h"
+#include "zipdirfs/entry_definitions.h"
 #include <fusekit/daemon.h>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 #include <string.h>
 
-typedef fusekit::daemon<system_directory> daemon_type;
+typedef fusekit::daemon<zipdirfs::system_directory> daemon_type;
 
 const char *getProgramName(const char* self);
 bool parseParameters(std::vector<const char*> &args, std::string &path);

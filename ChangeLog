@@ -1,5 +1,6 @@
 2012-07-03 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Feature: All zip representation classes created. Not yet usable.
+	* Refactor: Put all classes in zipdirfs namespace.
 
 2012-07-01 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Feature: List the entries in a regular folder. The entries are identified as symlink, zipfile or folder.
