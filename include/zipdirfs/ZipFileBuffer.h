@@ -43,15 +43,17 @@ namespace zipdirfs
 		}
 		int open (::fuse_file_info& fi)
 		{
-			return -EACCES;
+			if (!this->source->open()) return -EIO;
+			return 0;
 		}
 		int close (::fuse_file_info& fi)
 		{
-			return -EBADF;
+			this->source->release();
+			return 0;
 		}
 		int read (char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
 		{
-			return -EBADF;
+			return this->source->read(buf, size, offset);
 		}
 		int write (const char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
 		{
@@ -63,7 +65,7 @@ namespace zipdirfs
 		}
 		int flush (::fuse_file_info& fi)
 		{
-			return -EBADF;
+			return 0;
 		}
 		int truncate (::off_t offset)
 		{

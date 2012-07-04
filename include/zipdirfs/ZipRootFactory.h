@@ -37,7 +37,7 @@ namespace zipdirfs
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
 		ZipRootFactory() : entries (deleteEntry), zipFile (NULL), lastUpdate (0) {}
-		virtual ~ZipRootFactory() {}
+		virtual ~ZipRootFactory() { if (this->zipFile != NULL) delete this->zipFile; }
 		void setZipFile (const char* path)
 		{
 			if (this->zipFile)

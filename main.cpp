@@ -35,7 +35,7 @@ bool isHelp(const char* s1) { return !strcmp(s1, "-h"); }
 int main(int argc, const char *argv[])
 {
 	const char* const programName = getProgramName(argv[0]);
-	for (int i = 0; i < argc; i++) std::cerr << "args: " << argv[i] << std::endl;
+	// for (int i = 0; i < argc; i++) std::cerr << "args: " << argv[i] << std::endl;
 	std::string sourcePath;
 	std::vector<const char*> arguments(argv, argv + argc);
 	if (std::find_if(arguments.begin(), arguments.end(), isHelp) != arguments.end())
@@ -65,7 +65,7 @@ int main(int argc, const char *argv[])
 	arguments.push_back(fsname);
 	daemon_type &daemon = daemon_type::instance();
 	daemon.root().setRealPath(sourcePath.c_str());
-	for (std::vector<const char*>::iterator it = arguments.begin(); it != arguments.end(); it++) std::cerr << "fuse args:" << *it << std::endl;
+	// for (std::vector<const char*>::iterator it = arguments.begin(); it != arguments.end(); it++) std::cerr << "fuse args:" << *it << std::endl;
 	daemon.run(arguments.size(), const_cast<char **>(&arguments[0]));
 	delete[] fsname;
 	delete[] fstype;

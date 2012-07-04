@@ -44,7 +44,7 @@
 	<iterator>
 	<deque>
 
-1341339129 source:/home/pierrick/Projects/zipdirfs/main.cpp
+1341427317 source:/home/pierrick/Projects/zipdirfs/main.cpp
 	"zipdirfs/entry_definitions.h"
 	<fusekit/daemon.h>
 	<vector>
@@ -145,16 +145,19 @@
 	<fusekit/no_lock.h>
 	<time.h>
 
-1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntry.cpp
+1341429869 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntry.cpp
 	"zipdirfs/ZipEntry.h"
 	"zipdirfs/ZipFile.h"
 	"zipdirfs/ZipEntryFileInfo.h"
+	<zip.h>
+	<asm-generic/errno-base.h>
+	<iostream>
 
 1341171459 /home/pierrick/Projects/zipdirfs/include/zipdirfs/ZipEntry.h
 	<time.h>
 	<stdint.h>
 
-1341343891 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipFile.cpp
+1341350852 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipFile.cpp
 	"zipdirfs/ZipFile.h"
 	"zipdirfs/ZipEntry.h"
 	<iostream>
@@ -172,7 +175,7 @@
 	<time.h>
 	<string>
 
-1341344377 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipIterator.cpp
+1341350852 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipIterator.cpp
 	"zipdirfs/ZipIterator.h"
 	"zipdirfs/ZipFile.h"
 	<zip.h>
@@ -284,7 +287,7 @@
 	<fusekit/entry.h>
 	<string.h>
 
-1341350263 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipRootFactory.h
+1341430279 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipRootFactory.h
 	"zipdirfs/NameSearchTree.h"
 	"zipdirfs/ZipWalker.h"
 	"zipdirfs/ZipFile.h"
@@ -292,7 +295,7 @@
 	<fusekit/no_lock.h>
 	<time.h>
 
-1341340701 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFile.h
+1341350852 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFile.h
 	"zipdirfs/ZipIterator.h"
 	<string>
 
@@ -302,7 +305,7 @@
 	<iterator>
 	<string>
 
-1341342884 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipDirectoryFactory.h
+1341350852 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipDirectoryFactory.h
 	"zipdirfs/ZipWalker.h"
 	"zipdirfs/ZipFile.h"
 	<fusekit/no_lock.h>
@@ -318,14 +321,15 @@
 1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipTime.h
 	<time.h>
 
-1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFileBuffer.h
+1341425775 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipFileBuffer.h
 	"zipdirfs/ZipEntry.h"
 	<stdint.h>
 	<asm-generic/errno-base.h>
 	<fuse.h>
 	<time.h>
 
-1341339129 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntry.h
+1341425348 /home/pierrick/Projects/zipdirfs/include//zipdirfs/ZipEntry.h
+	<sys/types.h>
 	<time.h>
 	<stdint.h>
 
@@ -340,7 +344,7 @@
 1341339129 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipEntryFileInfo.cpp
 	"zipdirfs/ZipEntryFileInfo.h"
 
-1341346547 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipWalker.cpp
+1341350852 source:/home/pierrick/Projects/zipdirfs/src/zipdirfs/ZipWalker.cpp
 	"zipdirfs/ZipWalker.h"
 	"zipdirfs/ZipFile.h"
 	"zipdirfs/entry_definitions.h"

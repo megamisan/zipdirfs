@@ -1,0 +1,5 @@
+I think that should be added:
+* Locks on shared data access.
+* A system file or directory to provide various statistics.
+* Provides answers to statfs and block count in stat.
+* Listen to underlying file system changes to follow a change of file kind in the underlying file system.

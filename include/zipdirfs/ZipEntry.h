@@ -21,9 +21,11 @@
 #ifndef ZIPENTRY_H
 #define ZIPENTRY_H
 
+#include <sys/types.h>
 #include <time.h>
 #include <stdint.h>
 
+struct zip_file;
 namespace zipdirfs
 {
 	class ZipFile;
@@ -35,6 +37,7 @@ namespace zipdirfs
 		virtual ~ZipEntry();
 		bool open();
 		bool release();
+		int read (char* buf, ::size_t size, ::off_t offset);
 		const ::uint64_t getSize() const
 		{
 			return this->size;
@@ -50,7 +53,12 @@ namespace zipdirfs
 		const ::uint64_t index;
 		const ::uint64_t size;
 		const ::time_t mtime;
+		char *buffer;
+		::uint64_t progress;
+		int refCount;
+		::zip_file *zipFileEntry;
 		ZipEntry (ZipFile &, const ZipEntryFileInfo&);
+		bool ensureRead(::uint64_t position);
 	};
 }
 

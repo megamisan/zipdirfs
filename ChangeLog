@@ -1,3 +1,7 @@
+2012-07-04 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.Fr>
+	* Feature: The content of the files in the exposed Zip files can be read.
+	* Fix: Memory leak in ZipRootFactory. The ZipFile instance was not freed by the containing object.
+
 2012-07-03 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Feature: All zip representation classes created. Files cannot be read.
 	* Refactor: Put all classes in zipdirfs namespace.
