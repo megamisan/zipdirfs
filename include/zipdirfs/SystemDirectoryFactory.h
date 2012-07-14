@@ -23,6 +23,7 @@
 
 #include "zipdirfs/NameSearchTree.h"
 #include "zipdirfs/EntryFactory.h"
+#include "zipdirfs/DirectoryMark.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
 #include <time.h>
@@ -43,7 +44,7 @@ namespace zipdirfs
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
 		/** Default constructor */
-		SystemDirectoryFactory() : entries (deleteEntry), lastUpdate (0) {};
+		SystemDirectoryFactory() : entries (deleteEntry), folderCount(0), lastUpdate (0) {};
 		/** Default destructor */
 		virtual ~SystemDirectoryFactory() {};
 		void setRealPath (const char* path)
@@ -81,9 +82,15 @@ namespace zipdirfs
 		}
 		int size()
 		{
-			this->checkSystem();    //TODO: Count only directories. Internal value.
+			this->checkSystem();
 			lock guard (*this);
 			return entries.size();
+		}
+		int links()
+		{
+			this->checkSystem();
+			lock guard (*this);
+			return folderCount;
 		}
 		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
@@ -104,6 +111,7 @@ namespace zipdirfs
 	protected:
 	private:
 		tree entries;
+		int folderCount;
 		std::string realPath;
 		::time_t lastUpdate;
 		static void deleteEntry (fusekit::entry* e)
@@ -169,6 +177,7 @@ namespace zipdirfs
 						if (!entries.isset (result->d_name) )
 						{
 							entries.add (result->d_name, holder = EntryFactory::newEntry (result, this->realPath) );
+							if (dynamic_cast<DirectoryMark*>(holder) != NULL) folderCount++;
 						}
 					}
 
@@ -187,6 +196,7 @@ namespace zipdirfs
 
 			for (tree::iterator it = toRemove.begin(); it != toRemove.end(); it++)
 			{
+				if (dynamic_cast<DirectoryMark*>(entries.get(it->c_str())) != NULL) folderCount--;
 				entries.remove (it->c_str() );
 			}
 		}

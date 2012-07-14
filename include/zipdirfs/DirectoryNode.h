@@ -43,7 +43,7 @@ namespace zipdirfs
 		}
 		int links()
 		{
-			return factory().size() + 2;
+			return factory().links() + 2;
 		}
 		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info& finfo)
 		{

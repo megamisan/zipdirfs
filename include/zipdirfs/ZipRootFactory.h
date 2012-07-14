@@ -24,6 +24,7 @@
 #include "zipdirfs/NameSearchTree.h"
 #include "zipdirfs/ZipWalker.h"
 #include "zipdirfs/ZipFile.h"
+#include "zipdirfs/DirectoryMark.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
 #include <time.h>
@@ -36,7 +37,7 @@ namespace zipdirfs
 		typedef typename ZipRootFactory<LockingPolicy>::lock lock;
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipRootFactory() : entries (deleteEntry), zipFile (NULL), lastUpdate (0) {}
+		ZipRootFactory() : entries (deleteEntry), folderCount(0), zipFile (NULL), lastUpdate (0) {}
 		virtual ~ZipRootFactory() { if (this->zipFile != NULL) delete this->zipFile; }
 		void setZipFile (const char* path)
 		{
@@ -69,9 +70,15 @@ namespace zipdirfs
 		}
 		int size()
 		{
-			this->checkFile();    //TODO: Count only directories. Internal value.
+			this->checkFile();
 			lock guard (*this);
 			return entries.size();
+		}
+		int links()
+		{
+			this->checkFile();
+			lock guard (*this);
+			return folderCount;
 		}
 		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
@@ -92,6 +99,7 @@ namespace zipdirfs
 	protected:
 	private:
 		tree entries;
+		int folderCount;
 		ZipFile* zipFile;
 		::time_t lastUpdate;
 		static void deleteEntry (fusekit::entry* e)
@@ -119,6 +127,7 @@ namespace zipdirfs
 		void updateEntries()
 		{
 			lock guard (*this);
+			folderCount = 0;
 			entries.clear();
 			ZipWalker it (this->zipFile, "", false);
 			ZipWalker end (this->zipFile, "", true);
@@ -126,6 +135,7 @@ namespace zipdirfs
 			for (; it != end; it++)
 			{
 				fusekit::entry* entry = it->second;
+				if (dynamic_cast<DirectoryMark*>(entry) != NULL) folderCount++;
 				entries.add (it->first.c_str(), entry);
 			}
 
@@ -145,6 +155,7 @@ namespace zipdirfs
 				for (; it != end; it++)
 				{
 					fusekit::entry* entry = it->second;
+					if (dynamic_cast<DirectoryMark*>(entry) != NULL) folderCount++;
 					entries.add (it->first.c_str(), entry);
 				}
 			}

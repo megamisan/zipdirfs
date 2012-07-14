@@ -18,49 +18,31 @@
  *
  * $Id$
  */
-#ifndef ZIPENTRY_H
-#define ZIPENTRY_H
+#ifndef MUTEXLOCKPOLICY_H
+#define MUTEXLOCKPOLICY_H
 
-#include "zipdirfs/MutexLockPolicy.h"
-#include <sys/types.h>
-#include <time.h>
-#include <stdint.h>
-
-struct zip_file;
 namespace zipdirfs
 {
-	class ZipFile;
-	struct ZipEntryFileInfo;
-
-	class ZipEntry : MutexLockPolicy
+	struct mutex;
+	class MutexLockPolicy
 	{
 	public:
-		virtual ~ZipEntry();
-		bool open();
-		bool release();
-		int read (char* buf, ::size_t size, ::off_t offset);
-		const ::uint64_t getSize() const
+		MutexLockPolicy();
+		~MutexLockPolicy();
+		class Lock
 		{
-			return this->size;
-		}
-		const ::time_t getMTime() const
-		{
-			return this->mtime;
-		}
-		friend class ZipFile;
+		public:
+			Lock (MutexLockPolicy& policy);
+			~Lock();
+		private:
+			MutexLockPolicy& policy;
+		};
+		typedef Lock lock;
 	protected:
 	private:
-		ZipFile& file;
-		const ::uint64_t index;
-		const ::uint64_t size;
-		const ::time_t mtime;
-		char *buffer;
-		::uint64_t progress;
-		int refCount;
-		::zip_file *zipFileEntry;
-		ZipEntry (ZipFile &, const ZipEntryFileInfo&);
-		bool ensureRead(::uint64_t position);
+		struct mutex* mutex;
+		friend class Lock;
 	};
 }
 
-#endif // ZIPENTRY_H
+#endif // MUTEXLOCKPOLICY_H

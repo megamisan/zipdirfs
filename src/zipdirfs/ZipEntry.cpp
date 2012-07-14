@@ -86,6 +86,7 @@ namespace zipdirfs
 
 	bool ZipEntry::ensureRead(::uint64_t position)
 	{
+		Lock lock(*this);
 		if (position < this->progress) return true;
 		int read;
 		while (this->progress < position)

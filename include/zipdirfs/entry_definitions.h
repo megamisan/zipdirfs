@@ -33,6 +33,8 @@
 #include "zipdirfs/ZipDirectoryFactory.h"
 #include "zipdirfs/ZipTime.h"
 #include "zipdirfs/ZipFileBuffer.h"
+#include "zipdirfs/MutexLockPolicy.h"
+#include "zipdirfs/DirectoryMark.h"
 #include <fusekit/basic_entry.h>
 #include <fusekit/basic_directory.h>
 #include <fusekit/basic_file.h>
@@ -40,16 +42,16 @@
 
 namespace zipdirfs
 {
-	template <class Derived> class SystemDirectory : public DirectoryNode<SystemDirectoryFactory<>, Derived> {};
+	template <class Derived> class SystemDirectory : public DirectoryNode<SystemDirectoryFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
 	typedef fusekit::basic_directory<SystemDirectory, SystemDirectoryTime, DefaultDirectoryPermission> system_directory;
 
-	template <class Derived> class Link : public LinkNode<LinkFactory<>, Derived> {};
+	template <class Derived> class Link : public LinkNode<LinkFactory<MutexLockPolicy>, Derived> {};
 	typedef fusekit::basic_entry<LinkTime, DefaultLinkPermission, LinkBuffer, Link, S_IFLNK> wrapper_link;
 
-	template <class Derived> class ZipRootDirectory : public DirectoryNode<ZipRootFactory<>, Derived> {};
+	template <class Derived> class ZipRootDirectory : public DirectoryNode<ZipRootFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
 	typedef fusekit::basic_directory<ZipRootDirectory, SystemDirectoryTime, DefaultDirectoryPermission> zip_root_directory;
 
-	template <class Derived> class ZipDirectory : public DirectoryNode<ZipDirectoryFactory<>, Derived> {};
+	template <class Derived> class ZipDirectory : public DirectoryNode<ZipDirectoryFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
 	typedef fusekit::basic_directory<ZipDirectory, ZipTime, DefaultDirectoryPermission> zip_directory;
 
 	typedef fusekit::basic_file<ZipFileBuffer, ZipTime, DefaultFilePermission> zip_file;

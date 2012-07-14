@@ -23,6 +23,7 @@
 
 #include "zipdirfs/ZipWalker.h"
 #include "zipdirfs/ZipFile.h"
+#include "zipdirfs/DirectoryMark.h"
 #include <fusekit/no_lock.h>
 #include <fusekit/entry.h>
 #include <string>
@@ -35,7 +36,7 @@ namespace zipdirfs
 		typedef typename ZipDirectoryFactory<LockingPolicy>::lock lock;
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipDirectoryFactory() : entries (deleteEntry), source (NULL), mtime (0) {}
+		ZipDirectoryFactory() : entries (deleteEntry), folderCount(0), source (NULL), mtime (0) {}
 		virtual ~ZipDirectoryFactory() {}
 		fusekit::entry* find (const char* name)
 		{
@@ -53,9 +54,15 @@ namespace zipdirfs
 		}
 		int size()
 		{
-			this->checkFile();    //TODO: Count only directories. Internal value.
+			this->checkFile();
 			lock guard (*this);
 			return entries.size();
+		}
+		int links()
+		{
+			this->checkFile();
+			lock guard (*this);
+			return folderCount;
 		}
 		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
@@ -77,6 +84,7 @@ namespace zipdirfs
 	protected:
 	private:
 		tree entries;
+		int folderCount;
 		std::string relativePath;
 		ZipFile* source;
 		::time_t mtime;
@@ -101,6 +109,7 @@ namespace zipdirfs
 				for (; it != end; it++)
 				{
 					fusekit::entry *entry = it->second;
+					if (dynamic_cast<DirectoryMark*>(entry) != NULL) folderCount++;
 					entries.add(it->first.c_str(), entry);
 				}
 				this->source = NULL;
