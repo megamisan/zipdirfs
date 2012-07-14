@@ -54,18 +54,23 @@
 			<Add library="z" />
 		</Linker>
 		<Unit filename="include/zipdirfs/DefaultPermission.h" />
+		<Unit filename="include/zipdirfs/DirectoryMark.h" />
 		<Unit filename="include/zipdirfs/DirectoryNode.h" />
 		<Unit filename="include/zipdirfs/EntryFactory.h" />
+		<Unit filename="include/zipdirfs/FixedDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/LinkBuffer.h" />
 		<Unit filename="include/zipdirfs/LinkFactory.h" />
 		<Unit filename="include/zipdirfs/LinkNode.h" />
 		<Unit filename="include/zipdirfs/LinkTime.h" />
+		<Unit filename="include/zipdirfs/MutexLockPolicy.h" />
 		<Unit filename="include/zipdirfs/NameSearchTree.h" />
 		<Unit filename="include/zipdirfs/NameSearchTreeNodes.h" />
 		<Unit filename="include/zipdirfs/NameSearchWalker.h" />
 		<Unit filename="include/zipdirfs/NotFoundException.h" />
+		<Unit filename="include/zipdirfs/StatDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/SystemDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/SystemDirectoryTime.h" />
+		<Unit filename="include/zipdirfs/UnionDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/ZipDirectoryFactory.h" />
 		<Unit filename="include/zipdirfs/ZipEntry.h" />
 		<Unit filename="include/zipdirfs/ZipEntryFileInfo.h" />
@@ -86,6 +91,7 @@
 		</Unit>
 		<Unit filename="src/zipdirfs/EntryFactory.cpp" />
 		<Unit filename="src/zipdirfs/LinkTime.cpp" />
+		<Unit filename="src/zipdirfs/MutexLockPolicy.cpp" />
 		<Unit filename="src/zipdirfs/NotFoundException.cpp" />
 		<Unit filename="src/zipdirfs/ZipEntry.cpp" />
 		<Unit filename="src/zipdirfs/ZipEntryFileInfo.cpp" />
