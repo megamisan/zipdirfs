@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([zipdirfs], [0.1], [pierrick.caillon+zipdirfs@megami.fr], [zipdirfs])
+AC_INIT([Zip directory virtual filesystem], [0.1.1], [pierrick.caillon+zipdirfs@megami.fr], [zipdirfs])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_SRCDIR([main.cpp])

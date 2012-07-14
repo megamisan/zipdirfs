@@ -19,6 +19,9 @@
  * $Id$
  */
 #include "zipdirfs/entry_definitions.h"
+#if HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <fusekit/daemon.h>
 #include <vector>
 #include <iostream>
@@ -30,7 +33,9 @@ typedef fusekit::daemon<zipdirfs::system_directory> daemon_type;
 const char *getProgramName(const char* self);
 bool parseParameters(std::vector<const char*> &args, std::string &path);
 void showUsage(const char *self);
-bool isHelp(const char* s1) { return !strcmp(s1, "-h"); }
+void showVersion(const char *self);
+bool isHelp(const char* s1) { return !strcmp(s1, "-h") || !strcmp(s1, "--help"); }
+bool isVersion(const char* s1) { return !strcmp(s1, "-V") || !strcmp(s1, "--version"); }
 
 int main(int argc, const char *argv[])
 {
@@ -41,6 +46,11 @@ int main(int argc, const char *argv[])
 	if (std::find_if(arguments.begin(), arguments.end(), isHelp) != arguments.end())
 	{
 		showUsage(argv[0]);
+		return 0;
+	}
+	if (std::find_if(arguments.begin(), arguments.end(), isVersion) != arguments.end())
+	{
+		showVersion(argv[0]);
 		return 0;
 	}
 	if (!parseParameters(arguments, sourcePath))
@@ -86,6 +96,18 @@ void showUsage(const char* self)
 	std::cerr << std::endl
 		<< "zipdirfs options:" << std::endl
 		<< "    originalpath           the path to mount from and filter for zip files" << std::endl;
+}
+
+void showVersion(const char *self)
+{
+#ifdef HAVE_CONFIG_H
+	std::cerr << PACKAGE_NAME << " version: " << PACKAGE_VERSION << std::endl;
+	std::cerr << "Report bugs to " << PACKAGE_BUGREPORT << std::endl;
+#else
+	std::cerr << self << " debug version." << std::endl;
+#endif
+	const char * argv[2] = { self, "-V" };
+	daemon_type::instance().run(2, const_cast<char **>(argv));
 }
 
 bool parseParameters(std::vector<const char*> &args, std::string &path)
