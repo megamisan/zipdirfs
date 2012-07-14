@@ -322,6 +322,7 @@ namespace zipdirfs
 						{
 							where = & (static_cast<node_type*> (*where)->child);
 							name += match;
+							continue;
 						}
 						else
 						{
@@ -380,7 +381,7 @@ namespace zipdirfs
 		}
 		else
 		{
-			out << "Root" << indent_inc << std::endl << *tree.root;
+			out << "Root" << indent_inc << std::endl << *tree.root << indent_dec;
 		}
 
 		return out;

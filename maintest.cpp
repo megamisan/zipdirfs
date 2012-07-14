@@ -39,6 +39,7 @@ int testZipOpen(std::string &path);
 int testZipEnumeration(std::string &path);
 int testZipIterator(std::string &path);
 int testZipWalker(std::string &path);
+int testTreeRemove(std::string &path);
 
 int main(int argc, char *argv[])
 {
@@ -53,7 +54,8 @@ int main(int argc, char *argv[])
 	// return testZipOpen(path);
 	// return testZipEnumeration(path);
 	// return testZipIterator(path);
-	return testZipWalker(path);
+	// return testZipWalker(path);
+	return testTreeRemove(path);
 }
 
 int buildTree(std::string& path, zipdirfs::NameSearchTree<int>& tree)
@@ -209,5 +211,19 @@ int testZipWalker(std::string &path)
 		std::cout << it->first << std::endl;
 		delete it->second;
 	}
+	return 0;
+}
+
+int testTreeRemove(std::string &path)
+{
+	zipdirfs::NameSearchTree<int> tree;
+	int value = 0;
+	tree.add("name", value);
+	std::cout << "Added name" << std::endl << tree;
+	value++;
+	tree.add("name1", value);
+	std::cout << "Added name1" << std::endl << tree;
+	tree.remove("name1");
+	std::cout << "Removed name1" << std::endl << tree;
 	return 0;
 }
