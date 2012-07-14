@@ -26,6 +26,10 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents some fixed permissions
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < ::mode_t Permissions, class Derived>
 	class DefaultPermission
 	{
@@ -48,12 +52,24 @@ namespace zipdirfs
 	private:
 	};
 
+	/**
+	 * \brief Fixed permissions for directories.
+	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Derived>
 	class DefaultDirectoryPermission : public DefaultPermission<0555, Derived> {};
 
+	/**
+	 * \brief Fixed permissions for files.
+	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Derived>
 	class DefaultFilePermission : public DefaultPermission<0444, Derived> {};
 
+	/**
+	 * \brief Fixed permissions for links.
+	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Derived>
 	class DefaultLinkPermission : public DefaultPermission<0777, Derived> {};
 }

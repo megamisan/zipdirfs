@@ -29,8 +29,15 @@ namespace zipdirfs
 	template < class ValueType, bool ownedValues >
 	class NameSearchTree;
 
+	/**
+	 * \brief Class and stream helpers for the SearchTreeNode class.
+	 */
 	namespace NameSearchTreeNodes
 	{
+		/**
+		 * \brief Base definition of a node.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		class NodeBase
 		{
@@ -47,6 +54,12 @@ namespace zipdirfs
 			virtual bool isLeaf() const = 0;
 		};
 
+		/**
+		 * \brief Node definition.
+		 * It contains a pointer the its children.
+		 * The class can only be instanciated by \ref NameSearchTree.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		class Node : public NodeBase<ValueType>
 		{
@@ -66,6 +79,12 @@ namespace zipdirfs
 			friend class zipdirfs::NameSearchTree<ValueType, false>;
 		};
 
+		/**
+		 * \brief Leaf definition.
+		 * It contains the final value.
+		 * The class can only be instanciated by \ref NameSearchTree.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		class Leaf : public NodeBase<ValueType>
 		{
@@ -85,6 +104,13 @@ namespace zipdirfs
 		template < class ValueType >
 		std::ostream& operator << (std::ostream& out, const NodeBase<ValueType>& node);
 
+		/**
+		 * \brief Dumps Node's children to an output stream.
+		 * \param out The output stream.
+		 * \param node The Node.
+		 * \return The output stream.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		std::ostream& operator << (std::ostream& out, const Node<ValueType>& node)
 		{
@@ -98,6 +124,13 @@ namespace zipdirfs
 			return out;
 		}
 
+		/**
+		 * \brief Dumps Leaf's value to an output stream.
+		 * \param out The output stream.
+		 * \param node The Leaf.
+		 * \return The output stream.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		std::ostream& operator << (std::ostream& out, const Leaf<ValueType>& node)
 		{
@@ -105,6 +138,13 @@ namespace zipdirfs
 			return out;
 		}
 
+		/**
+		 * \brief Dumps shared node information to an output stream.
+		 * \param out The output stream.
+		 * \param node The Node or Leaf.
+		 * \return The output stream.
+		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 */
 		template < class ValueType >
 		std::ostream& operator << (std::ostream& out, const NodeBase<ValueType>& node)
 		{

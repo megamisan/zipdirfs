@@ -25,8 +25,16 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Provides all the dates for all links.
+	 */
 	extern const ::time_t linksTime;
 
+	/**
+	 * \brief Represents a time definition for a link.
+	 * This class must be used as the %Time template parameter to the \ref fusekit::basic_entry template class.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Derived>
 	class LinkTime
 	{

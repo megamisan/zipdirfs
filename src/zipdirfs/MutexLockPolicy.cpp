@@ -49,4 +49,14 @@ namespace zipdirfs
 	{
 		pthread_mutex_lock (&this->policy.mutex->_mutex);
 	}
+
+	MutexLockPolicy::UnLock::~UnLock()
+	{
+		pthread_mutex_lock (&this->lock.policy.mutex->_mutex);
+	}
+
+	MutexLockPolicy::UnLock::UnLock (MutexLockPolicy::Lock& lock) : lock (lock)
+	{
+		pthread_mutex_unlock (&this->lock.policy.mutex->_mutex);
+	}
 }

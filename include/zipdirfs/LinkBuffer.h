@@ -25,6 +25,12 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents a Buffer for a link.
+	 * This class must be specified as the %Buffer template parameter of \ref fusekit::basic_entry.
+	 * It enables to have the right value returned as the size in stat.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Derived>
 	class LinkBuffer
 	{

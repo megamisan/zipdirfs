@@ -25,6 +25,10 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Exception thrown when an entry is not found.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class NotFoundException : public std::exception
 	{
 	public:

@@ -26,12 +26,22 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents a directory factory to access link information.
+	 * This class must be used as a template parameter of \brief LinkNode.
+	 * It holds the link's target path.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < class LockPolicy = fusekit::no_lock >
 	class LinkFactory : public LockPolicy
 	{
 	public:
 		LinkFactory() {}
 		virtual ~LinkFactory() {}
+		/**
+		 * \brief Defines the link target.
+		 * \param target The target of the link.
+		 */
 		void setLink (const char* target)
 		{
 			if (this->target.empty() )
@@ -39,6 +49,10 @@ namespace zipdirfs
 				this->target = target;
 			}
 		}
+		/**
+		 * \brief Retrieves the link target.
+		 * \return The link target.
+		 */
 		const std::string& getLink()
 		{
 			return this->target;

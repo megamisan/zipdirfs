@@ -27,6 +27,11 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents a join between two directory factory.
+	 * This class must be used as a template parameter of \brief DirectoryNode.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < class Factory1, class Factory2, class LockPolicy = fusekit::no_lock >
 	class UnionDirectoryFactory : public Factory1<LockPolicy>, public Factory2<LockPolicy>
 	{

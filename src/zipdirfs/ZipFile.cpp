@@ -27,7 +27,7 @@
 
 namespace zipdirfs
 {
-	ZipFile::ZipFile (const std::string& path) : path (path), zipFile (NULL), refCount(0)
+	ZipFile::ZipFile (const std::string& path) : path (path), zipFile (NULL), refCount (0)
 	{
 	}
 
@@ -39,28 +39,16 @@ namespace zipdirfs
 		}
 	}
 
-	/** @brief (one liner)
-	  *
-	  * (documentation goes here)
-	  */
 	ZipEntry* ZipFile::getEntry (const ZipEntryFileInfo& fileinfo)
 	{
 		return new ZipEntry (*this, fileinfo);
 	}
 
-	/** @brief (one liner)
-	  *
-	  * (documentation goes here)
-	  */
 	ZipIterator ZipFile::end()
 	{
 		return ZipIterator (this, true);
 	}
 
-	/** @brief (one liner)
-	  *
-	  * (documentation goes here)
-	  */
 	ZipIterator ZipFile::begin()
 	{
 		return ZipIterator (this, false);
@@ -68,28 +56,34 @@ namespace zipdirfs
 
 	::zip* ZipFile::getZip()
 	{
+		Lock lock (*this);
+
 		if (this->refCount == 0)
 		{
-			int handle = ::open (path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
-
-			if (handle < 0)
+			::zip* zipFile = NULL;
 			{
-				::perror ("ZipFile::getZip: open");
-				return NULL;
-			}
+				UnLock unlock (lock);
+				int handle = ::open (path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
 
-			int error;
-			::zip* zipFile = ::zip_fdopen (handle, 0, &error);
+				if (handle < 0)
+				{
+					::perror ("ZipFile::getZip: open");
+					return NULL;
+				}
 
-			if (zipFile == NULL)
-			{
-				int len = ::zip_error_to_str (NULL, 0, error, errno);
-				char* message = new char[len + 1];
-				::zip_error_to_str (message, 1024, error, errno);
-				std::cerr << "zip_fdopen: " << message << std::endl;
-				delete[] message;
-				::close (handle);
-				return NULL;
+				int error;
+				zipFile = ::zip_fdopen (handle, 0, &error);
+
+				if (zipFile == NULL)
+				{
+					int len = ::zip_error_to_str (NULL, 0, error, errno);
+					char* message = new char[len + 1];
+					::zip_error_to_str (message, 1024, error, errno);
+					std::cerr << "zip_fdopen: " << message << std::endl;
+					delete[] message;
+					::close (handle);
+					return NULL;
+				}
 			}
 
 			if (this->refCount == 0)
@@ -113,6 +107,7 @@ namespace zipdirfs
 
 	void ZipFile::releaseZip()
 	{
+		Lock lock (*this);
 		::zip* zipFile = this->zipFile;
 		this->refCount--;
 

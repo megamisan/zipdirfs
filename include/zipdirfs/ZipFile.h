@@ -22,6 +22,7 @@
 #define ZIPFILE_H
 
 #include "zipdirfs/ZipIterator.h"
+#include "zipdirfs/MutexLockingPolicy.h"
 #include <string>
 
 struct zip;
@@ -29,7 +30,11 @@ namespace zipdirfs
 {
 	class ZipEntry;
 
-	class ZipFile
+	/**
+	 * \brief Represents a zip file.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	class ZipFile : MutexLockPolicy
 	{
 	public:
 		ZipFile (const std::string& path);

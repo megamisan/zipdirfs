@@ -37,6 +37,11 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents a directory factory mirroring a system directory.
+	 * This class must be used as a template parameter of \brief DirectoryNode.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < class LockingPolicy = fusekit::no_lock >
 	class SystemDirectoryFactory : public LockingPolicy
 	{
@@ -47,6 +52,11 @@ namespace zipdirfs
 		SystemDirectoryFactory() : entries (deleteEntry), folderCount(0), lastUpdate (0) {};
 		/** Default destructor */
 		virtual ~SystemDirectoryFactory() {};
+		/**
+		 * \brief Defines the path to the underlying system directory.
+		 * The path is canonicalized.
+		 * \param path The target path.
+		 */
 		void setRealPath (const char* path)
 		{
 			if (!realPath.empty() )
@@ -62,6 +72,10 @@ namespace zipdirfs
 				::free (absolute);
 			}
 		}
+		/**
+		 * \brief Retrieves the path to the underlying system directory.
+		 * \return The underlying path.
+		 */
 		std::string getRealPath() const
 		{
 			return this->realPath;
@@ -118,6 +132,9 @@ namespace zipdirfs
 		{
 			if (e != NULL) delete e;
 		}
+		/**
+		 * \brief Checks the underlying system directory for update.
+		 */
 		void checkSystem()
 		{
 			struct ::stat pathinfo;
@@ -136,6 +153,11 @@ namespace zipdirfs
 				this->lastUpdate = pathinfo.st_mtime;
 			}
 		}
+		/**
+		 * \brief Updates the image of the underlying system directory.
+		 * \bug Recreating a node in the source file system without accessing the mirorred version
+		 * will not update the type of associated entry.
+		 */
 		void updateEntries()
 		{
 			lock guard (*this);

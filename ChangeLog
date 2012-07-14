@@ -4,6 +4,7 @@
 	* Feature: Added locking type for safer multi-threading.
 	* Feature: Interface to mark an entry as a directory.
 	* Fix: Returned link count in stat now count only directories.
+	* Comments: Added method documentation.
 
 2012-07-04 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.Fr>
 	* Feature: The content of the files in the exposed Zip files can be read.

@@ -18,41 +18,51 @@
  *
  * $Id$
  */
-#ifndef SYSTEMDIRECTORYTIME_H
-#define SYSTEMDIRECTORYTIME_H
+#ifndef STATDIRECTORYFACTORY_H
+#define STATDIRECTORYFACTORY_H
 
+#include <fusekit/entry.h>
+#include <fusekit/no_lock.h>
 #include <time.h>
 
 namespace zipdirfs
 {
 	/**
-	 * \brief Represents a time definition for a system directory or a system file transformed into a directory.
-	 * This class must be used as the %Time template parameter to the \ref fusekit::basic_entry template class.
+	 * \brief Represents a directory factory filled by statistic providers.
+	 * This class must be used as a template parameter of \brief DirectoryNode.
 	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
-	template <class Derived>
-	class SystemDirectoryTime
+	template < class LockPolicy = fusekit::no_lock >
+	class StatDirectoryFactory
 	{
+		typedef typename SystemDirectoryFactory<LockingPolicy>::lock lock;
+		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		SystemDirectoryTime() : create (::time (NULL) ) {}
-		virtual ~SystemDirectoryTime() {}
-		time_t modification_time()
-		{
-			return static_cast<Derived*> (this)->getLastUpdate();
-		}
-		time_t change_time()
-		{
-			return this->create;
-		}
-		time_t access_time()
-		{
-			return static_cast<Derived*> (this)->getLastUpdate();
-		}
-		void update (int) {}
+		StatDirectoryFactory() {}
+		virtual ~StatDirectoryFactory() {}
 	protected:
+		fusekit::entry* find (const char* name)
+		{
+			return NULL;
+		}
+		int size()
+		{
+			return 0;
+		}
+		int links()
+		{
+			return 0;
+		}
+		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
+		{
+			return 0;
+		}
+		inline ::time_t getLastUpdate()
+		{
+			return time(NULL);
+		}
 	private:
-		::time_t create;
 	};
 }
 
-#endif // SYSTEMDIRECTORYTIME_H
+#endif // STATDIRECTORYFACTORY_H

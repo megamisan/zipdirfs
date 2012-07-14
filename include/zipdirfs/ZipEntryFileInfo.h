@@ -28,6 +28,11 @@ namespace zipdirfs
 {
 	class ZipIterator;
 
+	/**
+	 * \brief Minimal representation of an entry in a \ref ZipFile.
+	 * This class can only be instanciated by \ref ZipIterator.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct ZipEntryFileInfo
 	{
 		::uint64_t index;

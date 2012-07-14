@@ -25,6 +25,14 @@
 
 namespace zipdirfs
 {
+	/**
+	 * \brief Represents a node for a directory.
+	 * This class must be used as the %Node template parameter to the \ref fusekit::basic_entry template class.
+	 * However, to do so, a compatible factory class must also be provided by using an intermediate type
+	 * specifying only the %Factory template parameter, like
+	 * `template <class Derived> class MyNode : DirectoryNode<MyFactory, Derived> {}`.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template <class Factory, class Derived>
 	class DirectoryNode : public Factory
 	{

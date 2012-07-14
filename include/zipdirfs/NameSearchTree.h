@@ -36,6 +36,21 @@ namespace zipdirfs
 	template < class ValueType, bool ownedValues >
 	std::ostream& operator << (std::ostream& out, const NameSearchTree<ValueType, ownedValues>& tree);
 
+	/**
+	 * \brief Represents a search tree for a name-value pair.
+	 * The tree contains two node type: Node and Leaf.
+	 * Each node type contains the name part for which it match and a link to the next node.
+	 * A Node also contains a link to its child Node. A Leaf also contains the value.
+	 * In each branches, Node and Leaf are sorted by name part.
+	 *
+	 * Using this structure, looking up an entry cost less than searching in an unordered list,
+	 * but a little more(?) than searching in an ordered vector.
+	 * It also cost more than just adding on top of an unordered list, but it does not have also
+	 * the hassle of reallocating an array when capacity is reached neither the hassle of inserting
+	 * in the middle of a vector.
+	 * Removing is also as efficient as adding.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < class ValueType, bool ownedValues = false >
 	class NameSearchTree
 	{
@@ -53,17 +68,31 @@ namespace zipdirfs
 		{
 			this->recursiveDelete (this->root);
 		}
+		/**
+		 * \brief Removes all entries from the tree.
+		 */
 		void clear()
 		{
 			nodebase_type* oldroot = this->root;
 			this->root = NULL;
 			this->recursiveDelete (oldroot);
 		}
-		bool isset (const char* name) const throw (NotFoundException)
+		/**
+		 * \brief Tests if an entry exists.
+		 * \param name The name of the searched entry.
+		 * \return `true` if found. `false` otherwise.
+		 */
+		bool isset (const char* name) const
 		{
 			nodebase_type* node = this->findNode (name);
 			return ( (node != NULL) && (node->isLeaf() ) );
 		}
+		/**
+		 * \brief Retrieves an entry.
+		 * \param name The name of the searched entry.
+		 * \return The searched entry's value.
+		 * \throw NotFoundException If the entry is not found.
+		 */
 		ValueType& get (const char* name) const throw (NotFoundException)
 		{
 			nodebase_type* node = this->findNode (name);
@@ -75,24 +104,49 @@ namespace zipdirfs
 
 			return static_cast<leaf_type*> (node)->value;
 		}
+		/**
+		 * \brief Adds en entry to the tree.
+		 * If the entry already exists, it fails.
+		 * \param name The name of the entry.
+		 * \param value The value of the entry.
+		 * \return `true` on success`. `false` on failure.
+		 */
 		bool add (const char* name, ValueType& value)
 		{
 			return this->addNode (name, value);
 		}
+		/**
+		 * \brief Removes an entry from the tree.
+		 * If the entry does not exists, it fails.
+		 * \param name The name of the entry.
+		 * \return `true` on success. `false` on failure.
+		 */
 		bool remove (const char* name)
 		{
 			return this->removeNode (name);
 		}
+		/**
+		 * \brief Retrieves the iterator to the beginning of the tree.
+		 * \return The iterator positionned at the beginning of the tree.
+		 */
 		iterator begin() const
 		{
 			iterator it (this->root);
 			return it;
 		}
+		/**
+		 * \brief Retrieves the iterator to the end of the tree.
+		 * \return The iterator to the end of the tree.
+		 */
 		iterator end() const
 		{
 			static iterator it (NULL);
 			return it;
 		}
+		/**
+		 * \brief Retrieves the number of elements in the tree.
+		 * \return The number of elements in the tree.
+		 */
 		int size() const
 		{
 			return this->count;
@@ -104,6 +158,10 @@ namespace zipdirfs
 		free freeFunction;
 		int count;
 
+		/**
+		 * \brief Frees a branch.
+		 * \param node The node to start freeing from.
+		 */
 		void recursiveDelete (nodebase_type* node)
 		{
 			nodebase_type* previous;
@@ -129,6 +187,11 @@ namespace zipdirfs
 				delete previous;
 			}
 		}
+		/**
+		 * \brief Looks up for a node.
+		 * \param name The name of the node to search.
+		 * \return The found node. `NULL` if none.
+		 */
 		nodebase_type* findNode (const char* name) const
 		{
 			nodebase_type* where = this->root;
@@ -179,8 +242,10 @@ namespace zipdirfs
 			return where;
 		}
 		/**
-		 * Searches what in where.
-		 * @return int n>0 => what is the start of where. n<=0 => (-n) is the number of matching character.
+		 * \brief Searches what in where.
+		 * \param where The string to look in.
+		 * \param what The string to look for.
+		 * \return `n>0` => what is the start of where. `n<=0`s => (-n) is the number of matching character.
 		 */
 		int matchStart (const char* where, const char* what) const
 		{
@@ -200,6 +265,14 @@ namespace zipdirfs
 
 			return -index;
 		}
+		/**
+		 * \brief Really adds an entry.
+		 * It fails if the entry already exists.
+		 * All needed nodes are created in the process.
+		 * \param name The name of the entry to add.
+		 * \param value The value of the entry to add.
+		 * \return `true` on success. `false` on failure.
+		 */
 		bool addNode (const char* name, ValueType& value)
 		{
 #define CONSUME_LEVEL(chars) parent = where; where = & (static_cast<node_type*> (*where)->child); name += (chars)
@@ -259,7 +332,13 @@ namespace zipdirfs
 			this->createNode (name, value, parent);
 			return true;
 		}
-		void createNode (const char* name, ValueType value, nodebase_type** parent)
+		/**
+		 * \brief Creates a Leaf in a branch.
+		 * \param name The name part of the Leaf.
+		 * \param value The value of the Leaf.
+		 * \param parent The pointer to the field containing the parent Node.
+		 */
+		void createNode (const char* name, ValueType& value, nodebase_type** parent)
 		{
 			nodebase_type** where = NULL;
 			leaf_type* newNode = new leaf_type();
@@ -286,6 +365,14 @@ namespace zipdirfs
 			*where = newNode;
 			this->count++;
 		}
+		/**
+		 * \brief Creates a branch from a node.
+		 * The name part of the original node is cut to create the new Node name part with the left string
+		 * and replace the first node name part with the right string.
+		 * \param which The Node or Leaf to move into a branch.
+		 * \param at The position at which to cut the name part of the node.
+		 * \return The newly created Node containing the passed node as a child.
+		 */
 		nodebase_type* splitNode (nodebase_type* which, int at) const
 		{
 			node_type* newNode = new node_type();
@@ -302,6 +389,12 @@ namespace zipdirfs
 			newNode->child = which;
 			return newNode;
 		}
+		/**
+		 * \brief Really removes an entry.
+		 * If the entry is not found, it fails.
+		 * \param name The name of the entry.
+		 * \return `true` on success. `false` on failure.
+		 */
 		bool removeNode (const char* name)
 		{
 			nodebase_type** where = &this->root;
@@ -369,7 +462,17 @@ namespace zipdirfs
 		}
 	};
 
-
+	/**
+	 * \brief Dumps the tree nodes to an output stream.
+	 * If the tree is empty, the string `(empty)` is outputted. Otherwise `Root` and a newline is outputted followed by the nodes.
+	 * In all cases, the output is terminated by a newline.
+	 *
+	 * Stream helper methods are defined in stream_indent.h.
+	 * \param out The output stream.
+	 * \param tree The tree to dump.
+	 * \return The output stream.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	template < class ValueType, bool ownedValues >
 	std::ostream& operator << (std::ostream& out, const NameSearchTree<ValueType, ownedValues>& tree)
 	{
@@ -381,7 +484,7 @@ namespace zipdirfs
 		}
 		else
 		{
-			out << "Root" << indent_inc << std::endl << *tree.root << indent_dec;
+			out << "Root" << std::endl << indent_inc << *tree.root << indent_dec;
 		}
 
 		return out;
