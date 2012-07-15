@@ -22,7 +22,7 @@
 #define ZIPFILE_H
 
 #include "zipdirfs/ZipIterator.h"
-#include "zipdirfs/MutexLockingPolicy.h"
+#include "zipdirfs/MutexLockPolicy.h"
 #include <string>
 
 struct zip;

@@ -63,7 +63,7 @@ namespace zipdirfs
 			~UnLock();
 		private:
 			Lock &lock;
-		}
+		};
 		typedef Lock lock;
 	protected:
 	private:
