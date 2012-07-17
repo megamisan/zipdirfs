@@ -1,4 +1,8 @@
 2012-07-14 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	* Refactor: Changed main.cpp to a class.
+	* Note: CommandLine files come from http://mcdataviewers.codeplex.com/.
+
+2012-07-14 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Bug fix: Remove method on NameSearchTree could remove the wrong item.
 	* Feature: Added version information display. Display compiled package information.
 	* Feature: Added locking type for safer multi-threading.

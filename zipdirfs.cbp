@@ -52,7 +52,13 @@
 			<Add library="fuse" />
 			<Add library="zip" />
 			<Add library="z" />
+			<Add library="boost_program_options" />
 		</Linker>
+		<Unit filename="include/CommandLine.h" />
+		<Unit filename="include/Main.h">
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="include/zipdirfs/DefaultPermission.h" />
 		<Unit filename="include/zipdirfs/DirectoryMark.h" />
 		<Unit filename="include/zipdirfs/DirectoryNode.h" />
@@ -82,12 +88,13 @@
 		<Unit filename="include/zipdirfs/ZipWalker.h" />
 		<Unit filename="include/zipdirfs/entry_definitions.h" />
 		<Unit filename="include/zipdirfs/stream_indent.h" />
-		<Unit filename="main.cpp">
-			<Option target="Debug" />
-			<Option target="Release" />
-		</Unit>
 		<Unit filename="maintest.cpp">
 			<Option target="Test" />
+		</Unit>
+		<Unit filename="src/CommandLine.cpp" />
+		<Unit filename="src/Main.cpp">
+			<Option target="Debug" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/zipdirfs/EntryFactory.cpp" />
 		<Unit filename="src/zipdirfs/LinkTime.cpp" />
