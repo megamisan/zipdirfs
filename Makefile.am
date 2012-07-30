@@ -12,8 +12,6 @@ TEST_INCLUDE = $(top_builddir)/include/test
 TEST_SRC = $(top_builddir)/src/test
 
 SHARED_FILES = \
-	$(ROOT_SRC)/CommandLine.cpp \
-	$(ROOT_INCLUDE)/CommandLine.h \
 	$(ZIPDIRFS_SRC)/EntryFactory.cpp \
 	$(ZIPDIRFS_SRC)/MutexLockPolicy.cpp \
 	$(ZIPDIRFS_SRC)/ZipEntry.cpp \
@@ -57,9 +55,11 @@ SHARED_FILES = \
 bin_PROGRAMS = zipdirfs zipdirfs-test
 zipdirfs_SOURCES = \
 	$(ROOT_SRC)/Main.cpp \
+	$(ROOT_SRC)/Options.cpp \
 	$(ROOT_INCLUDE)/Main.h \
+	$(ROOT_INCLUDE)/Options.h \
 	$(SHARED_FILES)
 
-zipdirfs_test_SOURCES = maintext.cpp \
+zipdirfs_test_SOURCES = maintest.cpp \
 	$(SHARED_FILES)
 

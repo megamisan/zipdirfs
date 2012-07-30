@@ -1,3 +1,7 @@
+2012-07-30 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	* Feature: Full command line parsing for mount options, fuse options and function handlers for special arguments like help and version.
+	* Feature: Deamon command line rebuilt from parsed arguments to have no duplicate in options.
+
 2012-07-14 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	* Refactor: Changed main.cpp to a class.
 	* Note: CommandLine files come from http://mcdataviewers.codeplex.com/.

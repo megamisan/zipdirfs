@@ -52,10 +52,12 @@
 			<Add library="fuse" />
 			<Add library="zip" />
 			<Add library="z" />
-			<Add library="boost_program_options" />
 		</Linker>
-		<Unit filename="include/CommandLine.h" />
 		<Unit filename="include/Main.h">
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/Options.h">
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
@@ -91,8 +93,11 @@
 		<Unit filename="maintest.cpp">
 			<Option target="Test" />
 		</Unit>
-		<Unit filename="src/CommandLine.cpp" />
 		<Unit filename="src/Main.cpp">
+			<Option target="Debug" />
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="src/Options.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>

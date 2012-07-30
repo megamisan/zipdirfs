@@ -5,7 +5,7 @@ AC_PREREQ([2.68])
 AC_INIT([Zip directory virtual filesystem], [0.2.0], [pierrick.caillon+zipdirfs@megami.fr], [zipdirfs])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE([-Wall -Werror])
-AC_CONFIG_SRCDIR([main.cpp])
+AC_CONFIG_SRCDIR([src/Main.cpp])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
@@ -34,21 +34,6 @@ CPPFLAGS="$CPPFLAGS $LIBZIP_CFLAGS"
 AM_SANITY_CHECK
 
 AC_LANG([C++])
-
-AC_LANG_PUSH([C++])
-saved_libs="$LIBS"
-AC_MSG_CHECKING([[checking for Boost.Program_options...]])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([#include <boost/program_options.hpp>],
-	[boost::program_options::variables_map dummy()])],
-	[AC_MSG_RESULT([yes])
-	BOOST_LIBS="-lboost_program_options"],
-	[AC_MSG_RESULT([no])
-	AC_MSG_FAILURE([libboost_program_options (Boost C++ Libraries) is not installed, but is required by $PACKAGE])])
-LIBS="$saved_libs"
-AC_SUBST(BOOST_LIBS)
-AC_LANG_POP([C++])
-
-LIBS="$LIBS $BOOST_LIBS"
 
 # Checks for header files.
 AC_HEADER_STDC

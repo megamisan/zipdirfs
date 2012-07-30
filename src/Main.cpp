@@ -19,8 +19,8 @@
  * $Id$
  */
 #include "Main.h"
+#include "Options.h"
 #include "zipdirfs/entry_definitions.h"
-#include "CommandLine.h"
 #if HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -32,15 +32,11 @@
 
 typedef fusekit::daemon<zipdirfs::system_directory> daemon_type;
 
-namespace po = boost::program_options;
 Main application;
 
-const char *getProgramName(const char* self);
-bool parseParameters(std::vector<const char*> &args, std::string &path);
-void showUsage(const char *self);
-void showVersion(const char *self);
-bool isHelp(const char* s1) { return !strcmp(s1, "-h") || !strcmp(s1, "--help"); }
-bool isVersion(const char* s1) { return !strcmp(s1, "-V") || !strcmp(s1, "--version"); }
+std::string getProgramName(const std::string& self);
+void showUsage(Options&) throw(Main::Result);
+void showVersion(Options&) throw(Main::Result);
 char** toArgv(std::vector<std::string>& arguments);
 void freeArgv(char** argv);
 
@@ -48,8 +44,8 @@ int main(const int argc, const char** argv)
 {
 	try
 	{
-		app.Init(argc, argv);
-		app.Run();
+		application.Init(argc, argv);
+		application.Run();
 	}
 	catch (Main::Result res)
 	{
@@ -60,13 +56,12 @@ int main(const int argc, const char** argv)
 
 void Main::Run() throw(Main::Result)
 {
-	this->fuseOptions.push_back("-oro,nosuid,noexec,noatime");
 	this->fuseOptions.push_back("-o");
-	this->fuseOptions.push_back(std::string("subtype=") + getProgramName(this->fuseOptions.front().c_str()));
+	this->fuseOptions.push_back(std::string("subtype=") + getProgramName(this->fuseOptions.front()));
 	this->fuseOptions.push_back("-o");
 	this->fuseOptions.push_back(std::string("fsname=") + this->sourcePath);
 	daemon_type &daemon = daemon_type::instance();
-	daemon.root().setRealPath(sourcePath.c_str());
+	daemon.root().setRealPath(this->sourcePath.c_str());
 	char** argv = toArgv(this->fuseOptions);
 	daemon.run(this->fuseOptions.size(), argv);
 	freeArgv(argv);
@@ -74,30 +69,55 @@ void Main::Run() throw(Main::Result)
 
 void Main::Init(const int argc, const char* argv[]) throw(Main::Result)
 {
-	const char* const programName = getProgramName(argv[0]);
-	std::vector<const char*> arguments(argv + 1, argv + argc);
-	if (std::find_if(arguments.begin(), arguments.end(), isHelp) != arguments.end())
+	Options options(argc, argv);
+	options.addHandler("h", showUsage);
+	options.addHandler("help", showUsage);
+	options.addHandler("V", showVersion);
+	options.addHandler("version", showVersion);
+	options.parseArguments();
+
+	if (options.sourcePath().empty() || options.mountPoint().empty())
 	{
-		showUsage(argv[0]);
-		throw Result(0);
-	}
-	if (std::find_if(arguments.begin(), arguments.end(), isVersion) != arguments.end())
-	{
-		showVersion(argv[0]);
-		throw Result(0);
-	}
-	if (!parseParameters(arguments, this->sourcePath))
-	{
-		const char *message = (this->sourcePath.empty()) ? ": missing originalpath argument" : ": missing mountpoint argument";
-		std::cerr << programName << message << std::endl;
+		const char *message = (options.mountPoint().empty()) ? ": missing originalpath argument" : ": missing mountpoint argument"; // Argument order is originalpath then mountpoint. Parse order is reversed. See Options::parseArguments();
+		std::cerr << getProgramName(options.self()) << message << std::endl;
 		throw Result(-1);
 	}
-	for (std::vector<const char*>::iterator it = arguments.begin(); it != arguments.end(); it++)
+
+	this->sourcePath = options.sourcePath();
+
+	this->fuseOptions.push_back(options.self());
+	this->fuseOptions.push_back(options.mountPoint());
+
+	Options::stringMap mountOptions(options.mountOptions());
+	mountOptions["ro"] = "";
+	mountOptions["nosuid"] = "";
+	mountOptions["noexec"] = "";
+	mountOptions["noatime"] = "";
+	std::string mountArgument("-");
+	mountArgument.reserve(2 + (mountOptions.size() << 3));
+	for (Options::stringMap::iterator mit = mountOptions.begin(); mit != mountOptions.end(); mit++)
+	{
+		mountArgument.append(",");
+		mountArgument.append(mit->first);
+		if (!mit->second.empty())
+		{
+			mountArgument.append("=");
+			mountArgument.append(mit->second);
+		}
+	}
+	mountArgument[1] = 'o';
+	this->fuseOptions.push_back(mountArgument);
+
+	for (Options::stringVector::const_iterator it = options.fuseArguments().begin(); it != options.fuseArguments().end(); it++)
+	{
+		this->fuseOptions.push_back("-o");
+		this->fuseOptions.push_back(*it);
+	}
+
+	for (Options::stringVector::const_iterator it = options.unknownArguments().begin(); it != options.unknownArguments().end(); it++)
 	{
 		this->fuseOptions.push_back(*it);
 	}
-	if (sourcePath[sourcePath.size() - 1] == '/') sourcePath.erase(sourcePath.size() - 1);
-	this->fuseOptions.insert(this->fuseOptions.begin(), argv[0]);
 }
 
 Main::Main()
@@ -108,61 +128,37 @@ Main::~Main()
 {
 }
 
-const char *getProgramName(const char* self)
+std::string getProgramName(const std::string& self)
 {
-	const char *program = strrchr(self, '/');
-	return (program == NULL) ? self : (program + 1);
+	size_t pos = self.rfind('/');
+	if (pos == std::string::npos) pos = 0;
+	else pos++;
+	return self.substr(pos);
 }
 
-void showUsage(const char* self)
+void showUsage(Options& options) throw(Main::Result)
 {
-	std::cerr << "real usage: " << self << " originalpath mountpoint [options]" << std::endl;
-	const char * argv[2] = { self, "-h" };
+	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]" << std::endl;
+	const char * argv[2] = { options.self().c_str(), "-h" };
 	daemon_type::instance().run(2, const_cast<char **>(argv));
 	std::cerr << std::endl
+		<< getProgramName(options.self())
 		<< " options:" << std::endl
 		<< "    originalpath           the path to mount from and filter for zip files" << std::endl;
+	throw Main::Result(0);
 }
 
-void showVersion(const char *self)
+void showVersion(Options& options) throw(Main::Result)
 {
 #ifdef HAVE_CONFIG_H
 	std::cerr << PACKAGE_NAME << " version: " << PACKAGE_VERSION << std::endl;
 	std::cerr << "Report bugs to " << PACKAGE_BUGREPORT << std::endl;
 #else
-	std::cerr << self << " debug version." << std::endl;
+	std::cerr << options.self() << " debug version." << std::endl;
 #endif
-	const char * argv[2] = { self, "-V" };
+	const char * argv[2] = { options.self().c_str(), "-V" };
 	daemon_type::instance().run(2, const_cast<char **>(argv));
-}
-
-bool parseParameters(std::vector<const char*> &args, std::string &path)
-{
-	bool hasMountPoint = false;
-	bool hasMountSource = false;
-	std::vector<const char*>::iterator itPath;
-	for (std::vector<const char*>::iterator it = args.begin(); it != args.end(); it++)
-	{
-		if (*it[0] == '-')
-		{
-			continue;
-		}
-		if (!hasMountPoint)
-		{
-			path = *it;
-			hasMountPoint = true;
-			itPath = it;
-		}
-		else if (!hasMountSource)
-		{
-			hasMountSource = true;
-		}
-	}
-	if (hasMountSource)
-	{
-		args.erase(itPath);
-	}
-	return hasMountSource;
+	throw Main::Result(0);
 }
 
 char* toArgv_convert(std::string value)
