@@ -20,3 +20,16 @@
 /*.layout
 /bin
 /obj
+#Automake
+*.m4
+*.cache
+config/
+config.*
+configure
+Makefile
+*.in
+stamp*
+.deps
+# Output
+zipdirfs
+zipdirfs-test

@@ -18,32 +18,27 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef NOTFOUNDEXCEPTION_H
+#define NOTFOUNDEXCEPTION_H
 
-#include <string>
-#include <vector>
+#include <exception>
 
-class Main
+namespace ZipDirFs
 {
+	/**
+	 * \brief Exception thrown when an entry is not found.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	class NotFoundException : public std::exception
+	{
 	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
+		/** Default constructor */
+		NotFoundException();
+		/** Default destructor */
+		virtual ~NotFoundException() throw();
 	protected:
 	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	};
+}
 
-extern Main application;
-
-#endif // MAIN_H
+#endif // NOTFOUNDEXCEPTION_H

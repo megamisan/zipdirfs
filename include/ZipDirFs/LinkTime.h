@@ -16,34 +16,47 @@
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  *
- * $Id$
+ * \\$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef LINKTIME_H
+#define LINKTIME_H
 
-#include <string>
-#include <vector>
+#include <time.h>
 
-class Main
+namespace ZipDirFs
 {
+	/**
+	 * \brief Provides all the dates for all links.
+	 */
+	extern const ::time_t linksTime;
+
+	/**
+	 * \brief Represents a time definition for a link.
+	 * This class must be used as the %Time template parameter to the \ref fusekit::basic_entry template class.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	template <class Derived>
+	class LinkTime
+	{
 	public:
-		struct Result
+		LinkTime() {}
+		virtual ~LinkTime() {}
+		::time_t modification_time()
 		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
+			return linksTime;
+		}
+		::time_t change_time()
+		{
+			return linksTime;
+		}
+		::time_t access_time()
+		{
+			return linksTime;
+		}
+		void update (int) {}
 	protected:
 	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	};
+}
 
-extern Main application;
-
-#endif // MAIN_H
+#endif // LINKTIME_H

@@ -18,32 +18,27 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef STREAM_INDENT_H
+#define STREAM_INDENT_H
 
-#include <string>
-#include <vector>
+#include <ostream>
 
-class Main
+namespace ZipDirFs
 {
-	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
-	protected:
-	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	struct _IndentChar
+	{
+		char c;
+	};
 
-extern Main application;
+	std::ostream& indent_inc (std::ostream&);
+	std::ostream& indent_dec (std::ostream&);
+	std::ostream& indent (std::ostream&);
+	inline _IndentChar indent_char (char c)
+	{
+		_IndentChar ic = { c };
+		return ic;
+	}
+	std::ostream& operator << (std::ostream&, _IndentChar);
+}
 
-#endif // MAIN_H
+#endif // STREAM_INDENT_H

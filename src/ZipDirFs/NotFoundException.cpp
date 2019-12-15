@@ -18,32 +18,15 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#include "ZipDirFs/NotFoundException.h"
 
-#include <string>
-#include <vector>
-
-class Main
+namespace ZipDirFs
 {
-	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
-	protected:
-	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	NotFoundException::NotFoundException()
+	{
+	}
 
-extern Main application;
-
-#endif // MAIN_H
+	NotFoundException::~NotFoundException() throw()
+	{
+	}
+}

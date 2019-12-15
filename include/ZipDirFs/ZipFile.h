@@ -18,32 +18,41 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef ZIPFILE_H
+#define ZIPFILE_H
 
+#include "ZipDirFs/ZipIterator.h"
+#include "ZipDirFs/MutexLockPolicy.h"
 #include <string>
-#include <vector>
 
-class Main
+struct zip;
+namespace ZipDirFs
 {
+	class ZipEntry;
+
+	/**
+	 * \brief Represents a zip file.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	class ZipFile : MutexLockPolicy
+	{
 	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
+		ZipFile (const std::string& path);
+		virtual ~ZipFile();
+		ZipIterator begin();
+		ZipIterator end();
+		ZipEntry* getEntry (const ZipEntryFileInfo& fileinfo);
+		const std::string& getFilePath() const;
+		friend class ZipIterator;
+		friend class ZipEntry;
 	protected:
 	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+		const std::string path;
+		::zip* zipFile;
+		::zip* getZip();
+		void releaseZip();
+		int volatile refCount;
+	};
+}
 
-extern Main application;
-
-#endif // MAIN_H
+#endif // ZIPFILE_H

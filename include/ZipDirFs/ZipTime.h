@@ -18,32 +18,35 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef ZIPTIME_H
+#define ZIPTIME_H
 
-#include <string>
-#include <vector>
+#include <time.h>
 
-class Main
+namespace ZipDirFs
 {
+	template <class Derived>
+	class ZipTime
+	{
 	public:
-		struct Result
+		ZipTime() {}
+		virtual ~ZipTime() {}
+		::time_t modification_time()
 		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
+			return static_cast<Derived*> (this)->getMTime();
+		}
+		::time_t change_time()
+		{
+			return static_cast<Derived*> (this)->getMTime();
+		}
+		::time_t access_time()
+		{
+			return static_cast<Derived*> (this)->getMTime();
+		}
+		void update (int) {}
 	protected:
 	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	};
+}
 
-extern Main application;
-
-#endif // MAIN_H
+#endif // ZIPTIME_H

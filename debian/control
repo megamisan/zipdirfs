@@ -1,0 +1,19 @@
+Source: zipdirfs
+Section: contrib/misc
+Priority: optional
+Maintainer: Pierrick Caillon <pierrick.caillon+zipdirfs@megami.Fr>
+Build-Depends: debhelper (>= 10), autotools-dev, libfuse-dev, 
+  libzip-dev, libfusekit-dev (>= 0.6.0), pkg-config
+Standards-Version: 4.1.2
+Homepage: https://github.com/megamisan/zipdirfs
+Vcs-Git: https://github.com/megamisan/zipdirfs.git
+Vcs-Browser: https://github.com/megamisan/zipdirfs
+
+Package: zipdirfs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, fuse, libzip4, libfusekit (>= 0.6.0)
+Description: FileSystem exposing zip file content
+ ziplibfs is a FUSE file system which show each mounted zip file as
+ a directory and enables directly reading the contained files.
+ .
+ All other files and directory are symlinked to their origin.

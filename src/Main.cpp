@@ -20,7 +20,7 @@
  */
 #include "Main.h"
 #include "Options.h"
-#include "zipdirfs/entry_definitions.h"
+#include "ZipDirFs/entry_definitions.h"
 #if HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -30,13 +30,13 @@
 #include <algorithm>
 #include <string.h>
 
-typedef fusekit::daemon<zipdirfs::system_directory> daemon_type;
+typedef fusekit::daemon<ZipDirFs::system_directory> daemon_type;
 
 Main application;
 
 std::string getProgramName(const std::string& self);
-void showUsage(Options&) throw(Main::Result);
-void showVersion(Options&) throw(Main::Result);
+void showUsage(Options&);
+void showVersion(Options&);
 char** toArgv(std::vector<std::string>& arguments);
 void freeArgv(char** argv);
 
@@ -54,7 +54,7 @@ int main(const int argc, const char** argv)
 	return 0;
 }
 
-void Main::Run() throw(Main::Result)
+void Main::Run()
 {
 	this->fuseOptions.push_back("-o");
 	this->fuseOptions.push_back(std::string("subtype=") + getProgramName(this->fuseOptions.front()));
@@ -67,7 +67,7 @@ void Main::Run() throw(Main::Result)
 	freeArgv(argv);
 }
 
-void Main::Init(const int argc, const char* argv[]) throw(Main::Result)
+void Main::Init(const int argc, const char* argv[])
 {
 	Options options(argc, argv);
 	options.addHandler("h", showUsage);
@@ -136,7 +136,7 @@ std::string getProgramName(const std::string& self)
 	return self.substr(pos);
 }
 
-void showUsage(Options& options) throw(Main::Result)
+void showUsage(Options& options)
 {
 	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]" << std::endl;
 	const char * argv[2] = { options.self().c_str(), "-h" };
@@ -148,7 +148,7 @@ void showUsage(Options& options) throw(Main::Result)
 	throw Main::Result(0);
 }
 
-void showVersion(Options& options) throw(Main::Result)
+void showVersion(Options& options)
 {
 #ifdef HAVE_CONFIG_H
 	std::cerr << PACKAGE_NAME << " version: " << PACKAGE_VERSION << std::endl;

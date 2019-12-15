@@ -18,32 +18,19 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef DIRECTORYMARK_H
+#define DIRECTORYMARK_H
 
-#include <string>
-#include <vector>
-
-class Main
+namespace ZipDirFs
 {
-	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
-	protected:
-	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	/**
+	 * \brief Mark an entry as a directory.
+	 * This class can be herited anywhere in the inheritance tree of the final entry definition.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	class DirectoryMark
+	{
+	};
+}
 
-extern Main application;
-
-#endif // MAIN_H
+#endif // DIRECTORYMARK_H

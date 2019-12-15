@@ -18,32 +18,31 @@
  *
  * $Id$
  */
-#ifndef MAIN_H
-#define MAIN_H
-
+#ifndef ZIPENTRYFILEINFO_H
+#define ZIPENTRYFILEINFO_H
+#include <stdint.h>
 #include <string>
-#include <vector>
+#include <time.h>
 
-class Main
+namespace ZipDirFs
 {
-	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
-	protected:
-	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
-};
+	class ZipIterator;
 
-extern Main application;
+	/**
+	 * \brief Minimal representation of an entry in a \ref ZipFile.
+	 * This class can only be instanciated by \ref ZipIterator.
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	struct ZipEntryFileInfo
+	{
+		::uint64_t index;
+		std::string name;
+		::uint64_t size;
+		::time_t mtime;
+private:
+		ZipEntryFileInfo();
+		friend class ZipIterator;
+	};
+}
 
-#endif // MAIN_H
+#endif // ZIPENTRYFILEINFO_H
