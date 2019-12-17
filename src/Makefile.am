@@ -1,11 +1,11 @@
 SUBDIRS = ZipDirFs
-AM_CPPFLAGS = -I $(srcdir)/../include
+AM_CPPFLAGS = -I $(top_srcdir)/include
 AM_CXXFLAGS = -Wall -fexceptions -O2
 AM_LDFLAGS = -s
 LDADD = ZipDirFs/libinternal.a
 
-ROOT_INCLUDE = ../include
-ZIPDIRFS_INCLUDE = ../include/ZipDirFs
+ROOT_INCLUDE = $(top_srcdir)/include
+ZIPDIRFS_INCLUDE = $(top_srcdir)/include/ZipDirFs
 
 bin_PROGRAMS = zipdirfs
 zipdirfs_SOURCES = \

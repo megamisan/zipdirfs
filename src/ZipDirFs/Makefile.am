@@ -1,8 +1,8 @@
-AM_CPPFLAGS = -I $(srcdir)/../../include
+AM_CPPFLAGS = -I $(top_srcdir)/include
 AM_CXXFLAGS = -Wall -fexceptions -O2
 AM_LDFLAGS = -s -Ur
 
-ZIPDIRFS_INCLUDE = ../../include/zipdirfs
+ZIPDIRFS_INCLUDE = $(top_srcdir)/include/zipdirfs
 
 noinst_LIBRARIES = libinternal.a
 libinternal_a_SOURCES = \

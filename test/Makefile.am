@@ -1,9 +1,9 @@
-AM_CPPFLAGS = -I $(srcdir)/../include
+AM_CPPFLAGS = -I $(top_srcdir)/include
 AM_CXXFLAGS = -Wall -fexceptions -O2
 AM_LDFLAGS = -s
-LDADD = ../src/ZipDirFs/libinternal.a
+LDADD = $(top_srcdir)/src/ZipDirFs/libinternal.a
 
-ZIPDIRFS_INCLUDE = ../include/ZipDirFs
+ZIPDIRFS_INCLUDE = $(top_srcdir)/include/ZipDirFs
 
 noinst_PROGRAMS = zipdirfs-test
 
