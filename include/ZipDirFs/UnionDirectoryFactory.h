@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef UNIONDIRECTORYFACTORY_H
 #define UNIONDIRECTORYFACTORY_H
@@ -59,10 +57,10 @@ namespace ZipDirFs
 			factory2().readdir(buf, filler, offset, finfo);
 			return 0;
 		}
-		inline ::time_t getLastUpdate()
+		inline timespec getLastUpdate()
 		{
-			::time_t u1 = factory1().getLastUpdate();
-			::time_t u2 = factory2().getLastUpdate();
+			timespec u1 = factory1().getLastUpdate();
+			timespec u2 = factory2().getLastUpdate();
 			return (u1 > u2) ? u1 : u2;
 		}
 	private:

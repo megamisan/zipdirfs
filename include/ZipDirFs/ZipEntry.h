@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPENTRY_H
 #define ZIPENTRY_H
@@ -70,7 +68,7 @@ namespace ZipDirFs
 		 * \brief Retrieves the modification time of the file.
 		 * \return The modification time.
 		 */
-		const ::time_t getMTime() const
+		const timespec getMTime() const
 		{
 			return this->mtime;
 		}
@@ -80,7 +78,7 @@ namespace ZipDirFs
 		ZipFile& file;
 		const ::uint64_t index;
 		const ::uint64_t size;
-		const ::time_t mtime;
+		const struct timespec mtime;
 		char *buffer;
 		::uint64_t progress;
 		int refCount;

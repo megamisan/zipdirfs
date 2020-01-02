@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPDIRECTORYFACTORY_H
 #define ZIPDIRECTORYFACTORY_H
@@ -41,7 +39,7 @@ namespace ZipDirFs
 		typedef typename ZipDirectoryFactory<LockingPolicy>::lock lock;
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipDirectoryFactory() : entries (deleteEntry), folderCount(0), source (NULL), mtime (0) {}
+		ZipDirectoryFactory() : entries (deleteEntry), folderCount(0), source (NULL), mtime ({0}) {}
 		virtual ~ZipDirectoryFactory() {}
 		fusekit::entry* find (const char* name)
 		{
@@ -81,7 +79,7 @@ namespace ZipDirFs
 
 			return 0;
 		}
-		inline ::time_t getMTime()
+		inline timespec getMTime()
 		{
 			return this->mtime;
 		}
@@ -92,7 +90,7 @@ namespace ZipDirFs
 		int folderCount;
 		std::string relativePath;
 		ZipFile* source;
-		::time_t mtime;
+		struct timespec mtime;
 		/**
 		 * \brief Defines the directory info.
 		 * \param source The ZipFile in which this directory is found.
@@ -103,7 +101,7 @@ namespace ZipDirFs
 		{
 			this->source = source;
 			this->relativePath = relativePath;
-			this->mtime = mtime;
+			this->mtime = { mtime, 0 };
 		}
 		static void deleteEntry (fusekit::entry* e)
 		{

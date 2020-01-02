@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef FIXEDDIRECTORYFACTORY_H
 #define FIXEDDIRECTORYFACTORY_H
@@ -97,14 +95,14 @@ namespace ZipDirFs
 
 			return 0;
 		}
-		inline ::time_t getLastUpdate()
+		inline timespec getLastUpdate()
 		{
 			return lastUpdate;
 		}
 	private:
 		tree entries;
 		int folderCount;
-		::time_t lastUpdate;
+		struct timespec lastUpdate;
 		static void deleteEntry (fusekit::entry* e)
 		{
 			if (e != NULL) delete e;

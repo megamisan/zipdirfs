@@ -1,8 +1,8 @@
 AM_CPPFLAGS = -I $(top_srcdir)/include
-AM_CXXFLAGS = -Wall -fexceptions -O2
-AM_LDFLAGS = -s -Ur
+AM_CXXFLAGS = -Wall -fexceptions
+AM_LDFLAGS = -Ur
 
-ZIPDIRFS_INCLUDE = $(top_srcdir)/include/zipdirfs
+ZIPDIRFS_INCLUDE = $(top_srcdir)/include/ZipDirFs
 
 noinst_LIBRARIES = libinternal.a
 libinternal_a_SOURCES = \
@@ -27,21 +27,19 @@ libinternal_a_SOURCES = \
 	$(ZIPDIRFS_INCLUDE)/ZipTime.h \
 	$(ZIPDIRFS_INCLUDE)/NotFoundException.h \
 	$(ZIPDIRFS_INCLUDE)/FixedDirectoryFactory.h \
-	$(ZIPDIRFS_INCLUDE)/LinkFactory.h \
 	$(ZIPDIRFS_INCLUDE)/EntryFactory.h \
 	$(ZIPDIRFS_INCLUDE)/UnionDirectoryFactory.h \
 	$(ZIPDIRFS_INCLUDE)/NameSearchWalker.h \
 	$(ZIPDIRFS_INCLUDE)/ZipEntryFileInfo.h \
-	$(ZIPDIRFS_INCLUDE)/LinkNode.h \
 	$(ZIPDIRFS_INCLUDE)/DirectoryMark.h \
-	$(ZIPDIRFS_INCLUDE)/LinkTime.h \
+	$(ZIPDIRFS_INCLUDE)/SymlinkTime.h \
 	$(ZIPDIRFS_INCLUDE)/DirectoryNode.h \
 	$(ZIPDIRFS_INCLUDE)/entry_definitions.h \
 	$(ZIPDIRFS_INCLUDE)/ZipRootFactory.h \
-	$(ZIPDIRFS_INCLUDE)/LinkBuffer.h \
 	$(ZIPDIRFS_INCLUDE)/SystemDirectoryFactory.h \
 	$(ZIPDIRFS_INCLUDE)/NameSearchTreeNodes.h \
 	$(ZIPDIRFS_INCLUDE)/ZipFileBuffer.h \
 	$(ZIPDIRFS_INCLUDE)/MutexLockPolicy.h \
 	$(ZIPDIRFS_INCLUDE)/ZipFile.h \
-	$(ZIPDIRFS_INCLUDE)/NameSearchTree.h
+	$(ZIPDIRFS_INCLUDE)/NameSearchTree.h \
+	$(ZIPDIRFS_INCLUDE)/utils.h

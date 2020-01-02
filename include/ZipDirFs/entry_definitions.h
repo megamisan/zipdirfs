@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ENTRY_DEFINITIONS_H_INCLUDED
 #define ENTRY_DEFINITIONS_H_INCLUDED
@@ -25,10 +23,7 @@
 #include "ZipDirFs/SystemDirectoryFactory.h"
 #include "ZipDirFs/SystemDirectoryTime.h"
 #include "ZipDirFs/DirectoryNode.h"
-#include "ZipDirFs/LinkFactory.h"
-#include "ZipDirFs/LinkTime.h"
-#include "ZipDirFs/LinkBuffer.h"
-#include "ZipDirFs/LinkNode.h"
+#include "ZipDirFs/SymlinkTime.h"
 #include "ZipDirFs/ZipRootFactory.h"
 #include "ZipDirFs/ZipDirectoryFactory.h"
 #include "ZipDirFs/ZipTime.h"
@@ -38,6 +33,7 @@
 #include <fusekit/basic_entry.h>
 #include <fusekit/basic_directory.h>
 #include <fusekit/basic_file.h>
+#include <fusekit/basic_symlink.h>
 #include <fusekit/no_buffer.h>
 
 namespace ZipDirFs
@@ -45,8 +41,7 @@ namespace ZipDirFs
 	template <class Derived> class SystemDirectory : public DirectoryNode<SystemDirectoryFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
 	typedef fusekit::basic_directory<SystemDirectory, SystemDirectoryTime, DefaultDirectoryPermission> system_directory;
 
-	template <class Derived> class Link : public LinkNode<LinkFactory<MutexLockPolicy>, Derived> {};
-	typedef fusekit::basic_entry<LinkTime, DefaultLinkPermission, LinkBuffer, Link, S_IFLNK> wrapper_link;
+	typedef fusekit::basic_symlink<SymlinkTime> wrapper_link;
 
 	template <class Derived> class ZipRootDirectory : public DirectoryNode<ZipRootFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
 	typedef fusekit::basic_directory<ZipRootDirectory, SystemDirectoryTime, DefaultDirectoryPermission> zip_root_directory;

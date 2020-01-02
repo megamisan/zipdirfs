@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/EntryFactory.h"
 #include "ZipDirFs/entry_definitions.h"
@@ -37,8 +35,7 @@ namespace ZipDirFs
 
 	fusekit::entry* createLink (const std::string& target)
 	{
-		wrapper_link* entry = new wrapper_link();
-		entry->setLink (target.c_str() );
+		wrapper_link* entry = new wrapper_link(target.c_str());
 		return entry;
 	}
 

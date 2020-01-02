@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef DIRECTORYNODE_H
 #define DIRECTORYNODE_H
@@ -53,11 +51,19 @@ namespace ZipDirFs
 		{
 			return factory().links() + 2;
 		}
+		int opendir (::fuse_file_info& finfo)
+		{
+			return 0;
+		}
 		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info& finfo)
 		{
 			filler (buf, ".", NULL, offset);
 			filler (buf, "..", NULL, offset);
 			factory().readdir (buf, filler, offset, finfo);
+			return 0;
+		}
+		int releasedir (::fuse_file_info& finfo)
+		{
 			return 0;
 		}
 		int mknod (const char* name, ::mode_t mode, ::dev_t type)
@@ -75,6 +81,10 @@ namespace ZipDirFs
 		int rmdir (const char* name)
 		{
 			return -EACCES;
+		}
+		int symlink (const char* name, const char* target)
+		{
+			return -EPERM;
 		}
 	protected:
 	private:

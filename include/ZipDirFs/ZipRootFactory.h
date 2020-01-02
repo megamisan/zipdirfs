@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPROOTACTORY_H
 #define ZIPROOTFACTORY_H
@@ -25,6 +23,7 @@
 #include "ZipDirFs/ZipWalker.h"
 #include "ZipDirFs/ZipFile.h"
 #include "ZipDirFs/DirectoryMark.h"
+#include "ZipDirFs/utils.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
 #include <time.h>
@@ -37,7 +36,7 @@ namespace ZipDirFs
 		typedef typename ZipRootFactory<LockingPolicy>::lock lock;
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipRootFactory() : entries (deleteEntry), folderCount(0), zipFile (NULL), lastUpdate (0) {}
+		ZipRootFactory() : entries (deleteEntry), folderCount(0), zipFile (NULL), lastUpdate ({0}) {}
 		virtual ~ZipRootFactory() { if (this->zipFile != NULL) delete this->zipFile; }
 		void setZipFile (const char* path)
 		{
@@ -92,7 +91,7 @@ namespace ZipDirFs
 
 			return 0;
 		}
-		inline ::time_t getLastUpdate()
+		inline timespec getLastUpdate()
 		{
 			return this->lastUpdate;
 		}
@@ -101,7 +100,7 @@ namespace ZipDirFs
 		tree entries;
 		int folderCount;
 		ZipFile* zipFile;
-		::time_t lastUpdate;
+		struct timespec lastUpdate;
 		static void deleteEntry (fusekit::entry* e)
 		{
 			if (e != NULL) delete e;
@@ -118,10 +117,10 @@ namespace ZipDirFs
 				return;
 			}
 
-			if (this->lastUpdate < pathinfo.st_mtime)
+			if (!equals(this->lastUpdate, pathinfo.st_mtim))
 			{
 				this->updateEntries();
-				this->lastUpdate = pathinfo.st_mtime;
+				this->lastUpdate = pathinfo.st_mtim;
 			}
 		}
 		void updateEntries()

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPTIME_H
 #define ZIPTIME_H
@@ -31,15 +29,15 @@ namespace ZipDirFs
 	public:
 		ZipTime() {}
 		virtual ~ZipTime() {}
-		::time_t modification_time()
+		timespec modification_time()
 		{
 			return static_cast<Derived*> (this)->getMTime();
 		}
-		::time_t change_time()
+		timespec change_time()
 		{
 			return static_cast<Derived*> (this)->getMTime();
 		}
-		::time_t access_time()
+		timespec access_time()
 		{
 			return static_cast<Derived*> (this)->getMTime();
 		}

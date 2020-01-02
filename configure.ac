@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([Zip directory virtual filesystem],[0.2.0],[pierrick.caillon+zipdirfs@megami.fr],[zipdirfs],[https://github.com/megamisan/zipdirfs])
+AC_INIT([Zip directory virtual filesystem],[1.0.0],[pierrick.caillon+zipdirfs@megami.fr],[zipdirfs],[https://github.com/megamisan/zipdirfs])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_SRCDIR([src/Main.cpp])
@@ -22,7 +22,7 @@ AC_SUBST([FUSE_LIBS])
 LIBS="$LIBS $FUSE_LIBS"
 CPPFLAGS="$CPPFLAGS $FUSE_CFLAGS"
 
-PKG_CHECK_MODULES([FUSEKIT], [fusekit >= 0.6.3])
+PKG_CHECK_MODULES([FUSEKIT], [fusekit >= 0.7.0])
 AC_SUBST([FUSEKIT_CFLAGS])
 
 CPPFLAGS="$CPPFLAGS $FUSEKIT_CFLAGS"

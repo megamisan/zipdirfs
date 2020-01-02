@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "ZipDirFs/SymlinkTime.h"
+#ifndef UTILS_H
+#define UTILS_H
 
-namespace ZipDirFs
-{
-	inline struct timespec clock_now()
-	{
-		struct timespec tv;
-		clock_gettime(CLOCK_REALTIME, &tv);
-		return tv;
-	}
+#include <time.h>
 
-	const struct timespec linksTime = clock_now();
+namespace ZipDirFs {
+    inline bool equals(const struct timespec& a, const struct timespec& b) {
+        return a.tv_sec == b.tv_sec && a.tv_nsec == b.tv_nsec;
+    }
 }
+
+#endif // UTILS_H

@@ -1,3 +1,10 @@
+zipdirfs (1.0.0) unstable; urgency=low
+
+  * Fix symlink support.
+  * Dependancy update
+
+ -- Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>  Thu, 02 Jan 2020 21:06:01 +0100
+
 zipdirfs (0.2.0) unstable; urgency=low
 
   * Initial package release.

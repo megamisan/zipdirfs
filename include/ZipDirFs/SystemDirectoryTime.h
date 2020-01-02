@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef SYSTEMDIRECTORYTIME_H
 #define SYSTEMDIRECTORYTIME_H
@@ -34,24 +32,27 @@ namespace ZipDirFs
 	class SystemDirectoryTime
 	{
 	public:
-		SystemDirectoryTime() : create (::time (NULL) ) {}
+		SystemDirectoryTime()
+		{
+			clock_gettime(CLOCK_REALTIME, &create);
+		}
 		virtual ~SystemDirectoryTime() {}
-		time_t modification_time()
+		timespec modification_time()
 		{
 			return static_cast<Derived*> (this)->getLastUpdate();
 		}
-		time_t change_time()
+		timespec change_time()
 		{
 			return this->create;
 		}
-		time_t access_time()
+		timespec access_time()
 		{
 			return static_cast<Derived*> (this)->getLastUpdate();
 		}
 		void update (int) {}
 	protected:
 	private:
-		::time_t create;
+		struct timespec create;
 	};
 }
 

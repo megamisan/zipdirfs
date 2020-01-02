@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPFILEBUFFER_H
 #define ZIPFILEBUFFER_H
@@ -71,7 +69,11 @@ namespace ZipDirFs
 		{
 			return -EACCES;
 		}
-		::time_t getMTime()
+		int readlink(char*, size_t)
+		{
+			return -EINVAL;
+		}
+		timespec getMTime()
 		{
 			return this->source->getMTime();
 		}

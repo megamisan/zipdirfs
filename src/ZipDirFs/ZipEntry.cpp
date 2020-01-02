@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/ZipEntry.h"
 #include "ZipDirFs/ZipFile.h"
@@ -27,7 +25,7 @@
 
 namespace ZipDirFs
 {
-	ZipEntry::ZipEntry (ZipFile& file, const ZipEntryFileInfo& fileinfo) : file (file), index (fileinfo.index), size (fileinfo.size), mtime (fileinfo.mtime), buffer (NULL), progress (0), refCount (0), zipFileEntry (0)
+	ZipEntry::ZipEntry (ZipFile& file, const ZipEntryFileInfo& fileinfo) : file (file), index (fileinfo.index), size (fileinfo.size), mtime ({fileinfo.mtime, 0}), buffer (NULL), progress (0), refCount (0), zipFileEntry (0)
 	{
 	}
 
