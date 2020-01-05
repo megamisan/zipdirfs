@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/NameSearchTree.h"
 #include "ZipDirFs/SystemDirectoryFactory.h"
@@ -23,23 +23,6 @@ int testZipEnumeration(std::string &path);
 int testZipIterator(std::string &path);
 int testZipWalker(std::string &path);
 int testTreeRemove(std::string &path);
-
-int main(int argc, char *argv[])
-{
-	std::string path(".");
-	if (argc > 1)
-	{
-		path = argv[1];
-	}
-	// return testTree(path);
-	// return testTreeIterator(path);
-	// return testDirectoryFactory(path);
-	// return testZipOpen(path);
-	// return testZipEnumeration(path);
-	// return testZipIterator(path);
-	// return testZipWalker(path);
-	return testTreeRemove(path);
-}
 
 int buildTree(std::string& path, ZipDirFs::NameSearchTree<int>& tree)
 {

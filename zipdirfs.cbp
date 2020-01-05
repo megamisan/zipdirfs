@@ -16,6 +16,7 @@
 				<Option parameters="/media/Backup/Server/Nipponsei/ /mediazip/ -d -o allow_other" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -25,6 +26,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -38,13 +40,15 @@
 				<Option parameters="/media/Backup/Server/Nipponsei/\[#aznmp3\ \&amp;\ Nipponsei\]\ Juuousei\ OP\ -\ Deep\ in\ Your\ Heart\ \[320kbps\ x\ Scans\]\[Doumoto\ Kouichi\]\[2006.07.12\].zip" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
+					<Add directory="test" />
+					<Add directory="./" />
 				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add option="-D_FILE_OFFSET_BITS=64" />
 			<Add option="-DFUSE_USE_VERSION=27" />
 			<Add directory="include" />
 		</Compiler>
@@ -97,21 +101,35 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="src/ZipDirFs/EntryFactory.cpp" />
-		<Unit filename="src/ZipDirFs/LinkTime.cpp" />
 		<Unit filename="src/ZipDirFs/MutexLockPolicy.cpp" />
 		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
+		<Unit filename="src/ZipDirFs/SymlinkTime.cpp" />
+		<Unit filename="src/ZipDirFs/SystemDirectoryFactory.cpp" />
 		<Unit filename="src/ZipDirFs/ZipEntry.cpp" />
 		<Unit filename="src/ZipDirFs/ZipEntryFileInfo.cpp" />
 		<Unit filename="src/ZipDirFs/ZipFile.cpp" />
 		<Unit filename="src/ZipDirFs/ZipIterator.cpp" />
 		<Unit filename="src/ZipDirFs/ZipWalker.cpp" />
 		<Unit filename="src/ZipDirFs/stream_indent.cpp" />
-		<Unit filename="test/maintest.cpp">
+		<Unit filename="test/Coverage/coverage.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/gtest.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/gtest.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/old/maintest.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/old/tests.cpp">
 			<Option target="Test" />
 		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

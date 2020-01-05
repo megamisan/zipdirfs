@@ -10,6 +10,7 @@
 *.pyc
 *.pyo
 *.rej
+*.gc*
 *~
 *.#*
 .*.swp
@@ -18,7 +19,8 @@
 # The contents of the svn:ignore property on the branch root.
 /zipdirfs.depend
 /*.layout
-/bin
+/bin/*
+!bin/build*
 /obj
 #Automake
 *.m4
@@ -30,11 +32,24 @@ Makefile
 *.in
 stamp*
 .deps
+m4/
+libtool
+conftest*
+.dirstamp
+/coverage
 # Output
 zipdirfs
-zipdirfs-test
+zipdirfs-test*
+googletest/
+gtest
+gtest.*
+!gtest.cpp
+!gtest.h
+*.log
+test_detail.xml
 # Package building
 autoreconf.*
 debhelper*
 files
-zipdirfs.*
+*/zipdirfs.*
+zipdirfs-*.tar*

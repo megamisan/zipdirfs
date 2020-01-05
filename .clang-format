@@ -1,4 +1,4 @@
-AccessModifierOffset: 0
+AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
 # AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
@@ -29,7 +29,7 @@ BreakBeforeTernaryOperators: false
 BreakConstructorInitializers: AfterColon
 #BreakInheritanceList: AfterColon
 BreakStringLiterals: true
-ColumnLimit: 120
+ColumnLimit: 100
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ConstructorInitializerIndentWidth: 4
@@ -58,7 +58,7 @@ SpaceBeforeAssignmentOperators: true
 #SpaceBeforeCpp11BracedList: false
 #SpaceBeforeCtorInitializerColon: true
 #SpaceBeforeInheritanceColon: true
-SpaceBeforeParens: Always
+SpaceBeforeParens: ControlStatements
 #SpaceBeforeRangeBasedForLoopColon: true
 #SpaceBeforeSquareBrackets: false
 #SpaceInEmptyBlock: false
