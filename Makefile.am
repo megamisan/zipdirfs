@@ -22,7 +22,9 @@ libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/ZipEntryFileInfo.cpp \
 	src/ZipDirFs/ZipFile.cpp \
 	src/ZipDirFs/ZipIterator.cpp \
-	src/ZipDirFs/ZipWalker.cpp
+	src/ZipDirFs/ZipWalker.cpp \
+	src/ZipDirFs/Containers/EntryGenerator.cpp \
+	src/ZipDirFs/Containers/EntryIterator.cpp
 libzipdirfs_la_CXXFLAGS = $(CXXFLAGS_COVERAGE)
 libzipdirfs_la_LIBADD = $(LDADD_COVERAGE)
 
@@ -55,7 +57,15 @@ noinst_HEADERS = \
 	include/ZipDirFs/ZipIterator.h \
 	include/ZipDirFs/ZipRootFactory.h \
 	include/ZipDirFs/ZipTime.h \
-	include/ZipDirFs/ZipWalker.h
+	include/ZipDirFs/ZipWalker.h \
+	include/ZipDirFs/Containers/EntryGenerator.h \
+	include/ZipDirFs/Containers/EntryIterator.h \
+	include/ZipDirFs/Containers/EntryList.h \
+	include/ZipDirFs/Containers/list_map.h \
+	include/ZipDirFs/Containers/Helpers/Changed.h \
+	include/ZipDirFs/Containers/Helpers/EntryListProxy.h \
+	include/ZipDirFs/Containers/Helpers/Enumerator.h \
+	include/ZipDirFs/Containers/Helpers/Factory.h
 
 libzipdirfs_test_la_SOURCES = test/old/tests.cpp
 libzipdirfs_test_la_LIBADD = libzipdirfs.la
@@ -100,7 +110,35 @@ libgmock_main_la_CPPFLAGS = -I googletest/googlemock/include -I googletest/googl
 libgmock_main_la_LDFLAGS = -pthread
 libgmock_main_la_LIBADD = libgtest.la
 libgtest_local_la_SOURCES = \
-	test/Coverage/coverage.cpp
+	test/Coverage/coverage.cpp \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorEndWrapper.h \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorEndWrapper.cpp \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorTestWrapper.h \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorTestWrapper.cpp \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorWrapperMock.h \
+	test/ZipDirFs/Containers/Fixtures/EntryIteratorWrapperMock.cpp \
+	test/ZipDirFs/Containers/Fixtures/helpers.h \
+	test/ZipDirFs/Containers/Fixtures/helpers.cpp \
+	test/ZipDirFs/Containers/Fixtures/HolderStateInitializer.h \
+	test/ZipDirFs/Containers/Fixtures/HolderStateInitializer.cpp \
+	test/ZipDirFs/Containers/Fixtures/list_for_proxy.h \
+	test/ZipDirFs/Containers/Fixtures/list_for_proxy.cpp \
+	test/ZipDirFs/Containers/Fixtures/list_map_for_proxy.h \
+	test/ZipDirFs/Containers/Fixtures/list_map_for_proxy.cpp \
+	test/ZipDirFs/Containers/Fixtures/list_map_mock.h \
+	test/ZipDirFs/Containers/Fixtures/list_map_mock.cpp \
+	test/ZipDirFs/Containers/Fixtures/list_mock.h \
+	test/ZipDirFs/Containers/Fixtures/list_mock.cpp \
+	test/ZipDirFs/Containers/Fixtures/map_mock.h \
+	test/ZipDirFs/Containers/Fixtures/map_mock.cpp \
+	test/ZipDirFs/Containers/Helpers/Fixtures/ChangedMock.h \
+	test/ZipDirFs/Containers/Helpers/Fixtures/ChangedMock.cpp \
+	test/ZipDirFs/Containers/Helpers/Fixtures/EntryListProxyMock.h \
+	test/ZipDirFs/Containers/Helpers/Fixtures/EntryListProxyMock.cpp \
+	test/ZipDirFs/Containers/Helpers/Fixtures/EnumeratorMock.h \
+	test/ZipDirFs/Containers/Helpers/Fixtures/EnumeratorMock.cpp \
+	test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.h \
+	test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.cpp
 libgtest_local_la_CXXFLAGS = $(CXXFLAGS_COVERAGE) -D BUILD_TEST
 libgtest_local_la_LIBADD = $(LDADD_COVERAGE)
 libgtest_local_la_LDFLAGS = -pthread
@@ -108,7 +146,15 @@ libgtest_local_la_LDFLAGS = -pthread
 check_PROGRAMS = gtest
 gtest_SOURCES = \
 	test/gtest.h \
-	test/gtest.cpp
+	test/gtest.cpp \
+	test/ZipDirFs/Containers/EntryGenerator.h \
+	test/ZipDirFs/Containers/EntryGenerator.cpp \
+	test/ZipDirFs/Containers/EntryIterator.h \
+	test/ZipDirFs/Containers/EntryIterator.cpp \
+	test/ZipDirFs/Containers/EntryList.h \
+	test/ZipDirFs/Containers/EntryList.cpp \
+	test/ZipDirFs/Containers/list_map.h \
+	test/ZipDirFs/Containers/list_map.cpp
 gtest_CXXFLAGS = $(CXXFLAGS_COVERAGE)
 gtest_LDADD = libzipdirfs.la libgtest.la libgmock_main.la libgtest_local.la $(LDADD_COVERAGE)
 gtest_LDFLAGS = -pthread

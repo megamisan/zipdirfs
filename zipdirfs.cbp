@@ -65,6 +65,14 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="include/ZipDirFs/Containers/EntryGenerator.h" />
+		<Unit filename="include/ZipDirFs/Containers/EntryIterator.h" />
+		<Unit filename="include/ZipDirFs/Containers/EntryList.h" />
+		<Unit filename="include/ZipDirFs/Containers/Helpers/Changed.h" />
+		<Unit filename="include/ZipDirFs/Containers/Helpers/EntryListProxy.h" />
+		<Unit filename="include/ZipDirFs/Containers/Helpers/Enumerator.h" />
+		<Unit filename="include/ZipDirFs/Containers/Helpers/Factory.h" />
+		<Unit filename="include/ZipDirFs/Containers/list_map.h" />
 		<Unit filename="include/ZipDirFs/DefaultPermission.h" />
 		<Unit filename="include/ZipDirFs/DirectoryMark.h" />
 		<Unit filename="include/ZipDirFs/DirectoryNode.h" />
@@ -100,6 +108,8 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="src/ZipDirFs/Containers/EntryGenerator.cpp" />
+		<Unit filename="src/ZipDirFs/Containers/EntryIterator.cpp" />
 		<Unit filename="src/ZipDirFs/EntryFactory.cpp" />
 		<Unit filename="src/ZipDirFs/MutexLockPolicy.cpp" />
 		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
@@ -112,6 +122,114 @@
 		<Unit filename="src/ZipDirFs/ZipWalker.cpp" />
 		<Unit filename="src/ZipDirFs/stream_indent.cpp" />
 		<Unit filename="test/Coverage/coverage.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryGenerator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryGenerator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryIterator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryIterator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryList.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/EntryList.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorEndWrapper.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorEndWrapper.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorTestWrapper.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorTestWrapper.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorWrapperMock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/EntryIteratorWrapperMock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/HolderStateInitializer.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/HolderStateInitializer.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/helpers.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/helpers.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_for_proxy.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_for_proxy.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_map_for_proxy.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_map_for_proxy.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_map_mock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_map_mock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_mock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/list_mock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/map_mock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Fixtures/map_mock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/ChangedMock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/ChangedMock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/EntryListProxyMock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/EntryListProxyMock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/EnumeratorMock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/EnumeratorMock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/list_map.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Containers/list_map.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/gtest.cpp">
