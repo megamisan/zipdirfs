@@ -29,6 +29,10 @@ AM_PROG_AR
 LT_INIT
 
 # Checks for libraries.
+AX_BOOST_BASE([1.62],, [AC_MSG_ERROR([This program needs Boost, but it was not found in your system])])
+AX_BOOST_SYSTEM
+AX_BOOST_FILESYSTEM
+
 PKG_CHECK_MODULES([FUSE], [fuse >= 2.4.0])
 AC_SUBST([FUSE_CFLAGS])
 AC_SUBST([FUSE_LIBS])

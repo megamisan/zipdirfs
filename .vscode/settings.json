@@ -51,7 +51,18 @@
         "cstring": "cpp",
         "forward_list": "cpp",
         "iomanip": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "thread": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "bitset": "cpp",
+        "numeric": "cpp",
+        "csignal": "cpp",
+        "random": "cpp",
+        "ios": "cpp",
+        "unordered_set": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

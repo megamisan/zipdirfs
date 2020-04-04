@@ -19,5 +19,6 @@ namespace Test::ZipDirFs::Containers::Helpers
 			}
 		}
 		bool ChangedMock::operator()() { return invoke(); }
+		ChangedMock::operator std::time_t() const { return get(); }
 	} // namespace Fixtures
 } // namespace Test::ZipDirFs::Containers::Helpers

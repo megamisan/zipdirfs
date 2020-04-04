@@ -65,6 +65,12 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="include/ZipDirFs/Components/NativeChanged.h" />
+		<Unit filename="include/ZipDirFs/Components/NativeDirectoryEnumerator.h" />
+		<Unit filename="include/ZipDirFs/Components/NativeFactory.h" />
+		<Unit filename="include/ZipDirFs/Components/ZipDirectoryEnumerator.h" />
+		<Unit filename="include/ZipDirFs/Components/ZipFactory.h" />
+		<Unit filename="include/ZipDirFs/Components/ZipFileChanged.h" />
 		<Unit filename="include/ZipDirFs/Containers/EntryGenerator.h" />
 		<Unit filename="include/ZipDirFs/Containers/EntryIterator.h" />
 		<Unit filename="include/ZipDirFs/Containers/EntryList.h" />
@@ -73,7 +79,6 @@
 		<Unit filename="include/ZipDirFs/Containers/Helpers/Enumerator.h" />
 		<Unit filename="include/ZipDirFs/Containers/Helpers/Factory.h" />
 		<Unit filename="include/ZipDirFs/Containers/list_map.h" />
-		<Unit filename="include/ZipDirFs/DefaultPermission.h" />
 		<Unit filename="include/ZipDirFs/DirectoryMark.h" />
 		<Unit filename="include/ZipDirFs/DirectoryNode.h" />
 		<Unit filename="include/ZipDirFs/EntryFactory.h" />
@@ -88,6 +93,18 @@
 		<Unit filename="include/ZipDirFs/SystemDirectoryFactory.h" />
 		<Unit filename="include/ZipDirFs/SystemDirectoryTime.h" />
 		<Unit filename="include/ZipDirFs/UnionDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/Utilities/DefaultPermission.h" />
+		<Unit filename="include/ZipDirFs/Utilities/FileSystem.h" />
+		<Unit filename="include/ZipDirFs/Utilities/type_traits.h" />
+		<Unit filename="include/ZipDirFs/Zip/Archive.h" />
+		<Unit filename="include/ZipDirFs/Zip/Base/Content.h" />
+		<Unit filename="include/ZipDirFs/Zip/Base/Lib.h" />
+		<Unit filename="include/ZipDirFs/Zip/Base/Stat.h" />
+		<Unit filename="include/ZipDirFs/Zip/Entry.h" />
+		<Unit filename="include/ZipDirFs/Zip/Exception.h" />
+		<Unit filename="include/ZipDirFs/Zip/Factory.h" />
+		<Unit filename="include/ZipDirFs/Zip/Lib.h" />
+		<Unit filename="include/ZipDirFs/Zip/Stream.h" />
 		<Unit filename="include/ZipDirFs/ZipDirectoryFactory.h" />
 		<Unit filename="include/ZipDirFs/ZipEntry.h" />
 		<Unit filename="include/ZipDirFs/ZipEntryFileInfo.h" />
@@ -108,6 +125,10 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="src/ZipDirFs/Components/NativeChanged.cpp" />
+		<Unit filename="src/ZipDirFs/Components/NativeDirectoryEnumerator.cpp" />
+		<Unit filename="src/ZipDirFs/Components/ZipDirectoryEnumerator.cpp" />
+		<Unit filename="src/ZipDirFs/Components/ZipFileChanged.cpp" />
 		<Unit filename="src/ZipDirFs/Containers/EntryGenerator.cpp" />
 		<Unit filename="src/ZipDirFs/Containers/EntryIterator.cpp" />
 		<Unit filename="src/ZipDirFs/EntryFactory.cpp" />
@@ -115,6 +136,16 @@
 		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
 		<Unit filename="src/ZipDirFs/SymlinkTime.cpp" />
 		<Unit filename="src/ZipDirFs/SystemDirectoryFactory.cpp" />
+		<Unit filename="src/ZipDirFs/Utilities/FileSystem.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Archive.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Base/Content.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Base/Lib.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Base/Stat.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Entry.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Exception.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Factory.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Lib.cpp" />
+		<Unit filename="src/ZipDirFs/Zip/Stream.cpp" />
 		<Unit filename="src/ZipDirFs/ZipEntry.cpp" />
 		<Unit filename="src/ZipDirFs/ZipEntryFileInfo.cpp" />
 		<Unit filename="src/ZipDirFs/ZipFile.cpp" />
@@ -122,6 +153,51 @@
 		<Unit filename="src/ZipDirFs/ZipWalker.cpp" />
 		<Unit filename="src/ZipDirFs/stream_indent.cpp" />
 		<Unit filename="test/Coverage/coverage.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/Fixtures/LibInstance.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/Fixtures/ZipFactoryAccess.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/Fixtures/ZipFactoryAccess.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeChanged.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeChanged.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeDirectoryEnumerator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeDirectoryEnumerator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeFactory.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/NativeFactory.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipDirectoryEnumerator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipDirectoryEnumerator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipFactory.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipFactory.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipFileChanged.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Components/ZipFileChanged.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Containers/EntryGenerator.cpp">
@@ -230,6 +306,75 @@
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Containers/list_map.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Utilities/FileSystem.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Utilities/FileSystem.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Utilities/Fixtures/FileSystem.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Utilities/Fixtures/FileSystem.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Archive.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Archive.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Base/Content.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Base/Content.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Entry.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Entry.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Factory.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Factory.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/Lib.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/Lib.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/SimpleSpan.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/SimpleSpan.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/StreamBufferInitializer.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Fixtures/StreamBufferInitializer.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Lib.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Lib.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Stream.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Zip/Stream.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/fusekit/Fixtures/EntryMock.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/gtest.cpp">

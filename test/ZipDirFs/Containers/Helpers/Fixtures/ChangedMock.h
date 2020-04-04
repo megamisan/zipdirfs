@@ -27,6 +27,8 @@ namespace Test::ZipDirFs::Containers::Helpers
 			~ChangedMock();
 			bool operator()();
 			MOCK_METHOD0(invoke, bool());
+			operator std::time_t() const;
+			MOCK_CONST_METHOD0(get, std::time_t());
 		};
 	} // namespace Fixtures
 } // namespace Test::ZipDirFs::Containers::Helpers

@@ -4,7 +4,7 @@
 #ifndef ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED
 #define ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED
 
-#include "ZipDirFs/DefaultPermission.h"
+#include "ZipDirFs/Utilities/DefaultPermission.h"
 #include "ZipDirFs/SystemDirectoryFactory.h"
 #include "ZipDirFs/SystemDirectoryTime.h"
 #include "ZipDirFs/DirectoryNode.h"
@@ -24,17 +24,17 @@
 namespace ZipDirFs
 {
 	template <class Derived> class SystemDirectory : public DirectoryNode<SystemDirectoryFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
-	typedef fusekit::basic_directory<SystemDirectory, SystemDirectoryTime, DefaultDirectoryPermission> system_directory;
+	typedef fusekit::basic_directory<SystemDirectory, SystemDirectoryTime, Utilities::DefaultDirectoryPermission> system_directory;
 
 	typedef fusekit::basic_symlink<SymlinkTime> wrapper_link;
 
 	template <class Derived> class ZipRootDirectory : public DirectoryNode<ZipRootFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
-	typedef fusekit::basic_directory<ZipRootDirectory, SystemDirectoryTime, DefaultDirectoryPermission> zip_root_directory;
+	typedef fusekit::basic_directory<ZipRootDirectory, SystemDirectoryTime, Utilities::DefaultDirectoryPermission> zip_root_directory;
 
 	template <class Derived> class ZipDirectory : public DirectoryNode<ZipDirectoryFactory<MutexLockPolicy>, Derived>, public DirectoryMark {};
-	typedef fusekit::basic_directory<ZipDirectory, ZipTime, DefaultDirectoryPermission> zip_directory;
+	typedef fusekit::basic_directory<ZipDirectory, ZipTime, Utilities::DefaultDirectoryPermission> zip_directory;
 
-	typedef fusekit::basic_file<ZipFileBuffer, ZipTime, DefaultFilePermission> zip_file;
+	typedef fusekit::basic_file<ZipFileBuffer, ZipTime, Utilities::DefaultFilePermission> zip_file;
 } // namespace ZipDirFs
 
 #endif // ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED

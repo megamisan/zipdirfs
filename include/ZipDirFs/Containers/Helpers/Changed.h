@@ -4,6 +4,8 @@
 #ifndef ZIPDIRFS_CONTAINERS_HELPERS_CHANGED_H
 #define ZIPDIRFS_CONTAINERS_HELPERS_CHANGED_H
 
+#include <ctime>
+
 namespace ZipDirFs::Containers
 {
 	namespace Helpers
@@ -18,6 +20,7 @@ namespace ZipDirFs::Containers
 		public:
 			virtual ~Changed() {}
 			virtual bool operator()() = 0;
+			virtual operator std::time_t() const = 0;
 		};
 	} // namespace Helpers
 } // namespace ZipDirFs::Containers
