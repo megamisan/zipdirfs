@@ -1,28 +1,13 @@
 /*
  * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ZIPENTRY_H
-#define ZIPENTRY_H
+#ifndef ZIPDIRFS_ZIPENTRY_H
+#define ZIPDIRFS_ZIPENTRY_H
 
 #include "ZipDirFs/MutexLockPolicy.h"
 #include <sys/types.h>
-#include <time.h>
-#include <stdint.h>
+#include <ctime>
+#include <cstdint>
 
 struct zip_file;
 namespace ZipDirFs
@@ -98,6 +83,6 @@ namespace ZipDirFs
 		 */
 		bool ensureRead(::uint64_t position);
 	};
-}
+} // namespace ZipDirFs
 
-#endif // ZIPENTRY_H
+#endif // ZIPDIRFS_ZIPENTRY_H

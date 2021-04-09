@@ -1,23 +1,8 @@
 /*
  * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NAMESEARCHTREENODES_H_INCLUDED
-#define NAMESEARCHTREENODES_H_INCLUDED
+#ifndef ZIPDIRFS_NAMESEARCHTREENODES_H_INCLUDED
+#define ZIPDIRFS_NAMESEARCHTREENODES_H_INCLUDED
 
 #include "ZipDirFs/stream_indent.h"
 #include <ostream>
@@ -54,7 +39,7 @@ namespace ZipDirFs
 
 		/**
 		 * \brief Node definition.
-		 * It contains a pointer the its children.
+		 * It contains a pointer to its children.
 		 * The class can only be instanciated by \ref NameSearchTree.
 		 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 		 */
@@ -166,8 +151,8 @@ namespace ZipDirFs
 
 			return out;
 		}
-	}
-}
+	} // namespace NameSearchTreeNodes
+} // namespace ZipDirFs
 
-#endif // NAMESEARCHTREENODES_H_INCLUDED
+#endif // ZIPDIRFS_NAMESEARCHTREENODES_H_INCLUDED
 

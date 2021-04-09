@@ -1,20 +1,5 @@
 /*
  * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "Main.h"
 #include "Options.h"
@@ -26,9 +11,20 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
 
 typedef fusekit::daemon<ZipDirFs::system_directory> daemon_type;
+
+struct CommandArguments
+{
+	const int argc;
+	const char* const* argv;
+	CommandArguments(const std::vector<std::string>&);
+	~CommandArguments();
+private:
+	static char* toArgv_convert(const std::string&);
+	static char** toArgv(const std::vector<std::string>&);
+};
 
 Main application;
 
@@ -59,10 +55,9 @@ void Main::Run()
 	this->fuseOptions.push_back("-o");
 	this->fuseOptions.push_back(std::string("fsname=") + this->sourcePath);
 	daemon_type &daemon = daemon_type::instance();
-	daemon.root().setRealPath(this->sourcePath.c_str());
-	char** argv = toArgv(this->fuseOptions);
-	daemon.run(this->fuseOptions.size(), argv);
-	freeArgv(argv);
+	daemon.root().setRealPath(this->sourcePath);
+	CommandArguments arguments(this->fuseOptions);
+	daemon.run(arguments.argc, (char**)arguments.argv);
 }
 
 void Main::Init(const int argc, const char* argv[])
@@ -159,7 +154,21 @@ void showVersion(Options& options)
 	throw Main::Result(0);
 }
 
-char* toArgv_convert(std::string value)
+CommandArguments::CommandArguments(const std::vector<std::string>& value) :
+	argc(value.size()), argv(toArgv(value)) {}
+
+CommandArguments::~CommandArguments()
+{
+	char* const* argvIt = (char* const*)argv;
+	while (*argvIt != NULL)
+	{
+		delete[] *argvIt;
+		argvIt++;
+	}
+	delete[] argv;
+}
+
+char* CommandArguments::toArgv_convert(const std::string& value)
 {
 	char* newValue = new char[value.size() + 1];
 	newValue[value.size()] = 0;
@@ -167,25 +176,14 @@ char* toArgv_convert(std::string value)
 	return newValue;
 }
 
-char** toArgv(std::vector<std::string>& arguments)
+char** CommandArguments::toArgv(const std::vector<std::string>& arguments)
 {
 	char** argv = new char*[arguments.size() + 1];
 	char** argvIt = argv;
-	for (std::vector<std::string>::iterator argIt = arguments.begin(); argIt != arguments.end(); argIt++, argvIt++)
+	for (std::vector<std::string>::const_iterator argIt = arguments.begin(); argIt != arguments.end(); argIt++, argvIt++)
 	{
 		*argvIt = toArgv_convert(*argIt);
 	}
 	*argvIt = NULL;
 	return argv;
-}
-
-void freeArgv(char** argv)
-{
-	char** argvIt = argv;
-	while (*argvIt != NULL)
-	{
-		delete[] *argvIt;
-		argvIt++;
-	}
-	delete[] argv;
 }

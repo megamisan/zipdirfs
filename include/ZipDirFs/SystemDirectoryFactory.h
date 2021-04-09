@@ -1,23 +1,8 @@
 /*
  * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SYSTEMDIRECTORYFACTORY_H
-#define SYSTEMDIRECTORYFACTORY_H
+#ifndef ZIPDIRFS_SYSTEMDIRECTORYFACTORY_H
+#define ZIPDIRFS_SYSTEMDIRECTORYFACTORY_H
 
 #include "ZipDirFs/NameSearchTree.h"
 #include "ZipDirFs/EntryFactory.h"
@@ -25,17 +10,21 @@
 #include "ZipDirFs/utils.h"
 #include <fusekit/entry.h>
 #include <fusekit/no_lock.h>
-#include <time.h>
+#include <ctime>
 #include <sys/stat.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <stdio.h>
-#include <stddef.h>
+#include <cstdio>
+#include <cstddef>
 #include <iostream>
 
 namespace ZipDirFs
 {
+	/**
+	 * \brief Returns the canonicalized absolute pathname
+	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	bool realpath(const std::string& path, std::string& resolved_path);
 	/**
 	 * \brief Represents a directory factory mirroring a system directory.
 	 * This class must be used as a template parameter of \brief DirectoryNode.
@@ -56,26 +45,19 @@ namespace ZipDirFs
 		 * The path is canonicalized.
 		 * \param path The target path.
 		 */
-		void setRealPath(const char* path)
+		bool setRealPath(const std::string& path)
 		{
-			if (!realPath.empty())
+			if (realPath.empty())
 			{
-				return;
+				return realpath(path, realPath);
 			}
-
-			char* absolute = ::realpath(path, NULL);
-
-			if (absolute != NULL)
-			{
-				realPath = absolute;
-				::free(absolute);
-			}
+			return true;
 		}
 		/**
 		 * \brief Retrieves the path to the underlying system directory.
 		 * \return The underlying path.
 		 */
-		std::string getRealPath() const
+		const std::string& getRealPath() const
 		{
 			return this->realPath;
 		}
@@ -117,7 +99,7 @@ namespace ZipDirFs
 
 			return 0;
 		}
-		inline timespec getLastUpdate()
+		inline timespec getLastUpdate() const
 		{
 			return this->lastUpdate;
 		}
@@ -208,6 +190,6 @@ namespace ZipDirFs
 			}
 		}
 	};
-}
+} // namespace ZipDirFs
 
-#endif // SYSTEMDIRECTORYFACTORY_H
+#endif // ZIPDIRFS_SYSTEMDIRECTORYFACTORY_H

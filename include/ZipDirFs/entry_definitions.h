@@ -1,23 +1,8 @@
 /*
  * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ENTRY_DEFINITIONS_H_INCLUDED
-#define ENTRY_DEFINITIONS_H_INCLUDED
+#ifndef ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED
+#define ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED
 
 #include "ZipDirFs/DefaultPermission.h"
 #include "ZipDirFs/SystemDirectoryFactory.h"
@@ -50,6 +35,6 @@ namespace ZipDirFs
 	typedef fusekit::basic_directory<ZipDirectory, ZipTime, DefaultDirectoryPermission> zip_directory;
 
 	typedef fusekit::basic_file<ZipFileBuffer, ZipTime, DefaultFilePermission> zip_file;
-}
+} // namespace ZipDirFs
 
-#endif // ENTRY_DEFINITIONS_H_INCLUDED
+#endif // ZIPDIRFS_ENTRY_DEFINITIONS_H_INCLUDED
