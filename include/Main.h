@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef MAIN_H
 #define MAIN_H
@@ -26,22 +24,22 @@
 
 class Main
 {
-	public:
-		struct Result
-		{
-			const int result;
-			Result(int res) : result(res) {}
-			Result(const Result &res) : result(res.result) {}
-		};
-		Main();
-		virtual ~Main();
-		void Init(const int argc, const char* argv[]);
-		void Run();
-		inline const std::string getSourcePath() { return this->sourcePath; }
-	protected:
-	private:
-		std::string sourcePath;
-		std::vector<std::string> fuseOptions;
+public:
+	struct Result
+	{
+		const int result;
+		Result(int res) : result(res) {}
+		Result(const Result &res) : result(res.result) {}
+	};
+	Main();
+	virtual ~Main();
+	void Init(const int argc, const char* argv[]);
+	void Run();
+	inline const std::string getSourcePath() { return this->sourcePath; }
+protected:
+private:
+	std::string sourcePath;
+	std::vector<std::string> fuseOptions;
 };
 
 extern Main application;

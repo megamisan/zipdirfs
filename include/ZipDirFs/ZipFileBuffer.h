@@ -31,7 +31,7 @@ namespace ZipDirFs
 	class ZipFileBuffer
 	{
 	public:
-		ZipFileBuffer() : source (NULL) {}
+		ZipFileBuffer() : source(NULL) {}
 		virtual ~ZipFileBuffer()
 		{
 			if (source != NULL)
@@ -39,21 +39,21 @@ namespace ZipDirFs
 				delete source;
 			}
 		}
-		int open (::fuse_file_info& fi)
+		int open(::fuse_file_info& fi)
 		{
-			if (!this->source->open()) return -EIO;
+			if (!this->source->open()) { return -EIO; }
 			return 0;
 		}
-		int close (::fuse_file_info& fi)
+		int close(::fuse_file_info& fi)
 		{
 			this->source->release();
 			return 0;
 		}
-		int read (char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
+		int read(char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
 		{
 			return this->source->read(buf, size, offset);
 		}
-		int write (const char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
+		int write(const char* buf, ::size_t size, ::off_t offset, ::fuse_file_info& fi)
 		{
 			return -EACCES;
 		}
@@ -61,11 +61,11 @@ namespace ZipDirFs
 		{
 			return this->source->getSize();
 		}
-		int flush (::fuse_file_info& fi)
+		int flush(::fuse_file_info& fi)
 		{
 			return 0;
 		}
-		int truncate (::off_t offset)
+		int truncate(::off_t offset)
 		{
 			return -EACCES;
 		}
@@ -81,7 +81,7 @@ namespace ZipDirFs
 	protected:
 	private:
 		ZipEntry* source;
-		void setFileInfo (ZipEntry* source)
+		void setFileInfo(ZipEntry* source)
 		{
 			this->source = source;
 		}

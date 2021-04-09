@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "Main.h"
 #include "Options.h"
@@ -131,20 +129,20 @@ Main::~Main()
 std::string getProgramName(const std::string& self)
 {
 	size_t pos = self.rfind('/');
-	if (pos == std::string::npos) pos = 0;
-	else pos++;
+	if (pos == std::string::npos) { pos = 0; }
+	else { pos++; }
 	return self.substr(pos);
 }
 
 void showUsage(Options& options)
 {
 	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]" << std::endl;
-	const char * argv[2] = { options.self().c_str(), "-h" };
+	const char *argv[2] = { options.self().c_str(), "-h" };
 	daemon_type::instance().run(2, const_cast<char **>(argv));
 	std::cerr << std::endl
-		<< getProgramName(options.self())
-		<< " options:" << std::endl
-		<< "    originalpath           the path to mount from and filter for zip files" << std::endl;
+			  << getProgramName(options.self())
+			  << " options:" << std::endl
+			  << "    originalpath           the path to mount from and filter for zip files" << std::endl;
 	throw Main::Result(0);
 }
 
@@ -156,7 +154,7 @@ void showVersion(Options& options)
 #else
 	std::cerr << options.self() << " debug version." << std::endl;
 #endif
-	const char * argv[2] = { options.self().c_str(), "-V" };
+	const char *argv[2] = { options.self().c_str(), "-V" };
 	daemon_type::instance().run(2, const_cast<char **>(argv));
 	throw Main::Result(0);
 }

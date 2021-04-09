@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef DEFAULTPERMISSION_H
 #define DEFAULTPERMISSION_H
@@ -36,11 +34,11 @@ namespace ZipDirFs
 	public:
 		DefaultPermission() {}
 		virtual ~DefaultPermission() {}
-		int access (int permission)
+		int access(int permission)
 		{
-			return (permission & (~Permissions) ) ? -EACCES : 0;
+			return (permission & (~Permissions)) ? -EACCES : 0;
 		}
-		int chmod (::mode_t)
+		int chmod(::mode_t)
 		{
 			return -EACCES;
 		}

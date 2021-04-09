@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPWALKER_H
 #define ZIPWALKER_H
@@ -38,13 +36,13 @@ namespace ZipDirFs
 	class ZipWalker : public std::iterator<std::input_iterator_tag, std::pair<std::string, fusekit::entry*> const >
 	{
 	public:
-		ZipWalker (ZipFile* zipFile, std::string filterPath, bool end);
-		ZipWalker (const ZipWalker& it);
+		ZipWalker(ZipFile* zipFile, std::string filterPath, bool end);
+		ZipWalker(const ZipWalker& it);
 		ZipWalker& operator = (const ZipWalker& it);
 		ZipWalker& operator ++();
 		inline ZipWalker operator ++ (int)
 		{
-			ZipWalker it (*this);
+			ZipWalker it(*this);
 			operator ++();
 			return it;
 		}

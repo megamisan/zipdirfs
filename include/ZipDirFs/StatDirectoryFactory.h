@@ -39,7 +39,7 @@ namespace ZipDirFs
 		StatDirectoryFactory() {}
 		virtual ~StatDirectoryFactory() {}
 	protected:
-		fusekit::entry* find (const char* name)
+		fusekit::entry* find(const char* name)
 		{
 			return NULL;
 		}
@@ -51,7 +51,7 @@ namespace ZipDirFs
 		{
 			return 0;
 		}
-		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
+		int readdir(void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
 			return 0;
 		}

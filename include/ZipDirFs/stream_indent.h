@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef STREAM_INDENT_H
 #define STREAM_INDENT_H
@@ -30,10 +28,10 @@ namespace ZipDirFs
 		char c;
 	};
 
-	std::ostream& indent_inc (std::ostream&);
-	std::ostream& indent_dec (std::ostream&);
-	std::ostream& indent (std::ostream&);
-	inline _IndentChar indent_char (char c)
+	std::ostream& indent_inc(std::ostream&);
+	std::ostream& indent_dec(std::ostream&);
+	std::ostream& indent(std::ostream&);
+	inline _IndentChar indent_char(char c)
 	{
 		_IndentChar ic = { c };
 		return ic;

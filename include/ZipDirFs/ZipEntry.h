@@ -55,7 +55,7 @@ namespace ZipDirFs
 		 * \param offset The position of the first byte to read.
 		 * \return The number of bytes read or -EIO on error.
 		 */
-		int read (char* buf, ::size_t size, ::off_t offset);
+		int read(char* buf, ::size_t size, ::off_t offset);
 		/**
 		 * \brief Retrieves the size of the file.
 		 * \return The size of the file.
@@ -89,7 +89,7 @@ namespace ZipDirFs
 		 * \param file The ZipFile from which the entry comes from.
 		 * \param entryInfo Information about the entry: index, modification time and size.
 		 */
-		ZipEntry (ZipFile &file, const ZipEntryFileInfo& entryInfo);
+		ZipEntry(ZipFile &file, const ZipEntryFileInfo& entryInfo);
 		/**
 		 * \brief Fills in the buffer to the requested position.
 		 * If an error occured during decompression, it fails.

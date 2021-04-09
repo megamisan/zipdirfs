@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef NAMESEARCHTREENODES_H_INCLUDED
 #define NAMESEARCHTREENODES_H_INCLUDED
@@ -154,13 +152,13 @@ namespace ZipDirFs
 			{
 				out << indent << current->name;
 
-				if (current->isLeaf() )
+				if (current->isLeaf())
 				{
-					out << static_cast<const Leaf<ValueType>&> (*current);
+					out << static_cast<const Leaf<ValueType>&>(*current);
 				}
 				else
 				{
-					out << static_cast<const Node<ValueType>&> (*current);
+					out << static_cast<const Node<ValueType>&>(*current);
 				}
 
 				current = current->next;

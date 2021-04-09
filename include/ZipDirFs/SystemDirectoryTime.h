@@ -39,7 +39,7 @@ namespace ZipDirFs
 		virtual ~SystemDirectoryTime() {}
 		timespec modification_time()
 		{
-			return static_cast<Derived*> (this)->getLastUpdate();
+			return static_cast<Derived*>(this)->getLastUpdate();
 		}
 		timespec change_time()
 		{
@@ -47,9 +47,9 @@ namespace ZipDirFs
 		}
 		timespec access_time()
 		{
-			return static_cast<Derived*> (this)->getLastUpdate();
+			return static_cast<Derived*>(this)->getLastUpdate();
 		}
-		void update (int) {}
+		void update(int) {}
 	protected:
 	private:
 		struct timespec create;

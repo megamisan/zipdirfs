@@ -31,17 +31,17 @@ namespace ZipDirFs
 		virtual ~ZipTime() {}
 		timespec modification_time()
 		{
-			return static_cast<Derived*> (this)->getMTime();
+			return static_cast<Derived*>(this)->getMTime();
 		}
 		timespec change_time()
 		{
-			return static_cast<Derived*> (this)->getMTime();
+			return static_cast<Derived*>(this)->getMTime();
 		}
 		timespec access_time()
 		{
-			return static_cast<Derived*> (this)->getMTime();
+			return static_cast<Derived*>(this)->getMTime();
 		}
-		void update (int) {}
+		void update(int) {}
 	protected:
 	private:
 	};

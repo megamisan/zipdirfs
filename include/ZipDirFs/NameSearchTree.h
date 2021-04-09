@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef NAMESEARCHTREE_H
 #define NAMESEARCHTREE_H
@@ -55,18 +53,18 @@ namespace ZipDirFs
 	class NameSearchTree
 	{
 	public:
-		typedef void (*free) (ValueType value);
+		typedef void (*free)(ValueType value);
 		typedef NameSearchWalker<ValueType> iterator;
 		typedef NameSearchTreeNodes::NodeBase<ValueType> nodebase_type;
 		typedef NameSearchTreeNodes::Node<ValueType> node_type;
 		typedef NameSearchTreeNodes::Leaf<ValueType> leaf_type;
 		/** Default constructor */
-		NameSearchTree() : root (NULL), freeFunction (NULL), count (0) {}
-		NameSearchTree (free freeFunction) : root (NULL), freeFunction (freeFunction), count (0) {}
+		NameSearchTree() : root(NULL), freeFunction(NULL), count(0) {}
+		NameSearchTree(free freeFunction) : root(NULL), freeFunction(freeFunction), count(0) {}
 		/** Default destructor */
 		virtual ~NameSearchTree()
 		{
-			this->recursiveDelete (this->root);
+			this->recursiveDelete(this->root);
 		}
 		/**
 		 * \brief Removes all entries from the tree.
@@ -75,17 +73,17 @@ namespace ZipDirFs
 		{
 			nodebase_type* oldroot = this->root;
 			this->root = NULL;
-			this->recursiveDelete (oldroot);
+			this->recursiveDelete(oldroot);
 		}
 		/**
 		 * \brief Tests if an entry exists.
 		 * \param name The name of the searched entry.
 		 * \return `true` if found. `false` otherwise.
 		 */
-		bool isset (const char* name) const
+		bool isset(const char* name) const
 		{
-			nodebase_type* node = this->findNode (name);
-			return ( (node != NULL) && (node->isLeaf() ) );
+			nodebase_type* node = this->findNode(name);
+			return ((node != NULL) && (node->isLeaf()));
 		}
 		/**
 		 * \brief Retrieves an entry.
@@ -93,16 +91,16 @@ namespace ZipDirFs
 		 * \return The searched entry's value.
 		 * \throw NotFoundException If the entry is not found.
 		 */
-		ValueType& get (const char* name) const
+		ValueType& get(const char* name) const
 		{
-			nodebase_type* node = this->findNode (name);
+			nodebase_type* node = this->findNode(name);
 
-			if ( (node == NULL) || (!node->isLeaf() ) )
+			if ((node == NULL) || (!node->isLeaf()))
 			{
 				throw NotFoundException();
 			}
 
-			return static_cast<leaf_type*> (node)->value;
+			return static_cast<leaf_type*>(node)->value;
 		}
 		/**
 		 * \brief Adds en entry to the tree.
@@ -111,9 +109,9 @@ namespace ZipDirFs
 		 * \param value The value of the entry.
 		 * \return `true` on success`. `false` on failure.
 		 */
-		bool add (const char* name, ValueType& value)
+		bool add(const char* name, ValueType& value)
 		{
-			return this->addNode (name, value);
+			return this->addNode(name, value);
 		}
 		/**
 		 * \brief Removes an entry from the tree.
@@ -121,9 +119,9 @@ namespace ZipDirFs
 		 * \param name The name of the entry.
 		 * \return `true` on success. `false` on failure.
 		 */
-		bool remove (const char* name)
+		bool remove(const char* name)
 		{
-			return this->removeNode (name);
+			return this->removeNode(name);
 		}
 		/**
 		 * \brief Retrieves the iterator to the beginning of the tree.
@@ -131,7 +129,7 @@ namespace ZipDirFs
 		 */
 		iterator begin() const
 		{
-			iterator it (this->root);
+			iterator it(this->root);
 			return it;
 		}
 		/**
@@ -140,7 +138,7 @@ namespace ZipDirFs
 		 */
 		iterator end() const
 		{
-			static iterator it (NULL);
+			static iterator it(NULL);
 			return it;
 		}
 		/**
@@ -162,7 +160,7 @@ namespace ZipDirFs
 		 * \brief Frees a branch.
 		 * \param node The node to start freeing from.
 		 */
-		void recursiveDelete (nodebase_type* node)
+		void recursiveDelete(nodebase_type* node)
 		{
 			nodebase_type* previous;
 
@@ -170,16 +168,16 @@ namespace ZipDirFs
 			{
 				delete[] node->name;
 
-				if (node->isLeaf() )
+				if (node->isLeaf())
 				{
-					if (ownedValues && (freeFunction != NULL) )
+					if (ownedValues && (freeFunction != NULL))
 					{
-						this->freeFunction (static_cast<leaf_type*> (node)->value);
+						this->freeFunction(static_cast<leaf_type*>(node)->value);
 					}
 				}
 				else
 				{
-					this->recursiveDelete (static_cast<node_type*> (node)->child);
+					this->recursiveDelete(static_cast<node_type*>(node)->child);
 				}
 
 				previous = node;
@@ -192,13 +190,13 @@ namespace ZipDirFs
 		 * \param name The name of the node to search.
 		 * \return The found node. `NULL` if none.
 		 */
-		nodebase_type* findNode (const char* name) const
+		nodebase_type* findNode(const char* name) const
 		{
 			nodebase_type* where = this->root;
 
 			while (where != NULL)
 			{
-				int match = this->matchStart (name, where->name);
+				int match = this->matchStart(name, where->name);
 
 				if (match == 0)
 				{
@@ -208,9 +206,9 @@ namespace ZipDirFs
 				{
 					if (name[match] != 0)
 					{
-						if (!where->isLeaf() )
+						if (!where->isLeaf())
 						{
-							where = static_cast<node_type*> (where)->child;
+							where = static_cast<node_type*>(where)->child;
 							name += match;
 						}
 						else
@@ -220,13 +218,13 @@ namespace ZipDirFs
 					}
 					else
 					{
-						if (!where->isLeaf() )
+						if (!where->isLeaf())
 						{
-							if ( (static_cast<node_type*> (where)->child != NULL) &&
-									(static_cast<node_type*> (where)->child->name[0] == 0) &&
-									(static_cast<node_type*> (where)->child->isLeaf() ) )
+							if ((static_cast<node_type*>(where)->child != NULL) &&
+								(static_cast<node_type*>(where)->child->name[0] == 0) &&
+								(static_cast<node_type*>(where)->child->isLeaf()))
 							{
-								where = static_cast<node_type*> (where)->child;
+								where = static_cast<node_type*>(where)->child;
 							}
 						}
 
@@ -247,11 +245,11 @@ namespace ZipDirFs
 		 * \param what The string to look for.
 		 * \return `n>0` => what is the start of where. `n<=0`s => (-n) is the number of matching character.
 		 */
-		int matchStart (const char* where, const char* what) const
+		int matchStart(const char* where, const char* what) const
 		{
 			int index = 0;
 
-			while ( (*what != 0) && (*where != 0) && (*what == *where) )
+			while ((*what != 0) && (*where != 0) && (*what == *where))
 			{
 				++index;
 				++what;
@@ -273,7 +271,7 @@ namespace ZipDirFs
 		 * \param value The value of the entry to add.
 		 * \return `true` on success. `false` on failure.
 		 */
-		bool addNode (const char* name, ValueType& value)
+		bool addNode(const char* name, ValueType& value)
 		{
 #define CONSUME_LEVEL(chars) parent = where; where = & (static_cast<node_type*> (*where)->child); name += (chars)
 			nodebase_type** parent = NULL;
@@ -281,55 +279,55 @@ namespace ZipDirFs
 
 			while (*where != NULL)
 			{
-				int match = this->matchStart (name, (*where)->name);
+				int match = this->matchStart(name, (*where)->name);
 
 				if (match == 0)
 				{
-					where = & ( (*where)->next);
+					where = & ((*where)->next);
 				}
 				else if (match > 0)
 				{
 					if (name[match] != 0)
 					{
-						if ( (*where)->isLeaf() )
+						if ((*where)->isLeaf())
 						{
-							*where = this->splitNode (*where, match);
-							CONSUME_LEVEL (match);
+							*where = this->splitNode(*where, match);
+							CONSUME_LEVEL(match);
 							break;
 						}
 
-						CONSUME_LEVEL (match);
+						CONSUME_LEVEL(match);
 					}
 					else
 					{
-						if ( (*where)->isLeaf() )
+						if ((*where)->isLeaf())
 						{
 							return false;
 						}
 						else
 						{
-							if ( (static_cast<node_type*> (*where)->child != NULL) &&
-									(static_cast<node_type*> (*where)->child->name[0] == 0) &&
-									(static_cast<node_type*> (*where)->child->isLeaf() ) )
+							if ((static_cast<node_type*>(*where)->child != NULL) &&
+								(static_cast<node_type*>(*where)->child->name[0] == 0) &&
+								(static_cast<node_type*>(*where)->child->isLeaf()))
 							{
 								return false;
 							}
 						}
 
-						CONSUME_LEVEL (match);
+						CONSUME_LEVEL(match);
 						break;
 					}
 				}
 				else
 				{
-					*where = this->splitNode (*where, -match);
-					CONSUME_LEVEL (-match);
+					*where = this->splitNode(*where, -match);
+					CONSUME_LEVEL(-match);
 					break;
 				}
 			}
 
 #undef CONSUME_LEVEL
-			this->createNode (name, value, parent);
+			this->createNode(name, value, parent);
 			return true;
 		}
 		/**
@@ -338,12 +336,12 @@ namespace ZipDirFs
 		 * \param value The value of the Leaf.
 		 * \param parent The pointer to the field containing the parent Node.
 		 */
-		void createNode (const char* name, ValueType& value, nodebase_type** parent)
+		void createNode(const char* name, ValueType& value, nodebase_type** parent)
 		{
 			nodebase_type** where = NULL;
 			leaf_type* newNode = new leaf_type();
-			char* remaining = new char[strlen (name) + 1];
-			::strcpy (remaining, name);
+			char* remaining = new char[strlen(name) + 1];
+			::strcpy(remaining, name);
 			newNode->name = remaining;
 			newNode->value = value;
 
@@ -353,12 +351,12 @@ namespace ZipDirFs
 			}
 			else
 			{
-				where = & (static_cast<node_type*> (*parent)->child);
+				where = & (static_cast<node_type*>(*parent)->child);
 			}
 
-			while ( (*where != NULL) && (strcmp ( (*where)->name, newNode->name) < 0) )
+			while ((*where != NULL) && (strcmp((*where)->name, newNode->name) < 0))
 			{
-				where = & ( (*where)->next);
+				where = & ((*where)->next);
 			}
 
 			newNode->next = *where;
@@ -373,17 +371,17 @@ namespace ZipDirFs
 		 * \param at The position at which to cut the name part of the node.
 		 * \return The newly created Node containing the passed node as a child.
 		 */
-		nodebase_type* splitNode (nodebase_type* which, int at) const
+		nodebase_type* splitNode(nodebase_type* which, int at) const
 		{
 			node_type* newNode = new node_type();
 			newNode->next = which->next;
 			which->next = NULL;
 			char* tmp = new char[at + 1];
-			::strncpy (tmp, which->name, at);
+			::strncpy(tmp, which->name, at);
 			tmp[at] = 0;
 			newNode->name = tmp;
-			tmp = new char[strlen (which->name) - at + 1];
-			::strcpy (tmp, which->name + at);
+			tmp = new char[strlen(which->name) - at + 1];
+			::strcpy(tmp, which->name + at);
 			delete[] which->name;
 			which->name = tmp;
 			newNode->child = which;
@@ -395,25 +393,25 @@ namespace ZipDirFs
 		 * \param name The name of the entry.
 		 * \return `true` on success. `false` on failure.
 		 */
-		bool removeNode (const char* name)
+		bool removeNode(const char* name)
 		{
 			nodebase_type** where = &this->root;
 
 			while (*where != NULL)
 			{
-				int match = this->matchStart (name, (*where)->name);
+				int match = this->matchStart(name, (*where)->name);
 
 				if (match == 0)
 				{
-					where = & ( (*where)->next);
+					where = & ((*where)->next);
 				}
 				else if (match > 0)
 				{
 					if (name[match] != 0)
 					{
-						if (! (*where)->isLeaf() )
+						if (!(*where)->isLeaf())
 						{
-							where = & (static_cast<node_type*> (*where)->child);
+							where = & (static_cast<node_type*>(*where)->child);
 							name += match;
 							continue;
 						}
@@ -422,13 +420,13 @@ namespace ZipDirFs
 							break;
 						}
 					}
-					else if (! (*where)->isLeaf() )
+					else if (!(*where)->isLeaf())
 					{
-						if ( (static_cast<node_type*> (*where)->child != NULL) &&
-								(static_cast<node_type*> (*where)->child->name[0] == 0) &&
-								(static_cast<node_type*> (*where)->child->isLeaf() ) )
+						if ((static_cast<node_type*>(*where)->child != NULL) &&
+							(static_cast<node_type*>(*where)->child->name[0] == 0) &&
+							(static_cast<node_type*>(*where)->child->isLeaf()))
 						{
-							where = & (static_cast<node_type*> (*where)->child);
+							where = & (static_cast<node_type*>(*where)->child);
 						}
 						else
 						{
@@ -436,13 +434,13 @@ namespace ZipDirFs
 						}
 					}
 
-					if ( (*where)->isLeaf() )
+					if ((*where)->isLeaf())
 					{
-						delete [] (*where)->name;
+						delete [](*where)->name;
 
-						if (ownedValues && (freeFunction != NULL) )
+						if (ownedValues && (freeFunction != NULL))
 						{
-							this->freeFunction (static_cast<leaf_type*> (*where)->value);
+							this->freeFunction(static_cast<leaf_type*>(*where)->value);
 						}
 
 						nodebase_type* next = (*where)->next;

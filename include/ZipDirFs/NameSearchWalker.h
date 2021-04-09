@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef NAMESEARCHWALKER_H
 #define NAMESEARCHWALKER_H
@@ -43,7 +41,7 @@ namespace ZipDirFs
 	class NameSearchWalker : public std::iterator<std::input_iterator_tag, const std::string>
 	{
 	public:
-		NameSearchWalker (const NameSearchWalker& it) : parents (it.parents), current (it.current), name (it.name) { }
+		NameSearchWalker(const NameSearchWalker& it) : parents(it.parents), current(it.current), name(it.name) { }
 		NameSearchWalker& operator = (const NameSearchWalker& it)
 		{
 			parents = it.parents;
@@ -59,7 +57,7 @@ namespace ZipDirFs
 		}
 		NameSearchWalker operator ++ (int)
 		{
-			NameSearchWalker it (*this);
+			NameSearchWalker it(*this);
 			operator ++();
 			return it;
 		}
@@ -86,7 +84,7 @@ namespace ZipDirFs
 		std::deque<const NameSearchTreeNodes::NodeBase<ValueType>*> parents; /**< \brief The stack of parent nodes. */
 		const NameSearchTreeNodes::NodeBase<ValueType> *current; /**< \brief The current tree node. */
 		std::string name; /**< \brief The current built name. */
-		NameSearchWalker (const NameSearchTreeNodes::NodeBase<ValueType> *root) : current (root)
+		NameSearchWalker(const NameSearchTreeNodes::NodeBase<ValueType> *root) : current(root)
 		{
 			this->advanceFirst();
 		}
@@ -114,7 +112,7 @@ namespace ZipDirFs
 		{
 			if (current != NULL)
 			{
-				name.resize (name.size() - ::strlen (current->name) );
+				name.resize(name.size() - ::strlen(current->name));
 				current = current->next;
 			}
 
@@ -130,15 +128,15 @@ namespace ZipDirFs
 		{
 			while (current != NULL)
 			{
-				if (current->isLeaf() )
+				if (current->isLeaf())
 				{
 					break;
 				}
 				else
 				{
-					parents.push_back (current);
-					name.append (current->name);
-					current = static_cast<const NameSearchTreeNodes::Node<ValueType>*> (current)->child;
+					parents.push_back(current);
+					name.append(current->name);
+					current = static_cast<const NameSearchTreeNodes::Node<ValueType>*>(current)->child;
 				}
 
 				this->parentWalkIfNeeded();
@@ -146,7 +144,7 @@ namespace ZipDirFs
 
 			if (current != NULL)
 			{
-				name.append (current->name);
+				name.append(current->name);
 			}
 		}
 		/**
@@ -155,11 +153,11 @@ namespace ZipDirFs
 		 */
 		inline void parentWalkIfNeeded()
 		{
-			while ( (current == NULL) && (!parents.empty() ) )
+			while ((current == NULL) && (!parents.empty()))
 			{
 				current = parents.back();
 				parents.pop_back();
-				name.resize (name.size() - ::strlen (current->name) );
+				name.resize(name.size() - ::strlen(current->name));
 				current = current->next;
 			}
 		}

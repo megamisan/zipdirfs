@@ -61,13 +61,13 @@ namespace ZipDirFs
 
 		}
 	protected:
-		fusekit::entry* find (const char* name)
+		fusekit::entry* find(const char* name)
 		{
-			lock guard (*this);
+			lock guard(*this);
 
 			try
 			{
-				return entries.get (name);
+				return entries.get(name);
 			}
 			catch (NotFoundException)
 			{
@@ -76,21 +76,21 @@ namespace ZipDirFs
 		}
 		int size()
 		{
-			lock guard (*this);
+			lock guard(*this);
 			return entries.size();
 		}
 		int links()
 		{
-			lock guard (*this);
+			lock guard(*this);
 			return folderCount;
 		}
-		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
+		int readdir(void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
-			lock guard (*this);
+			lock guard(*this);
 
 			for (tree::iterator it = entries.begin(); it != entries.end(); it++)
 			{
-				filler (buf, it->c_str(), NULL, offset);
+				filler(buf, it->c_str(), NULL, offset);
 			}
 
 			return 0;
@@ -103,9 +103,9 @@ namespace ZipDirFs
 		tree entries;
 		int folderCount;
 		struct timespec lastUpdate;
-		static void deleteEntry (fusekit::entry* e)
+		static void deleteEntry(fusekit::entry* e)
 		{
-			if (e != NULL) delete e;
+			if (e != NULL) { delete e; }
 		}
 	};
 }

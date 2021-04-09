@@ -39,16 +39,16 @@ namespace ZipDirFs
 		typedef typename ZipDirectoryFactory<LockingPolicy>::lock lock;
 		typedef NameSearchTree<fusekit::entry*, true> tree;
 	public:
-		ZipDirectoryFactory() : entries (deleteEntry), folderCount(0), source (NULL), mtime ({0}) {}
+		ZipDirectoryFactory() : entries(deleteEntry), folderCount(0), source(NULL), mtime( {0}) {}
 		virtual ~ZipDirectoryFactory() {}
-		fusekit::entry* find (const char* name)
+		fusekit::entry* find(const char* name)
 		{
 			this->checkFile();
-			lock guard (*this);
+			lock guard(*this);
 
 			try
 			{
-				return entries.get (name);
+				return entries.get(name);
 			}
 			catch (NotFoundException)
 			{
@@ -58,23 +58,23 @@ namespace ZipDirFs
 		int size()
 		{
 			this->checkFile();
-			lock guard (*this);
+			lock guard(*this);
 			return entries.size();
 		}
 		int links()
 		{
 			this->checkFile();
-			lock guard (*this);
+			lock guard(*this);
 			return folderCount;
 		}
-		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
+		int readdir(void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &)
 		{
 			this->checkFile();
-			lock guard (*this);
+			lock guard(*this);
 
 			for (tree::iterator it = entries.begin(); it != entries.end(); it++)
 			{
-				filler (buf, it->c_str(), NULL, offset);
+				filler(buf, it->c_str(), NULL, offset);
 			}
 
 			return 0;
@@ -97,22 +97,22 @@ namespace ZipDirFs
 		 * \param relativePath The path of the directory in the source.
 		 * \param mtime The modification time of the directory.
 		 */
-		void setDirectoryInfo (ZipFile* source, std::string relativePath, ::time_t mtime)
+		void setDirectoryInfo(ZipFile* source, std::string relativePath, ::time_t mtime)
 		{
 			this->source = source;
 			this->relativePath = relativePath;
 			this->mtime = { mtime, 0 };
 		}
-		static void deleteEntry (fusekit::entry* e)
+		static void deleteEntry(fusekit::entry* e)
 		{
-			if (e != NULL) delete e;
+			if (e != NULL) { delete e; }
 		}
 		/**
 		 * \brief Loads inner entries from the source.
 		 */
 		void checkFile()
 		{
-			lock guard (*this);
+			lock guard(*this);
 
 			if (this->source != NULL)
 			{
@@ -121,7 +121,7 @@ namespace ZipDirFs
 				for (; it != end; it++)
 				{
 					fusekit::entry *entry = it->second;
-					if (dynamic_cast<DirectoryMark*>(entry) != NULL) folderCount++;
+					if (dynamic_cast<DirectoryMark*>(entry) != NULL) { folderCount++; }
 					entries.add(it->first.c_str(), entry);
 				}
 				this->source = NULL;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/ZipWalker.h"
 #include "ZipDirFs/ZipFile.h"
@@ -55,31 +53,31 @@ namespace ZipDirFs
 	  */
 	void ZipWalker::advanceToNext()
 	{
-		while ( begin != end )
+		while (begin != end)
 		{
-			if ( (this->filterPath.size() == 0) || (::strncmp (begin->name.c_str(), this->filterPath.c_str(), this->filterPath.size() ) == 0) )
+			if ((this->filterPath.size() == 0) || (::strncmp(begin->name.c_str(), this->filterPath.c_str(), this->filterPath.size()) == 0))
 			{
-				std::string name (begin->name.substr (this->filterPath.size() ) );
+				std::string name(begin->name.substr(this->filterPath.size()));
 
 				if (name.size() > 0)
 				{
-					::size_t pos = name.find ('/');
+					::size_t pos = name.find('/');
 
-					if ( (pos == std::string::npos) || (pos + 1 == name.size() ) )
+					if ((pos == std::string::npos) || (pos + 1 == name.size()))
 					{
 						this->entry.first = name;
 
 						if (pos != std::string::npos)
 						{
-							this->entry.first.erase (pos);
+							this->entry.first.erase(pos);
 							zip_directory* dir = new zip_directory();
-							dir->setDirectoryInfo (zipFile, begin->name, begin->mtime);
+							dir->setDirectoryInfo(zipFile, begin->name, begin->mtime);
 							this->entry.second = dir;
 						}
 						else
 						{
 							zip_file* file = new zip_file();
-							file->setFileInfo (this->zipFile->getEntry (*begin) );
+							file->setFileInfo(this->zipFile->getEntry(*begin));
 							this->entry.second = file;
 						}
 					}
@@ -167,7 +165,7 @@ namespace ZipDirFs
 	  *
 	  * (documentation goes here)
 	  */
-	ZipWalker::ZipWalker (const ZipWalker& it) : zipFile (it.zipFile), begin (it.begin), end (it.end), filterPath (it.filterPath), entry (it.entry)
+	ZipWalker::ZipWalker(const ZipWalker& it) : zipFile(it.zipFile), begin(it.begin), end(it.end), filterPath(it.filterPath), entry(it.entry)
 	{
 	}
 
@@ -175,7 +173,7 @@ namespace ZipDirFs
 	  *
 	  * (documentation goes here)
 	  */
-	ZipWalker::ZipWalker (ZipFile* zipFile, std::string filterPath, bool end) : zipFile (zipFile), begin (end ? zipFile->end() : zipFile->begin() ), end (zipFile->end() ), filterPath (filterPath)
+	ZipWalker::ZipWalker(ZipFile* zipFile, std::string filterPath, bool end) : zipFile(zipFile), begin(end ? zipFile->end() : zipFile->begin()), end(zipFile->end()), filterPath(filterPath)
 	{
 		this->entry.second = NULL;
 

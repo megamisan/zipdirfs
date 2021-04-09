@@ -51,7 +51,7 @@ namespace ZipDirFs
 		{
 			return linksTime;
 		}
-		void update (int) {}
+		void update(int) {}
 	protected:
 	private:
 	};

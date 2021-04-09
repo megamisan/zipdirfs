@@ -46,7 +46,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-D_FILE_OFFSET_BITS=64" />
 			<Add option="-DFUSE_USE_VERSION=27" />
-			<Add directory="/home/pierrick/Projects/zipdirfs/include/" />
+			<Add directory="include" />
 		</Compiler>
 		<Linker>
 			<Add library="fuse" />
@@ -61,38 +61,33 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="include/zipdirfs/DefaultPermission.h" />
-		<Unit filename="include/zipdirfs/DirectoryMark.h" />
-		<Unit filename="include/zipdirfs/DirectoryNode.h" />
-		<Unit filename="include/zipdirfs/EntryFactory.h" />
-		<Unit filename="include/zipdirfs/FixedDirectoryFactory.h" />
-		<Unit filename="include/zipdirfs/LinkBuffer.h" />
-		<Unit filename="include/zipdirfs/LinkFactory.h" />
-		<Unit filename="include/zipdirfs/LinkNode.h" />
-		<Unit filename="include/zipdirfs/LinkTime.h" />
-		<Unit filename="include/zipdirfs/MutexLockPolicy.h" />
-		<Unit filename="include/zipdirfs/NameSearchTree.h" />
-		<Unit filename="include/zipdirfs/NameSearchTreeNodes.h" />
-		<Unit filename="include/zipdirfs/NameSearchWalker.h" />
-		<Unit filename="include/zipdirfs/NotFoundException.h" />
-		<Unit filename="include/zipdirfs/StatDirectoryFactory.h" />
-		<Unit filename="include/zipdirfs/SystemDirectoryFactory.h" />
-		<Unit filename="include/zipdirfs/SystemDirectoryTime.h" />
-		<Unit filename="include/zipdirfs/UnionDirectoryFactory.h" />
-		<Unit filename="include/zipdirfs/ZipDirectoryFactory.h" />
-		<Unit filename="include/zipdirfs/ZipEntry.h" />
-		<Unit filename="include/zipdirfs/ZipEntryFileInfo.h" />
-		<Unit filename="include/zipdirfs/ZipFile.h" />
-		<Unit filename="include/zipdirfs/ZipFileBuffer.h" />
-		<Unit filename="include/zipdirfs/ZipIterator.h" />
-		<Unit filename="include/zipdirfs/ZipRootFactory.h" />
-		<Unit filename="include/zipdirfs/ZipTime.h" />
-		<Unit filename="include/zipdirfs/ZipWalker.h" />
-		<Unit filename="include/zipdirfs/entry_definitions.h" />
-		<Unit filename="include/zipdirfs/stream_indent.h" />
-		<Unit filename="maintest.cpp">
-			<Option target="Test" />
-		</Unit>
+		<Unit filename="include/ZipDirFs/DefaultPermission.h" />
+		<Unit filename="include/ZipDirFs/DirectoryMark.h" />
+		<Unit filename="include/ZipDirFs/DirectoryNode.h" />
+		<Unit filename="include/ZipDirFs/EntryFactory.h" />
+		<Unit filename="include/ZipDirFs/FixedDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/MutexLockPolicy.h" />
+		<Unit filename="include/ZipDirFs/NameSearchTree.h" />
+		<Unit filename="include/ZipDirFs/NameSearchTreeNodes.h" />
+		<Unit filename="include/ZipDirFs/NameSearchWalker.h" />
+		<Unit filename="include/ZipDirFs/NotFoundException.h" />
+		<Unit filename="include/ZipDirFs/StatDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/SymlinkTime.h" />
+		<Unit filename="include/ZipDirFs/SystemDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/SystemDirectoryTime.h" />
+		<Unit filename="include/ZipDirFs/UnionDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/ZipDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/ZipEntry.h" />
+		<Unit filename="include/ZipDirFs/ZipEntryFileInfo.h" />
+		<Unit filename="include/ZipDirFs/ZipFile.h" />
+		<Unit filename="include/ZipDirFs/ZipFileBuffer.h" />
+		<Unit filename="include/ZipDirFs/ZipIterator.h" />
+		<Unit filename="include/ZipDirFs/ZipRootFactory.h" />
+		<Unit filename="include/ZipDirFs/ZipTime.h" />
+		<Unit filename="include/ZipDirFs/ZipWalker.h" />
+		<Unit filename="include/ZipDirFs/entry_definitions.h" />
+		<Unit filename="include/ZipDirFs/stream_indent.h" />
+		<Unit filename="include/ZipDirFs/utils.h" />
 		<Unit filename="src/Main.cpp">
 			<Option target="Debug" />
 			<Option target="Release" />
@@ -101,16 +96,19 @@
 			<Option target="Debug" />
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="src/zipdirfs/EntryFactory.cpp" />
-		<Unit filename="src/zipdirfs/LinkTime.cpp" />
-		<Unit filename="src/zipdirfs/MutexLockPolicy.cpp" />
-		<Unit filename="src/zipdirfs/NotFoundException.cpp" />
-		<Unit filename="src/zipdirfs/ZipEntry.cpp" />
-		<Unit filename="src/zipdirfs/ZipEntryFileInfo.cpp" />
-		<Unit filename="src/zipdirfs/ZipFile.cpp" />
-		<Unit filename="src/zipdirfs/ZipIterator.cpp" />
-		<Unit filename="src/zipdirfs/ZipWalker.cpp" />
-		<Unit filename="src/zipdirfs/stream_indent.cpp" />
+		<Unit filename="src/ZipDirFs/EntryFactory.cpp" />
+		<Unit filename="src/ZipDirFs/LinkTime.cpp" />
+		<Unit filename="src/ZipDirFs/MutexLockPolicy.cpp" />
+		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
+		<Unit filename="src/ZipDirFs/ZipEntry.cpp" />
+		<Unit filename="src/ZipDirFs/ZipEntryFileInfo.cpp" />
+		<Unit filename="src/ZipDirFs/ZipFile.cpp" />
+		<Unit filename="src/ZipDirFs/ZipIterator.cpp" />
+		<Unit filename="src/ZipDirFs/ZipWalker.cpp" />
+		<Unit filename="src/ZipDirFs/stream_indent.cpp" />
+		<Unit filename="test/maintest.cpp">
+			<Option target="Test" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<debugger />

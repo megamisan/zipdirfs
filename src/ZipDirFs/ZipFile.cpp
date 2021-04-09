@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/ZipFile.h"
 #include "ZipDirFs/ZipEntry.h"
@@ -28,7 +26,7 @@
 
 namespace ZipDirFs
 {
-	ZipFile::ZipFile (const std::string& path) : path (path), zipFile (NULL), refCount (0)
+	ZipFile::ZipFile(const std::string& path) : path(path), zipFile(NULL), refCount(0)
 	{
 	}
 
@@ -40,49 +38,49 @@ namespace ZipDirFs
 		}
 	}
 
-	ZipEntry* ZipFile::getEntry (const ZipEntryFileInfo& fileinfo)
+	ZipEntry* ZipFile::getEntry(const ZipEntryFileInfo& fileinfo)
 	{
-		return new ZipEntry (*this, fileinfo);
+		return new ZipEntry(*this, fileinfo);
 	}
 
 	ZipIterator ZipFile::end()
 	{
-		return ZipIterator (this, true);
+		return ZipIterator(this, true);
 	}
 
 	ZipIterator ZipFile::begin()
 	{
-		return ZipIterator (this, false);
+		return ZipIterator(this, false);
 	}
 
 	::zip* ZipFile::getZip()
 	{
-		Lock lock (*this);
+		Lock lock(*this);
 
 		if (this->refCount == 0)
 		{
 			::zip* zipFile = NULL;
 			{
-				UnLock unlock (lock);
-				int handle = ::open (path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
+				UnLock unlock(lock);
+				int handle = ::open(path.c_str(), O_RDONLY | O_NOATIME | O_NOCTTY);
 
 				if (handle < 0)
 				{
-					::perror ("ZipFile::getZip: open");
+					::perror("ZipFile::getZip: open");
 					return NULL;
 				}
 
 				int error;
-				zipFile = ::zip_fdopen (handle, 0, &error);
+				zipFile = ::zip_fdopen(handle, 0, &error);
 
 				if (zipFile == NULL)
 				{
-					int len = ::zip_error_to_str (NULL, 0, error, errno);
+					int len = ::zip_error_to_str(NULL, 0, error, errno);
 					char* message = new char[len + 1];
-					::zip_error_to_str (message, 1024, error, errno);
+					::zip_error_to_str(message, 1024, error, errno);
 					std::cerr << "zip_fdopen: " << message << std::endl;
 					delete[] message;
-					::close (handle);
+					::close(handle);
 					return NULL;
 				}
 			}
@@ -95,7 +93,7 @@ namespace ZipDirFs
 			else
 			{
 				this->refCount++;
-				::zip_close (zipFile);
+				::zip_close(zipFile);
 			}
 		}
 		else
@@ -108,13 +106,13 @@ namespace ZipDirFs
 
 	void ZipFile::releaseZip()
 	{
-		Lock lock (*this);
+		Lock lock(*this);
 		::zip* zipFile = this->zipFile;
 		this->refCount--;
 
 		if (this->refCount == 0)
 		{
-			::zip_close (zipFile);
+			::zip_close(zipFile);
 		}
 	}
 

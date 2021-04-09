@@ -39,11 +39,11 @@ namespace ZipDirFs
 		DirectoryNode() {};
 		/** Default destructor */
 		virtual ~DirectoryNode() {};
-		fusekit::entry* find (const char* name)
+		fusekit::entry* find(const char* name)
 		{
-			return factory().find (name);
+			return factory().find(name);
 		}
-		int target (char*, size_t)
+		int target(char*, size_t)
 		{
 			return -EINVAL;
 		}
@@ -51,38 +51,38 @@ namespace ZipDirFs
 		{
 			return factory().links() + 2;
 		}
-		int opendir (::fuse_file_info& finfo)
+		int opendir(::fuse_file_info& finfo)
 		{
 			return 0;
 		}
-		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info& finfo)
+		int readdir(void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info& finfo)
 		{
-			filler (buf, ".", NULL, offset);
-			filler (buf, "..", NULL, offset);
-			factory().readdir (buf, filler, offset, finfo);
+			filler(buf, ".", NULL, offset);
+			filler(buf, "..", NULL, offset);
+			factory().readdir(buf, filler, offset, finfo);
 			return 0;
 		}
-		int releasedir (::fuse_file_info& finfo)
+		int releasedir(::fuse_file_info& finfo)
 		{
 			return 0;
 		}
-		int mknod (const char* name, ::mode_t mode, ::dev_t type)
+		int mknod(const char* name, ::mode_t mode, ::dev_t type)
 		{
 			return -EACCES;
 		}
-		int unlink (const char* name)
+		int unlink(const char* name)
 		{
 			return -EACCES;
 		}
-		int mkdir (const char* name, ::mode_t mode)
+		int mkdir(const char* name, ::mode_t mode)
 		{
 			return -EACCES;
 		}
-		int rmdir (const char* name)
+		int rmdir(const char* name)
 		{
 			return -EACCES;
 		}
-		int symlink (const char* name, const char* target)
+		int symlink(const char* name, const char* target)
 		{
 			return -EPERM;
 		}
@@ -90,7 +90,7 @@ namespace ZipDirFs
 	private:
 		inline Factory& factory()
 		{
-			return static_cast<Factory&> (*this);
+			return static_cast<Factory&>(*this);
 		}
 	};
 }

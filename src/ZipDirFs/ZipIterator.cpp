@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/ZipIterator.h"
 #include "ZipDirFs/ZipFile.h"
@@ -94,7 +92,7 @@ namespace ZipDirFs
 	  *
 	  * (documentation goes here)
 	  */
-	ZipIterator::ZipIterator (const ZipIterator& it) : file (it.file), position (it.position), count (it.count), fileinfo (it.fileinfo)
+	ZipIterator::ZipIterator(const ZipIterator& it) : file(it.file), position(it.position), count(it.count), fileinfo(it.fileinfo)
 	{
 		this->file->getZip();
 	}
@@ -103,9 +101,9 @@ namespace ZipDirFs
 	  *
 	  * (documentation goes here)
 	  */
-	ZipIterator::ZipIterator (ZipFile* zipFile, bool end) : file (zipFile)
+	ZipIterator::ZipIterator(ZipFile* zipFile, bool end) : file(zipFile)
 	{
-		this->count = ::zip_get_num_entries (zipFile->getZip(), 0);
+		this->count = ::zip_get_num_entries(zipFile->getZip(), 0);
 
 		if (end)
 		{
@@ -128,7 +126,7 @@ namespace ZipDirFs
 		this->fileinfo.name = "";
 		struct ::zip_stat fileinfo;
 
-		if (::zip_stat_index (this->file->getZip(), this->position, 0, &fileinfo) == 0)
+		if (::zip_stat_index(this->file->getZip(), this->position, 0, &fileinfo) == 0)
 		{
 			if (fileinfo.valid & ZIP_STAT_INDEX)
 			{

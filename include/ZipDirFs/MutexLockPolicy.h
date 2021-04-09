@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef MUTEXLOCKPOLICY_H
 #define MUTEXLOCKPOLICY_H
@@ -45,7 +43,7 @@ namespace ZipDirFs
 		class Lock
 		{
 		public:
-			Lock (MutexLockPolicy& policy);
+			Lock(MutexLockPolicy& policy);
 			~Lock();
 		private:
 			MutexLockPolicy& policy;
@@ -59,7 +57,7 @@ namespace ZipDirFs
 		class UnLock
 		{
 		public:
-			UnLock (Lock& lock);
+			UnLock(Lock& lock);
 			~UnLock();
 		private:
 			Lock &lock;

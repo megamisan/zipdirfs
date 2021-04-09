@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/stream_indent.h"
 #include <string>
@@ -47,34 +45,34 @@ namespace ZipDirFs
 		return index;
 	}
 
-	std::ostream& indent_inc (std::ostream& out)
+	std::ostream& indent_inc(std::ostream& out)
 	{
-		out.iword (getIndentIndex() ) ++;
+		out.iword(getIndentIndex()) ++;
 		return out;
 	}
 
-	std::ostream& indent_dec (std::ostream& out)
+	std::ostream& indent_dec(std::ostream& out)
 	{
-		out.iword (getIndentIndex() )--;
+		out.iword(getIndentIndex())--;
 		return out;
 	}
 
-	std::ostream& indent (std::ostream& out)
+	std::ostream& indent(std::ostream& out)
 	{
-		char c = (char) out.iword (getIndentCharIndex() );
+		char c = (char) out.iword(getIndentCharIndex());
 
 		if (c == 0)
 		{
 			c = '\t';
 		}
 
-		out << std::string (out.iword (getIndentIndex() ), c);
+		out << std::string(out.iword(getIndentIndex()), c);
 		return out;
 	}
 
 	std::ostream& operator << (std::ostream& out, _IndentChar ic)
 	{
-		out.iword (getIndentCharIndex() ) = ic.c;
+		out.iword(getIndentCharIndex()) = ic.c;
 		return out;
 	}
 }

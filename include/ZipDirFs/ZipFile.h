@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPFILE_H
 #define ZIPFILE_H
@@ -37,11 +35,11 @@ namespace ZipDirFs
 	class ZipFile : MutexLockPolicy
 	{
 	public:
-		ZipFile (const std::string& path);
+		ZipFile(const std::string& path);
 		virtual ~ZipFile();
 		ZipIterator begin();
 		ZipIterator end();
-		ZipEntry* getEntry (const ZipEntryFileInfo& fileinfo);
+		ZipEntry* getEntry(const ZipEntryFileInfo& fileinfo);
 		const std::string& getFilePath() const;
 		friend class ZipIterator;
 		friend class ZipEntry;

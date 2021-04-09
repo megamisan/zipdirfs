@@ -21,10 +21,12 @@
 
 #include <time.h>
 
-namespace ZipDirFs {
-    inline bool equals(const struct timespec& a, const struct timespec& b) {
-        return a.tv_sec == b.tv_sec && a.tv_nsec == b.tv_nsec;
-    }
+namespace ZipDirFs
+{
+	inline bool equals(const struct timespec& a, const struct timespec& b)
+	{
+		return a.tv_sec == b.tv_sec && a.tv_nsec == b.tv_nsec;
+	}
 }
 
 #endif // UTILS_H

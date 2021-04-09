@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #ifndef ZIPITERATOR_H
 #define ZIPITERATOR_H
@@ -34,12 +32,12 @@ namespace ZipDirFs
 	{
 	public:
 		virtual ~ZipIterator();
-		ZipIterator (const ZipIterator& it);
+		ZipIterator(const ZipIterator& it);
 		ZipIterator& operator = (const ZipIterator& it);
 		ZipIterator& operator ++();
 		inline ZipIterator operator ++ (int)
 		{
-			ZipIterator it (*this);
+			ZipIterator it(*this);
 			operator ++();
 			return it;
 		}
@@ -54,7 +52,7 @@ namespace ZipDirFs
 		::uint64_t position;
 		::uint64_t count;
 		ZipEntryFileInfo fileinfo;
-		ZipIterator (ZipFile* zipFile, bool end);
+		ZipIterator(ZipFile* zipFile, bool end);
 		void advance();
 	};
 }

@@ -33,46 +33,46 @@ namespace ZipDirFs
 	{
 	}
 
-	fusekit::entry* createLink (const std::string& target)
+	fusekit::entry* createLink(const std::string& target)
 	{
 		wrapper_link* entry = new wrapper_link(target.c_str());
 		return entry;
 	}
 
-	fusekit::entry* createDirectory (const std::string& realPath)
+	fusekit::entry* createDirectory(const std::string& realPath)
 	{
 		system_directory* entry = new system_directory();
-		entry->setRealPath (realPath.c_str() );
+		entry->setRealPath(realPath.c_str());
 		return entry;
 	}
 
-	bool isZipFile (const std::string& file)
+	bool isZipFile(const std::string& file)
 	{
-		int handle = ::open (file.c_str(), O_RDONLY);
+		int handle = ::open(file.c_str(), O_RDONLY);
 
 		if (handle < 0)
 		{
-			::perror ("(EntryFactory)isZipFile: open");
+			::perror("(EntryFactory)isZipFile: open");
 			return false;
 		}
 
 		int error;
-		::zip* zipFile = ::zip_fdopen (handle, 0, &error);
+		::zip* zipFile = ::zip_fdopen(handle, 0, &error);
 
 		if (zipFile == NULL)
 		{
-			::close (handle);
+			::close(handle);
 			return false;
 		}
 
-		::zip_close (zipFile);
+		::zip_close(zipFile);
 		return true;
 	}
 
-	fusekit::entry* createZipRootDirectory (const std::string& zipFile)
+	fusekit::entry* createZipRootDirectory(const std::string& zipFile)
 	{
 		zip_root_directory* entry = new zip_root_directory();
-		entry->setZipFile (zipFile.c_str() );
+		entry->setZipFile(zipFile.c_str());
 		return entry;
 	}
 
@@ -80,27 +80,27 @@ namespace ZipDirFs
 	  *
 	  * (documentation goes here)
 	  */
-	fusekit::entry* EntryFactory::newEntry (const dirent* dirEntry, const std::string& basePath)
+	fusekit::entry* EntryFactory::newEntry(const dirent* dirEntry, const std::string& basePath)
 	{
 		std::string realPath = basePath;
 		realPath += '/';
 		realPath += dirEntry->d_name;
 		struct ::stat fileinfo;
-		int res = ::stat (realPath.c_str(), &fileinfo);
+		int res = ::stat(realPath.c_str(), &fileinfo);
 
 		if (!res)
 		{
-			if (S_ISDIR (fileinfo.st_mode) )
+			if (S_ISDIR(fileinfo.st_mode))
 			{
-				return createDirectory (realPath);
+				return createDirectory(realPath);
 			}
 
-			if (S_ISREG (fileinfo.st_mode) && isZipFile (realPath) )
+			if (S_ISREG(fileinfo.st_mode) && isZipFile(realPath))
 			{
-				return createZipRootDirectory (realPath);
+				return createZipRootDirectory(realPath);
 			}
 		}
 
-		return createLink (realPath);
+		return createLink(realPath);
 	}
 }

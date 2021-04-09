@@ -37,10 +37,10 @@ namespace ZipDirFs
 		UnionDirectoryFactory() {}
 		virtual ~UnionDirectoryFactory() {}
 	protected:
-		fusekit::entry* find (const char* name)
+		fusekit::entry* find(const char* name)
 		{
 			fusekit::entry *entry = factory1().find(name);
-			if (entry == NULL) entry = factory2().find(name);
+			if (entry == NULL) { entry = factory2().find(name); }
 			return entry;
 		}
 		int size()
@@ -51,7 +51,7 @@ namespace ZipDirFs
 		{
 			return factory1().links() + factory2.links();
 		}
-		int readdir (void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &finfo)
+		int readdir(void* buf, ::fuse_fill_dir_t filler, ::off_t offset, ::fuse_file_info &finfo)
 		{
 			factory1().readdir(buf, filler, offset, finfo);
 			factory2().readdir(buf, filler, offset, finfo);
@@ -66,11 +66,11 @@ namespace ZipDirFs
 	private:
 		inline Factory1& factory1()
 		{
-			return static_cast<Factory1&> (*this);
+			return static_cast<Factory1&>(*this);
 		}
 		inline Factory2& factory2()
 		{
-			return static_cast<Factory2&> (*this);
+			return static_cast<Factory2&>(*this);
 		}
 	};
 }

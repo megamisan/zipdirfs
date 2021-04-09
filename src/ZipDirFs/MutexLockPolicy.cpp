@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "ZipDirFs/MutexLockPolicy.h"
 #include <pthread.h>
@@ -31,32 +29,32 @@ namespace ZipDirFs
 	MutexLockPolicy::MutexLockPolicy()
 	{
 		this->mutex = new struct mutex();
-		pthread_mutex_init (&this->mutex->_mutex, NULL);
+		pthread_mutex_init(&this->mutex->_mutex, NULL);
 	}
 
 	MutexLockPolicy::~MutexLockPolicy()
 	{
-		pthread_mutex_destroy (&this->mutex->_mutex);
+		pthread_mutex_destroy(&this->mutex->_mutex);
 		delete this->mutex;
 	}
 
 	MutexLockPolicy::Lock::~Lock()
 	{
-		pthread_mutex_unlock (&this->policy.mutex->_mutex);
+		pthread_mutex_unlock(&this->policy.mutex->_mutex);
 	}
 
-	MutexLockPolicy::Lock::Lock (MutexLockPolicy& policy) : policy (policy)
+	MutexLockPolicy::Lock::Lock(MutexLockPolicy& policy) : policy(policy)
 	{
-		pthread_mutex_lock (&this->policy.mutex->_mutex);
+		pthread_mutex_lock(&this->policy.mutex->_mutex);
 	}
 
 	MutexLockPolicy::UnLock::~UnLock()
 	{
-		pthread_mutex_lock (&this->lock.policy.mutex->_mutex);
+		pthread_mutex_lock(&this->lock.policy.mutex->_mutex);
 	}
 
-	MutexLockPolicy::UnLock::UnLock (MutexLockPolicy::Lock& lock) : lock (lock)
+	MutexLockPolicy::UnLock::UnLock(MutexLockPolicy::Lock& lock) : lock(lock)
 	{
-		pthread_mutex_unlock (&this->lock.policy.mutex->_mutex);
+		pthread_mutex_unlock(&this->lock.policy.mutex->_mutex);
 	}
 }

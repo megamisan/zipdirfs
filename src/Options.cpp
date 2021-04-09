@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  *
  * This file is part of zipdirfs.
  *
@@ -15,8 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
  */
 #include "Options.h"
 #include "Main.h"
@@ -49,7 +47,7 @@ void Options::parseArguments()
 	std::string lastOption;
 	for (Options::stringVector::iterator it = this->arguments_.begin(); it != this->arguments_.end(); it++)
 	{
-		if (it->empty()) continue; // TODO: Investigate bug
+		if (it->empty()) { continue; } // TODO: Investigate bug
 		if ((*it)[0] == '-')
 		{
 			if (inValuedOption && (lastOption != "-o"))
@@ -84,7 +82,7 @@ void Options::parseArguments()
 		{
 			if (lastOption == "-o")
 			{
-				if (std::find(this->fuseArguments_.begin(), this->fuseArguments_.end(), *it) == this->fuseArguments_.end()) this->fuseArguments_.push_back(*it);
+				if (std::find(this->fuseArguments_.begin(), this->fuseArguments_.end(), *it) == this->fuseArguments_.end()) { this->fuseArguments_.push_back(*it); }
 			}
 			else
 			{
@@ -120,9 +118,9 @@ void Options::parseArguments()
 void Options::explodeMountOptions(Options::string option)
 {
 	Options::string::iterator
-		nameStart = option.begin(),
-		nameEnd = option.begin(),
-		valueStart = option.end();
+	nameStart = option.begin(),
+	nameEnd = option.begin(),
+	valueStart = option.end();
 	bool hasValue = false;
 	for (Options::string::iterator it = option.begin(); it != option.end(); it++)
 	{
@@ -137,12 +135,12 @@ void Options::explodeMountOptions(Options::string option)
 			case ',':
 				if (hasValue)
 				{
-					if (nameStart != nameEnd) this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, it);
+					if (nameStart != nameEnd) { this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, it); }
 					hasValue = false;
 				}
 				else
 				{
-					if (nameStart != it) this->mountOptions_[Options::string(nameStart, it)] = "";
+					if (nameStart != it) { this->mountOptions_[Options::string(nameStart, it)] = ""; }
 				}
 				nameStart = it;
 				nameStart++;
@@ -152,11 +150,11 @@ void Options::explodeMountOptions(Options::string option)
 	}
 	if (hasValue)
 	{
-		if (nameStart != nameEnd) this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, option.end());
+		if (nameStart != nameEnd) { this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, option.end()); }
 	}
 	else
 	{
-		if (nameStart != option.end()) this->mountOptions_[Options::string(nameStart, option.end())] = "";
+		if (nameStart != option.end()) { this->mountOptions_[Options::string(nameStart, option.end())] = ""; }
 	}
 }
 
