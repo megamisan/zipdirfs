@@ -5,8 +5,9 @@ RUN set -eux; \
     apt-get -qq upgrade -y; \
     apt-get -qq install -y --no-install-recommends \
     build-essential libfuse-dev libzip-dev pkg-config \
-    debhelper autotools-dev fuse openssh-client \
-    git sudo ca-certificates lcov googletest google-mock \
+    libboost-filesystem-dev libzip4 gdb \
+    debhelper autotools-dev autoconf-archive fuse openssh-client \
+    git sudo ca-certificates lcov google-mock \
     bash-completion nano vim locales-all \
     procps iotop lsof; \
     rm -rf /var/lib/apt/lists/*;
