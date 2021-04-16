@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <help_text>fontsize=13
+fontfamily=SansSerif
+</help_text>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>200</y>
+      <w>480</w>
+      <h>490</h>
+    </coordinates>
+    <panel_attributes>template=Key,T,Compare,MapAllocator,ListAllocator,List,Map
+list_map
+--
+#_list: list_type
+#_map: map_type
+--
++list_map(Compare&amp;, MapAllocator&amp;, ListAllocator&amp;)
++get_list_allocator(): list_type::allocator_type
++get_map_allocator(): map_type::aloocator_type
++begin(): list_type::iterator
++end(): list_type::iterator
++rbegin(): list_type::reverse_iterator
++rend(): list_type::reverse_iterator
++cbegin(): list_type::const_iterator
++cend(): list_type::const_iterator
++crbegin(): list_type::const_reverse_iterator
++crend(): list_type::const_reverse_iterator
++size(): list_type::size_type
++empty(): bool
++front(): list_type::reference
++back(): list_type::reference
++insert(list_type::const_iterator, key_type&amp;, T&amp;)
++erase(list_type::const_iterator): list_type::iterator
++find(key_type&amp;): map_type::iterator
++valid(map_type::iterator): bool
+--
+alias list_type: List
+alias map_type: Map
+alias key_type: Key
+alias mapped_type: T
+alias value_type: map_type::value_type
+alias compare_type: Compare
+alias map_allocator: MapAllocator
+alias list_allocator: ListAllocator</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>220</y>
+      <w>540</w>
+      <h>460</h>
+    </coordinates>
+    <panel_attributes>template=Compare,MapAllocator,ListAllocator,ListMap
+EntryList
+--
+#container: ListMap
+--
++begin(): iterator
++end(): iterator
++insert(iterator, key_type&amp;, mapped_type&amp;): iterator
++erase(iterator): iterator
++find(key_type&amp;): mapped_type
++createWithProxy(): proxy_ptr
+--
+alias Self: EntryList&lt;Compare, MapAllocator, ListAllocator, ListMap&gt;
+alias key_type: ListMap::key_type
+alias value_type: ListMap::value_type
+alias mapped_type: LisrtMap::mapped_type
+alias iterator: ListMap::list_type::iterator
+alias proxy_ptr: shared_ptr&lt;EntryListProxy&gt;
+alias WrapperBase: EntryIterator::Wrapper
+--
+{innerclass
+#Wrapper
+--
+#_real: iterator
+--
++Wrapper(iterator&amp;)
+--
+alias iterator: Self::iterator
+innerclass}
+
+
+--
+{innerclass
+#Proxy
+--
+#_list: Self
+--
++Proxy()
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>850</x>
+      <y>1060</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+entry {::fusekit}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>720</y>
+      <w>310</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>/EntryListProxy {Helpers}/
+--
+--
+/+begin(): iterator/
+/+end(): iterator/
+/+insert(iterator, key_type&amp;, mapped_type&amp;): iterator/
+/+erase(iterator): iterator/
+/+find(key_type&amp;): entry*/
+--
+alias iterator: EntryIterator
+alias key_type: string
+alias mapped_type: entry*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>850</x>
+      <y>1010</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+string {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>650</y>
+      <w>120</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;100.0;100.0;100.0;16.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1230</x>
+      <y>250</y>
+      <w>270</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>EntryIterator
+--
+#wrapper: unique_ptr&lt;Wrapper&gt;
+--
++EntryIterator()
++EntryIterator(Wrapper*)
++EntryIterator(EntryITerator&amp;)
++operator=(EntryIterator&amp;): EntryIterator&amp;
++operator*(): reference
++operator++(): EntryIterator&amp;
++operator==(EntryIterator&amp;): bool
++swap(EntryIterator&amp;): void
++getWrapper(): Wrapper*
+--
+alias pointer_wrapper: unique_ptr&lt;Wrapper&gt;
+--
+{innerclass
+/+Wrapper/
+--
+--
+/#clone(): Wrapper*/
+/#dereference(): reference/
+/#increment(): void/
+/#equals(Wrapper&amp;): bool/
+--
+alias reference: EntryIterator::reference
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>850</x>
+      <y>960</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+shared_ptr {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1230</x>
+      <y>660</y>
+      <w>270</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=Category, _Tp, _Distance
+iterator</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1240</x>
+      <y>580</y>
+      <w>240</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+&lt;&lt;bind&gt;&gt;
+&lt; Category -&gt; forward_iterator_tag,
+ _Tp -&gt; string, _Distance -&gt;size &gt;</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>1110</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+unique_ptr {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>970</x>
+      <y>550</y>
+      <w>370</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;</panel_attributes>
+    <additional_attributes>18.0;18.0;35.0;35.0;335.0;35.0;355.0;15.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1090</x>
+      <y>740</y>
+      <w>410</w>
+      <h>410</h>
+    </coordinates>
+    <panel_attributes>EntryGenerator
+--
+--
++EntryGenerator(proxy_ptr, changed_ptr, enumerator_ptr, factory_ptr)
++begin(): EntryIterator
++end(): EntryIterator
++remove(off): EntryIterator
++add(EntryIterator, off): void
+-testAccessor(): HolderAccessor
+--
+alias proxy_type: EntryListProxy
+alias changed_type: Changed
+alias enumerator_type: Enumerator&lt;string&gt;
+alias factory_type: Factory
+alias proxy_ptr: shared_ptr&lt;proxy_type&gt;
+alias changed_ptr: shared_ptr&lt;changed_type&gt;
+alias enumerator_ptr: shared_ptr&lt;enumerator_type&gt;
+alias factory_ptr: shared_ptr&lt;factory_type&gt;
+--
+{innerclass
+&lt;&lt;datatype&gt;&gt;
++HolderBase
+innerclass}
+--
+{innerclass
+-HolderAccessor
+--
+--
++HolderAccessor(shared_ptr&lt;HolderBase&gt;&amp;)
++offsetWrappers(): map&lt;off, EntryIterator&gt;&amp;
++allWrappers(): set&lt;EntryIterator::Wrapper&gt;&amp;
++atCombined(EntryIterator&amp;, EntryIterator&amp;): EntryIterator
++atDirect(EntryIterator&amp;): EntryIterator
+innerclass}
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>1040</y>
+      <w>120</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/Changed {Helpers}/
+--
+--
++operator()(): bool
++operator time()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>600</x>
+      <y>900</y>
+      <w>170</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>template=T
+/Enumerator {Helpers}/
+--
+--
++reset(): void
++next(): void
++valid(): bool
++current(): T&amp;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>910</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>/Factory {Helper}/
+--
+--
++create(key_type&amp;): mapped_type
++destroy(mapped_type): void
+--
+alias key_type: string
+alias mapped_type: entry*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>1090</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=K, T
+map {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>630</x>
+      <y>1090</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+set {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>850</x>
+      <y>1110</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+size {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>340</x>
+      <y>160</y>
+      <w>1180</w>
+      <h>1010</h>
+    </coordinates>
+    <panel_attributes>ZipDirFs::Containers
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>1010</y>
+      <w>170</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=*
+m2=1
+r2=#holder {shared_ptr}
+group=1</panel_attributes>
+    <additional_attributes>145.0;10.0;110.0;10.0;110.0;70.0;145.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>920</y>
+      <w>170</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=*
+m2=1
+r2=#holder {shared_ptr}
+group=1</panel_attributes>
+    <additional_attributes>145.0;80.0;100.0;80.0;100.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>390</y>
+      <w>590</w>
+      <h>400</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>570.0;10.0;510.0;10.0;510.0;310.0;140.0;310.0;140.0;380.0;10.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1080</x>
+      <y>370</y>
+      <w>170</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>15.0;130.0;40.0;130.0;40.0;10.0;150.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1180</x>
+      <y>400</y>
+      <w>70</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>50.0;20.0;10.0;20.0;10.0;340.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>1060</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+time {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>960</x>
+      <y>1110</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+off {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
