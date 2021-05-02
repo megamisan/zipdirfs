@@ -83,6 +83,7 @@
 		<Unit filename="include/ZipDirFs/DirectoryNode.h" />
 		<Unit filename="include/ZipDirFs/EntryFactory.h" />
 		<Unit filename="include/ZipDirFs/FixedDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/Fuse/EntryProxy.h" />
 		<Unit filename="include/ZipDirFs/MutexLockPolicy.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTree.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTreeNodes.h" />
@@ -132,6 +133,7 @@
 		<Unit filename="src/ZipDirFs/Containers/EntryGenerator.cpp" />
 		<Unit filename="src/ZipDirFs/Containers/EntryIterator.cpp" />
 		<Unit filename="src/ZipDirFs/EntryFactory.cpp" />
+		<Unit filename="src/ZipDirFs/Fuse/EntryProxy.cpp" />
 		<Unit filename="src/ZipDirFs/MutexLockPolicy.cpp" />
 		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
 		<Unit filename="src/ZipDirFs/SymlinkTime.cpp" />
@@ -306,6 +308,12 @@
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Containers/list_map.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/EntryProxy.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/EntryProxy.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Utilities/FileSystem.cpp">
