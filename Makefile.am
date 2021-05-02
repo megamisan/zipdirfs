@@ -86,7 +86,9 @@ noinst_HEADERS = \
 	include/ZipDirFs/Containers/Helpers/EntryListProxy.h \
 	include/ZipDirFs/Containers/Helpers/Enumerator.h \
 	include/ZipDirFs/Containers/Helpers/Factory.h \
+	include/ZipDirFs/Fuse/DirectoryNode.h \
 	include/ZipDirFs/Fuse/EntryProxy.h \
+	include/ZipDirFs/Fuse/NativeTimePolicy.h \
 	include/ZipDirFs/Utilities/DefaultPermission.h \
 	include/ZipDirFs/Utilities/FileSystem.h \
 	include/ZipDirFs/Utilities/type_traits.h \
@@ -176,6 +178,20 @@ libgtest_local_la_SOURCES = \
 	test/ZipDirFs/Containers/Helpers/Fixtures/EnumeratorMock.cpp \
 	test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.h \
 	test/ZipDirFs/Containers/Helpers/Fixtures/FactoryMock.cpp \
+	test/ZipDirFs/Fuse/Fixtures/EmptyEnumerator.h \
+	test/ZipDirFs/Fuse/Fixtures/EmptyEnumerator.cpp \
+	test/ZipDirFs/Fuse/Fixtures/FunctionalEnumerator.h \
+	test/ZipDirFs/Fuse/Fixtures/FunctionalEnumerator.cpp \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemon.h \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemon.cpp \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemonFork.h \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemonFork.cpp \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemonThread.h \
+	test/ZipDirFs/Fuse/Fixtures/FuseDaemonThread.cpp \
+	test/ZipDirFs/Fuse/Fixtures/NullFactory.h \
+	test/ZipDirFs/Fuse/Fixtures/NullFactory.cpp \
+	test/ZipDirFs/Fuse/Fixtures/OneChanged.h \
+	test/ZipDirFs/Fuse/Fixtures/OneChanged.cpp \
 	test/ZipDirFs/Utilities/Fixtures/FileSystem.h \
 	test/ZipDirFs/Utilities/Fixtures/FileSystem.cpp \
 	test/ZipDirFs/Zip/Fixtures/Lib.h \
@@ -188,7 +204,7 @@ libgtest_local_la_CXXFLAGS = $(CXXFLAGS_COVERAGE) -D BUILD_TEST
 libgtest_local_la_LIBADD = $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 libgtest_local_la_LDFLAGS = -pthread
 
-check_PROGRAMS = gtest
+check_PROGRAMS = gtest gtest_helper
 gtest_SOURCES = \
 	test/gtest.h \
 	test/gtest.cpp \
@@ -214,8 +230,12 @@ gtest_SOURCES = \
 	test/ZipDirFs/Containers/list_map.cpp \
 	test/ZipDirFs/Utilities/FileSystem.h \
 	test/ZipDirFs/Utilities/FileSystem.cpp \
+	test/ZipDirFs/Fuse/DirectoryNode.h \
+	test/ZipDirFs/Fuse/DirectoryNode.cpp \
 	test/ZipDirFs/Fuse/EntryProxy.h \
 	test/ZipDirFs/Fuse/EntryProxy.cpp \
+	test/ZipDirFs/Fuse/NativeTimePolicy.h \
+	test/ZipDirFs/Fuse/NativeTimePolicy.cpp \
 	test/ZipDirFs/Zip/Archive.h \
 	test/ZipDirFs/Zip/Archive.cpp \
 	test/ZipDirFs/Zip/Entry.h \
@@ -232,13 +252,21 @@ gtest_CXXFLAGS = $(CXXFLAGS_COVERAGE)
 gtest_LDADD = libzipdirfs.la libgtest.la libgmock_main.la libgtest_local.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 gtest_LDFLAGS = -pthread
 
-gtest-coverage: gtest
+gtest_helper_SOURCES = \
+	test/gtest_helper.h \
+	test/gtest_helper.cpp \
+	test/ZipDirFs/Fuse/Worker/DirectoryNodeList.cpp \
+	test/ZipDirFs/Fuse/Worker/FileStat.cpp
+gtest_helper_LDADD = $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
+gtest_helper_LDFLAGS = -pthread
+
+gtest-coverage: gtest gtest_helper
 	bin/build-coverage.sh gtest "$(abs_top_builddir)"
 
-gtest-coverage-case: gtest
+gtest-coverage-case: gtest gtest_helper
 	bin/build-case-coverage.sh gtest "$(abs_top_builddir)"
 
-gtest-coverage-all: gtest
+gtest-coverage-all: gtest gtest_helper
 	bin/build-detailed-coverage.sh gtest "$(abs_top_builddir)"
 
 clean-coverage:

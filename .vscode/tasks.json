@@ -53,7 +53,8 @@
                 "CXXFLAGS=-g -O0",
                 "CXXFLAGS_COVERAGE=--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors",
                 "LDADD_COVERAGE=-lgcov",
-                "gtest"
+                "gtest",
+                "gtest_helper"
             ],
             "group": {
                 "kind": "test",

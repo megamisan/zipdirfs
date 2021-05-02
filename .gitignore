@@ -42,6 +42,7 @@ zipdirfs
 zipdirfs-test*
 googletest/
 gtest
+gtest_helper
 gtest.*
 !gtest.cpp
 !gtest.h

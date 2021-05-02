@@ -83,7 +83,9 @@
 		<Unit filename="include/ZipDirFs/DirectoryNode.h" />
 		<Unit filename="include/ZipDirFs/EntryFactory.h" />
 		<Unit filename="include/ZipDirFs/FixedDirectoryFactory.h" />
+		<Unit filename="include/ZipDirFs/Fuse/DirectoryNode.h" />
 		<Unit filename="include/ZipDirFs/Fuse/EntryProxy.h" />
+		<Unit filename="include/ZipDirFs/Fuse/NativeTimePolicy.h" />
 		<Unit filename="include/ZipDirFs/MutexLockPolicy.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTree.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTreeNodes.h" />
@@ -310,10 +312,67 @@
 		<Unit filename="test/ZipDirFs/Containers/list_map.h">
 			<Option target="Test" />
 		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/DirectoryNode.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/DirectoryNode.h">
+			<Option target="Test" />
+		</Unit>
 		<Unit filename="test/ZipDirFs/Fuse/EntryProxy.cpp">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Fuse/EntryProxy.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/EmptyEnumerator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/EmptyEnumerator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FunctionalEnumerator.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FunctionalEnumerator.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemon.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemon.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemonFork.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemonFork.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemonThread.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/FuseDaemonThread.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/NullFactory.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/NullFactory.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/OneChanged.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Fixtures/OneChanged.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/NativeTimePolicy.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/NativeTimePolicy.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Worker/DirectoryNodeList.cpp">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Utilities/FileSystem.cpp">
@@ -389,6 +448,12 @@
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/gtest.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/gtest_helper.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/gtest_helper.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/old/maintest.cpp">
