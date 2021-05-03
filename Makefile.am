@@ -30,6 +30,8 @@ libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/Containers/EntryGenerator.cpp \
 	src/ZipDirFs/Containers/EntryIterator.cpp \
 	src/ZipDirFs/Fuse/EntryProxy.cpp \
+	src/ZipDirFs/Fuse/NativeDirectory.cpp \
+	src/ZipDirFs/Fuse/NativeSymlink.cpp \
 	src/ZipDirFs/Utilities/FileSystem.cpp \
 	src/ZipDirFs/Zip/Archive.cpp \
 	src/ZipDirFs/Zip/Entry.cpp \
@@ -88,6 +90,8 @@ noinst_HEADERS = \
 	include/ZipDirFs/Containers/Helpers/Factory.h \
 	include/ZipDirFs/Fuse/DirectoryNode.h \
 	include/ZipDirFs/Fuse/EntryProxy.h \
+	include/ZipDirFs/Fuse/NativeDirectory.h \
+	include/ZipDirFs/Fuse/NativeSymlink.h \
 	include/ZipDirFs/Fuse/NativeTimePolicy.h \
 	include/ZipDirFs/Utilities/DefaultPermission.h \
 	include/ZipDirFs/Utilities/FileSystem.h \
