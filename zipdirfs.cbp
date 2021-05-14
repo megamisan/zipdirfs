@@ -88,6 +88,8 @@
 		<Unit filename="include/ZipDirFs/Fuse/NativeDirectory.h" />
 		<Unit filename="include/ZipDirFs/Fuse/NativeSymlink.h" />
 		<Unit filename="include/ZipDirFs/Fuse/NativeTimePolicy.h" />
+		<Unit filename="include/ZipDirFs/Fuse/ZipFileBuffer.h" />
+		<Unit filename="include/ZipDirFs/Fuse/ZipTimePolicy.h" />
 		<Unit filename="include/ZipDirFs/MutexLockPolicy.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTree.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTreeNodes.h" />
@@ -377,6 +379,21 @@
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Fuse/Worker/DirectoryNodeList.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/Worker/FileRead.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/ZipFileBuffer.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/ZipFileBuffer.h">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/ZipTimePolicy.cpp">
+			<Option target="Test" />
+		</Unit>
+		<Unit filename="test/ZipDirFs/Fuse/ZipTimePolicy.h">
 			<Option target="Test" />
 		</Unit>
 		<Unit filename="test/ZipDirFs/Utilities/FileSystem.cpp">

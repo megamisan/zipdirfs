@@ -93,6 +93,8 @@ noinst_HEADERS = \
 	include/ZipDirFs/Fuse/NativeDirectory.h \
 	include/ZipDirFs/Fuse/NativeSymlink.h \
 	include/ZipDirFs/Fuse/NativeTimePolicy.h \
+	include/ZipDirFs/Fuse/ZipFileBuffer.h \
+	include/ZipDirFs/Fuse/ZipTimePolicy.h \
 	include/ZipDirFs/Utilities/DefaultPermission.h \
 	include/ZipDirFs/Utilities/FileSystem.h \
 	include/ZipDirFs/Utilities/type_traits.h \
@@ -240,6 +242,10 @@ gtest_SOURCES = \
 	test/ZipDirFs/Fuse/EntryProxy.cpp \
 	test/ZipDirFs/Fuse/NativeTimePolicy.h \
 	test/ZipDirFs/Fuse/NativeTimePolicy.cpp \
+	test/ZipDirFs/Fuse/ZipFileBuffer.h \
+	test/ZipDirFs/Fuse/ZipFileBuffer.cpp \
+	test/ZipDirFs/Fuse/ZipTimePolicy.h \
+	test/ZipDirFs/Fuse/ZipTimePolicy.cpp \
 	test/ZipDirFs/Zip/Archive.h \
 	test/ZipDirFs/Zip/Archive.cpp \
 	test/ZipDirFs/Zip/Entry.h \
@@ -260,6 +266,7 @@ gtest_helper_SOURCES = \
 	test/gtest_helper.h \
 	test/gtest_helper.cpp \
 	test/ZipDirFs/Fuse/Worker/DirectoryNodeList.cpp \
+	test/ZipDirFs/Fuse/Worker/FileRead.cpp \
 	test/ZipDirFs/Fuse/Worker/FileStat.cpp
 gtest_helper_LDADD = $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 gtest_helper_LDFLAGS = -pthread
