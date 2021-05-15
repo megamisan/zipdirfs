@@ -88,7 +88,10 @@
 		<Unit filename="include/ZipDirFs/Fuse/NativeDirectory.h" />
 		<Unit filename="include/ZipDirFs/Fuse/NativeSymlink.h" />
 		<Unit filename="include/ZipDirFs/Fuse/NativeTimePolicy.h" />
+		<Unit filename="include/ZipDirFs/Fuse/ZipDirectory.h" />
+		<Unit filename="include/ZipDirFs/Fuse/ZipFile.h" />
 		<Unit filename="include/ZipDirFs/Fuse/ZipFileBuffer.h" />
+		<Unit filename="include/ZipDirFs/Fuse/ZipRootDirectory.h" />
 		<Unit filename="include/ZipDirFs/Fuse/ZipTimePolicy.h" />
 		<Unit filename="include/ZipDirFs/MutexLockPolicy.h" />
 		<Unit filename="include/ZipDirFs/NameSearchTree.h" />
@@ -142,6 +145,9 @@
 		<Unit filename="src/ZipDirFs/Fuse/EntryProxy.cpp" />
 		<Unit filename="src/ZipDirFs/Fuse/NativeDirectory.cpp" />
 		<Unit filename="src/ZipDirFs/Fuse/NativeSymlink.cpp" />
+		<Unit filename="src/ZipDirFs/Fuse/ZipDirectory.cpp" />
+		<Unit filename="src/ZipDirFs/Fuse/ZipFile.cpp" />
+		<Unit filename="src/ZipDirFs/Fuse/ZipRootDirectory.cpp" />
 		<Unit filename="src/ZipDirFs/MutexLockPolicy.cpp" />
 		<Unit filename="src/ZipDirFs/NotFoundException.cpp" />
 		<Unit filename="src/ZipDirFs/SymlinkTime.cpp" />

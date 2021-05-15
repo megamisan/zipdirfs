@@ -8,6 +8,7 @@
 #include "ZipDirFs/Containers/EntryGenerator.h"
 #include "ZipDirFs/Containers/EntryList.h"
 #include "ZipDirFs/Fuse/NativeSymlink.h"
+#include "ZipDirFs/Fuse/ZipRootDirectory.h"
 #include <boost/filesystem.hpp>
 
 namespace ZipDirFs::Fuse
@@ -19,7 +20,7 @@ namespace ZipDirFs::Fuse
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::NativeDirectoryEnumerator(path)),
 			EntryGenerator::factory_ptr(new ::ZipDirFs::Components::NativeFactory<NativeDirectory,
-				NativeSymlink, NativeSymlink>(path)))
+				NativeSymlink, ZipRootDirectory>(path)))
 	{
 	}
 	std::time_t NativeDirectory::getChangeTime() const { return *_changed; }
