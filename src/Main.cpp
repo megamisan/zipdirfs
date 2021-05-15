@@ -3,7 +3,8 @@
  */
 #include "Main.h"
 #include "Options.h"
-#include "ZipDirFs/entry_definitions.h"
+#include "ZipDirFs/Fuse/EntryProxy.h"
+#include "ZipDirFs/Fuse/NativeDirectory.h"
 #if HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -13,7 +14,7 @@
 #include <algorithm>
 #include <cstring>
 
-typedef fusekit::daemon<ZipDirFs::system_directory> daemon_type;
+typedef fusekit::daemon<ZipDirFs::Fuse::EntryProxy> daemon_type;
 
 struct CommandArguments
 {
@@ -55,9 +56,9 @@ void Main::Run()
 	this->fuseOptions.push_back("-o");
 	this->fuseOptions.push_back(std::string("fsname=") + this->sourcePath);
 	daemon_type &daemon = daemon_type::instance();
-	daemon.root().setRealPath(this->sourcePath);
+	daemon.root() = std::unique_ptr<fusekit::entry>(new ZipDirFs::Fuse::NativeDirectory(this->sourcePath));
 	CommandArguments arguments(this->fuseOptions);
-	daemon.run(arguments.argc, (char**)arguments.argv);
+	daemon.run(arguments.argc, (char**)arguments.argv, false);
 }
 
 void Main::Init(const int argc, const char* argv[])
