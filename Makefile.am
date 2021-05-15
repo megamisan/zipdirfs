@@ -10,19 +10,8 @@ zipdirfs_SOURCES = \
 zipdirfs_CXXFLAGS = $(CXXFLAGS_COVERAGE)
 zipdirfs_LDADD = $(LDADD_COVERAGE) libzipdirfs.la $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
-noinst_LTLIBRARIES = libzipdirfs.la libzipdirfs-test.la
+noinst_LTLIBRARIES = libzipdirfs.la
 libzipdirfs_la_SOURCES = \
-	src/ZipDirFs/EntryFactory.cpp \
-	src/ZipDirFs/MutexLockPolicy.cpp \
-	src/ZipDirFs/NotFoundException.cpp \
-	src/ZipDirFs/stream_indent.cpp \
-	src/ZipDirFs/SymlinkTime.cpp \
-	src/ZipDirFs/SystemDirectoryFactory.cpp \
-	src/ZipDirFs/ZipEntry.cpp \
-	src/ZipDirFs/ZipEntryFileInfo.cpp \
-	src/ZipDirFs/ZipFile.cpp \
-	src/ZipDirFs/ZipIterator.cpp \
-	src/ZipDirFs/ZipWalker.cpp \
 	src/ZipDirFs/Components/NativeChanged.cpp \
 	src/ZipDirFs/Components/NativeDirectoryEnumerator.cpp \
 	src/ZipDirFs/Components/ZipDirectoryEnumerator.cpp \
@@ -51,32 +40,6 @@ libzipdirfs_la_LIBADD = $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM
 noinst_HEADERS = \
 	include/Main.h \
 	include/Options.h \
-	include/ZipDirFs/DirectoryMark.h \
-	include/ZipDirFs/DirectoryNode.h \
-	include/ZipDirFs/entry_definitions.h \
-	include/ZipDirFs/EntryFactory.h \
-	include/ZipDirFs/FixedDirectoryFactory.h \
-	include/ZipDirFs/MutexLockPolicy.h \
-	include/ZipDirFs/NameSearchTree.h \
-	include/ZipDirFs/NameSearchTreeNodes.h \
-	include/ZipDirFs/NameSearchWalker.h \
-	include/ZipDirFs/NotFoundException.h \
-	include/ZipDirFs/StatDirectoryFactory.h \
-	include/ZipDirFs/stream_indent.h \
-	include/ZipDirFs/SymlinkTime.h \
-	include/ZipDirFs/SystemDirectoryFactory.h \
-	include/ZipDirFs/SystemDirectoryTime.h \
-	include/ZipDirFs/UnionDirectoryFactory.h \
-	include/ZipDirFs/utils.h \
-	include/ZipDirFs/ZipDirectoryFactory.h \
-	include/ZipDirFs/ZipEntry.h \
-	include/ZipDirFs/ZipEntryFileInfo.h \
-	include/ZipDirFs/ZipFile.h \
-	include/ZipDirFs/ZipFileBuffer.h \
-	include/ZipDirFs/ZipIterator.h \
-	include/ZipDirFs/ZipRootFactory.h \
-	include/ZipDirFs/ZipTime.h \
-	include/ZipDirFs/ZipWalker.h \
 	include/ZipDirFs/Components/NativeChanged.h \
 	include/ZipDirFs/Components/NativeDirectoryEnumerator.h \
 	include/ZipDirFs/Components/NativeFactory.h \
@@ -113,36 +76,6 @@ noinst_HEADERS = \
 	include/ZipDirFs/Zip/Base/Content.h \
 	include/ZipDirFs/Zip/Base/Lib.h \
 	include/ZipDirFs/Zip/Base/Stat.h
-
-libzipdirfs_test_la_SOURCES = test/old/tests.cpp
-libzipdirfs_test_la_LIBADD = libzipdirfs.la $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-
-noinst_PROGRAMS = zipdirfs-test1 zipdirfs-test2 zipdirfs-test3 zipdirfs-test4 \
-	 zipdirfs-test5 zipdirfs-test6 zipdirfs-test7 zipdirfs-test8
-zipdirfs_test1_SOURCES = test/old/maintest.cpp
-zipdirfs_test1_CPPFLAGS = -D TEST=1
-zipdirfs_test1_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test2_SOURCES = test/old/maintest.cpp
-zipdirfs_test2_CPPFLAGS = -D TEST=2
-zipdirfs_test2_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test3_SOURCES = test/old/maintest.cpp
-zipdirfs_test3_CPPFLAGS = -D TEST=3
-zipdirfs_test3_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test4_SOURCES = test/old/maintest.cpp
-zipdirfs_test4_CPPFLAGS = -D TEST=4
-zipdirfs_test4_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test5_SOURCES = test/old/maintest.cpp
-zipdirfs_test5_CPPFLAGS = -D TEST=5
-zipdirfs_test5_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test6_SOURCES = test/old/maintest.cpp
-zipdirfs_test6_CPPFLAGS = -D TEST=6
-zipdirfs_test6_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test7_SOURCES = test/old/maintest.cpp
-zipdirfs_test7_CPPFLAGS = -D TEST=7
-zipdirfs_test7_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
-zipdirfs_test8_SOURCES = test/old/maintest.cpp
-zipdirfs_test8_CPPFLAGS = -D TEST=8
-zipdirfs_test8_LDADD = libzipdirfs.la libzipdirfs-test.la $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
 if USE_TESTS
 check_LTLIBRARIES = libgtest.la libgmock_main.la libgtest_local.la

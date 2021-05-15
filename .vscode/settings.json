@@ -94,7 +94,6 @@
         "**/*.la": true,
         "**/*.lo": true,
         "**/*.o": true,
-        "**/zipdirfs-test*": true,
         "**/.libs": true,
         "**/googletest/**": true,
         "**/*.gc*": true

@@ -39,7 +39,6 @@ conftest*
 /coverage
 # Output
 zipdirfs
-zipdirfs-test*
 googletest/
 gtest
 gtest_helper
