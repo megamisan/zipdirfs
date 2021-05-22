@@ -153,6 +153,8 @@ check_PROGRAMS = gtest gtest_helper
 gtest_SOURCES = \
 	test/gtest.h \
 	test/gtest.cpp \
+	test/ZipDirFs/Integration.h \
+	test/ZipDirFs/Integration.cpp \
 	test/ZipDirFs/Components/NativeChanged.h \
 	test/ZipDirFs/Components/NativeChanged.cpp \
 	test/ZipDirFs/Components/NativeDirectoryEnumerator.h \
@@ -204,6 +206,7 @@ gtest_LDFLAGS = -pthread
 gtest_helper_SOURCES = \
 	test/gtest_helper.h \
 	test/gtest_helper.cpp \
+	test/ZipDirFs/Worker/Explore.cpp \
 	test/ZipDirFs/Fuse/Worker/DirectoryNodeList.cpp \
 	test/ZipDirFs/Fuse/Worker/FileRead.cpp \
 	test/ZipDirFs/Fuse/Worker/FileStat.cpp
