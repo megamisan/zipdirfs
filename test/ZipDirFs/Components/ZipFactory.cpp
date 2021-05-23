@@ -69,7 +69,7 @@ namespace Test::ZipDirFs::Components
 		EXPECT_CALL(lib, get_name(&libInstance, 0))
 			.WillOnce(Return(expected + std::to_string(::Test::rand(UINT32_MAX))));
 		EXPECT_CALL(lib, close(&libInstance));
-		TestedFactory factory(parent, inner + "/", changed);
+		TestedFactory factory(parent, inner + "/", std::shared_ptr<Changed>(changed));
 		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
 			factory.create(item), [&factory](::fusekit::entry* p) { factory.destroy(p); });
 		auto result = dynamic_cast<ZipDirectoryEntryMock*>(created.get());
@@ -90,7 +90,7 @@ namespace Test::ZipDirFs::Components
 		EXPECT_CALL(lib, get_num_entries(&libInstance)).WillOnce(Return(1));
 		EXPECT_CALL(lib, get_name(&libInstance, 0)).WillOnce(Return(item));
 		EXPECT_CALL(lib, close(&libInstance));
-		TestedFactory factory(parent, "", changed);
+		TestedFactory factory(parent, "", std::shared_ptr<Changed>(changed));
 		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
 			factory.create(item), [&factory](::fusekit::entry* p) { factory.destroy(p); });
 		auto result = dynamic_cast<ZipFileEntryMock*>(created.get());
@@ -112,7 +112,7 @@ namespace Test::ZipDirFs::Components
 		EXPECT_CALL(lib, get_num_entries(&libInstance)).WillOnce(Return(1));
 		EXPECT_CALL(lib, get_name(&libInstance, 0)).WillOnce(Return(inner + item));
 		EXPECT_CALL(lib, close(&libInstance));
-		TestedFactory factory(parent, inner, changed);
+		TestedFactory factory(parent, inner, std::shared_ptr<Changed>(changed));
 		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
 			factory.create(item), [&factory](::fusekit::entry* p) { factory.destroy(p); });
 		auto result = dynamic_cast<ZipFileEntryMock*>(created.get());

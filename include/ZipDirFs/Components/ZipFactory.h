@@ -18,7 +18,7 @@ namespace ZipDirFs::Components
 	class ZipFactory : public ::ZipDirFs::Containers::Helpers::Factory
 	{
 	public:
-		ZipFactory(const path& archive, const key_type& inner, std::shared_ptr<::ZipDirFs::Containers::Helpers::Changed>& changed) : archive(archive), inner(inner), changed(changed) {}
+		ZipFactory(const path& archive, const key_type& inner, std::shared_ptr<::ZipDirFs::Containers::Helpers::Changed>&& changed) : archive(archive), inner(inner), changed(changed) {}
 		const mapped_type create(const key_type& name)
 		{
 			auto innerPath = inner + name;

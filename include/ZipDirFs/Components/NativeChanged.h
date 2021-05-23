@@ -20,6 +20,7 @@ namespace ZipDirFs::Components
 		NativeChanged(const boost::filesystem::path&);
 		bool operator()();
 		operator std::time_t() const;
+		static const std::time_t getTime(const boost::filesystem::path&);
 
 	protected:
 		const boost::filesystem::path& path;

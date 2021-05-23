@@ -285,7 +285,9 @@ namespace Test::ZipDirFs
 		Lib lib;
 		LibInstance zipInstance1;
 		FileInstance itemInstance1, subItemInstance1;
-		const std::time_t now(time(NULL)), modified((std::time_t)::Test::rand(now));
+		const std::time_t now(time(NULL)), modifiedRoot((std::time_t)::Test::rand(now)),
+			modifiedNormal1((std::time_t)::Test::rand(now)), modifiedZip1((std::time_t)::Test::rand(now)),
+			modifiedItem1((std::time_t)::Test::rand(now)), modifiedSubItem1((std::time_t)::Test::rand(now));
 		const std::string normal1("normal" + std::to_string(::Test::rand(UINT32_MAX))),
 			zip1("zip" + std::to_string(::Test::rand(UINT32_MAX))),
 			item1("item" + std::to_string(::Test::rand(UINT32_MAX))), item1Path(item1),
@@ -297,8 +299,8 @@ namespace Test::ZipDirFs
 			fakeNormal1(fakeRoot / normal1), fakeZip1(fakeRoot / zip1);
 		const std::streamsize item1Size(::Test::rand<std::streamsize>(UINT8_MAX, UINT16_MAX)),
 			subItem1Size(::Test::rand<std::streamsize>(UINT8_MAX, UINT16_MAX));
-		const Stat item1Stat(0, item1Path, item1Size, modified, false),
-			subItem1Stat(1, subItem1Path, subItem1Size, modified, false);
+		const Stat item1Stat(0, item1Path, item1Size, modifiedItem1, false),
+			subItem1Stat(1, subItem1Path, subItem1Size, modifiedSubItem1, false);
 		filesystem::create_directory(mountPoint);
 		const std::string fsName = "IntegrationTestFull";
 		Guard rmdir([mountPoint]() {
@@ -320,9 +322,9 @@ namespace Test::ZipDirFs
 		GenerateRandomData(item1Content, item1Size);
 		GenerateRandomData(subItem1Content, subItem1Size);
 		// Initialize expectations
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(modified));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeNormal1)))).WillRepeatedly(Return(modified));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(modified));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(modifiedRoot));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeNormal1)))).WillRepeatedly(Return(modifiedNormal1));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(modifiedZip1));
 		EXPECT_CALL(fs, directory_iterator_from_path(Eq(ByRef(fakeRoot))))
 			.WillRepeatedly(ReturnNew<VectorIteratorWrapper>(
 				rootDirectoryItems.begin(), rootDirectoryItems.end()));
@@ -379,13 +381,13 @@ namespace Test::ZipDirFs
 			+ ComputeDirectory("/" + zip1) + ComputeFile("/" + zip1 + "/" + item1Path, item1Size)
 			+ ComputeDirectory("/" + zip1 + "/" + subItem1Parent)
 			+ ComputeFile("/" + zip1 + "/" + subItem1Path, subItem1Size));
-		WriteDirectory(expected, 0, 0, 2, "");
-		WriteLink(expected, modified, modified, "/" + normal1, fakeNormal1.native());
-		WriteDirectory(expected, 0, 0, 2, "/" + zip1);
-		WriteFile(expected, modified, modified, item1Size, "/" + zip1 + "/" + item1Path, item1Content);
-		WriteDirectory(expected, modified, modified, 2, "/" + zip1 + "/" + subItem1Parent);
+		WriteDirectory(expected, modifiedRoot, modifiedRoot, 2, "");
+		WriteLink(expected, modifiedNormal1, modifiedNormal1, "/" + normal1, fakeNormal1.native());
+		WriteDirectory(expected, modifiedZip1, modifiedZip1, 2, "/" + zip1);
+		WriteFile(expected, modifiedZip1, modifiedItem1, item1Size, "/" + zip1 + "/" + item1Path, item1Content);
+		WriteDirectory(expected, modifiedZip1, modifiedZip1, 2, "/" + zip1 + "/" + subItem1Parent);
 		WriteFile(
-			expected, modified, modified, subItem1Size, "/" + zip1 + "/" + subItem1Path, subItem1Content);
+			expected, modifiedZip1, modifiedSubItem1, subItem1Size, "/" + zip1 + "/" + subItem1Path, subItem1Content);
 		// Run test
 		result.reserve(expected.size());
 		FuseDaemonFork daemon(

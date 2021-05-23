@@ -4,6 +4,7 @@
 #ifndef ZIPDIRFS_FUSE_ZIPROOTDIRECTORY_H
 #define ZIPDIRFS_FUSE_ZIPROOTDIRECTORY_H
 
+#include "ZipDirFs/Components/ChangedProxy.h"
 #include "ZipDirFs/Fuse/DirectoryNode.h"
 #include "ZipDirFs/Fuse/NativeTimePolicy.h"
 #include "ZipDirFs/Utilities/DefaultPermission.h"
@@ -27,7 +28,7 @@ namespace ZipDirFs::Fuse
 	private:
 		const boost::filesystem::path path;
 		EntryGenerator::proxy_ptr _proxy;
-		EntryGenerator::changed_ptr _changed;
+		std::shared_ptr<::ZipDirFs::Components::ChangedProxy> _changed;
 		EntryGenerator _generator;
 	};
 } // namespace ZipDirFs::Fuse

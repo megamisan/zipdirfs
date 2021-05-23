@@ -89,4 +89,13 @@ namespace Test::ZipDirFs::Components
 		ASSERT_EQ((std::time_t)dc, expected);
 	}
 
+	TEST(NativeChangedTest, GetTime)
+	{
+		FileSystem fs;
+		std::time_t expected(::Test::rand(UINT32_MAX));
+		const boost::filesystem::path p(
+			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(p)))).WillOnce(Return(expected));
+		EXPECT_EQ(NativeChanged::getTime(p), expected);
+	}
 } // namespace Test::ZipDirFs::Components

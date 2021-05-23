@@ -225,4 +225,30 @@ namespace Test::ZipDirFs::Components
 		ASSERT_EQ((std::time_t)dc, expected);
 	}
 
+	TEST_F(ZipFileChangedTest, GetTime)
+	{
+		FileSystem fs;
+		Lib lib;
+		const boost::filesystem::path p(
+			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
+		std::time_t expected(::Test::rand(UINT32_MAX));
+		LibInstance data;
+		ZipFileChangedExpectArchive(fs, lib, data, p, expected);
+		ZipFileChangedExpectPopulateArchive(lib, data);
+		ASSERT_EQ(ZipFileChanged::getTime(p, ""), expected);
+	}
+
+	TEST_F(ZipFileChangedTest, GetTimeItem)
+	{
+		FileSystem fs;
+		Lib lib;
+		const boost::filesystem::path p(
+			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
+		std::time_t expected(::Test::rand(UINT32_MAX));
+		LibInstance data;
+		ZipFileChangedExpectArchive(fs, lib, data, p, std::time_t(0));
+		const auto name = ZipFileChangedExpectPopulateArchive(lib, data);
+		ZipFileChangedExpectEntry(lib, data, name, expected);
+		ASSERT_EQ(ZipFileChanged::getTime(p, name), expected);
+	}
 } // namespace Test::ZipDirFs::Components

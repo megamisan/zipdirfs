@@ -8,9 +8,9 @@ fontfamily=SansSerif
     <id>UMLClass</id>
     <coordinates>
       <x>80</x>
-      <y>230</y>
+      <y>140</y>
       <w>150</w>
-      <h>80</h>
+      <h>100</h>
     </coordinates>
     <panel_attributes>NativeChanged
 --
@@ -18,14 +18,14 @@ fontfamily=SansSerif
 #lastChanged: time
 --
 +NativeChanged(path&amp;)
-</panel_attributes>
+_+getTime(path&amp;): time_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>700</x>
-      <y>530</y>
+      <y>430</y>
       <w>150</w>
       <h>40</h>
     </coordinates>
@@ -37,7 +37,7 @@ path {::boost::filesystem}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>20</x>
-      <y>130</y>
+      <y>40</y>
       <w>250</w>
       <h>70</h>
     </coordinates>
@@ -53,7 +53,7 @@ path {::boost::filesystem}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>40</x>
-      <y>190</y>
+      <y>100</y>
       <w>60</w>
       <h>90</h>
     </coordinates>
@@ -64,9 +64,9 @@ path {::boost::filesystem}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>80</x>
-      <y>340</y>
+      <y>270</y>
       <w>200</w>
-      <h>130</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>ZipFileChanged
 --
@@ -77,14 +77,14 @@ path {::boost::filesystem}</panel_attributes>
 #state: bitset&lt;2&gt;
 --
 +ZipFileChanged(path&amp;, string&amp;)
-</panel_attributes>
+_+getTime(path&amp;, string&amp;): time_</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
-      <y>170</y>
+      <x>840</x>
+      <y>490</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -96,8 +96,8 @@ bitset {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
-      <y>300</y>
+      <x>700</x>
+      <y>490</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -109,18 +109,18 @@ string {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>40</x>
-      <y>190</y>
+      <y>100</y>
       <w>60</w>
-      <h>200</h>
+      <h>220</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;180.0;40.0;180.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;200.0;40.0;200.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>300</x>
-      <y>130</y>
+      <y>40</y>
       <w>290</w>
       <h>110</h>
     </coordinates>
@@ -138,7 +138,7 @@ string {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>430</x>
-      <y>270</y>
+      <y>180</y>
       <w>220</w>
       <h>100</h>
     </coordinates>
@@ -156,7 +156,7 @@ string {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>420</x>
-      <y>540</y>
+      <y>450</y>
       <w>230</w>
       <h>30</h>
     </coordinates>
@@ -167,7 +167,7 @@ string {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>320</x>
-      <y>230</y>
+      <y>140</y>
       <w>130</w>
       <h>90</h>
     </coordinates>
@@ -180,7 +180,7 @@ string {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>400</x>
-      <y>400</y>
+      <y>310</y>
       <w>250</w>
       <h>110</h>
     </coordinates>
@@ -199,7 +199,7 @@ string {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>320</x>
-      <y>230</y>
+      <y>140</y>
       <w>120</w>
       <h>220</h>
     </coordinates>
@@ -212,7 +212,7 @@ string {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>610</x>
-      <y>500</y>
+      <y>410</y>
       <w>70</w>
       <h>60</h>
     </coordinates>
@@ -224,7 +224,7 @@ string {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>640</x>
-      <y>290</y>
+      <y>200</y>
       <w>90</w>
       <h>280</h>
     </coordinates>
@@ -236,7 +236,7 @@ string {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>660</x>
-      <y>130</y>
+      <y>40</y>
       <w>240</w>
       <h>100</h>
     </coordinates>
@@ -254,7 +254,7 @@ alias mapped_type: entry*</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>870</x>
-      <y>530</y>
+      <y>430</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -266,7 +266,7 @@ entry {::fusekit}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>720</x>
-      <y>260</y>
+      <y>170</y>
       <w>250</w>
       <h>80</h>
     </coordinates>
@@ -283,7 +283,7 @@ NativeFactory
     <id>UMLClass</id>
     <coordinates>
       <x>720</x>
-      <y>370</y>
+      <y>280</y>
       <w>330</w>
       <h>100</h>
     </coordinates>
@@ -301,7 +301,7 @@ ZipFactory
     <id>Relation</id>
     <coordinates>
       <x>680</x>
-      <y>220</y>
+      <y>130</y>
       <w>60</w>
       <h>90</h>
     </coordinates>
@@ -312,7 +312,7 @@ ZipFactory
     <id>Relation</id>
     <coordinates>
       <x>680</x>
-      <y>220</y>
+      <y>130</y>
       <w>60</w>
       <h>200</h>
     </coordinates>
@@ -323,9 +323,9 @@ ZipFactory
     <id>UMLPackage</id>
     <coordinates>
       <x>0</x>
-      <y>90</y>
+      <y>0</y>
       <w>1080</w>
-      <h>500</h>
+      <h>670</h>
     </coordinates>
     <panel_attributes>ZipDirFs::Components
 --
@@ -336,12 +336,106 @@ ZipFactory
     <id>UMLClass</id>
     <coordinates>
       <x>990</x>
-      <y>530</y>
+      <y>430</y>
       <w>70</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>&lt;&lt;datatype&gt;&gt;
 time {::std}</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>440</y>
+      <w>240</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>ChangedProxy
+--
+--
++ChangedProxy(unique_ptr&lt;Changed&gt;)
++swap(unique_ptr&lt;Changed&gt;&amp;): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>540</y>
+      <w>600</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>ChangedStart
+--
+#lastChanged: time
+#called: bool
+-buildReal: function&lt;unique_ptr&lt;Changed&gt;()&gt;
+-firstValue: function&lt;time()&gt;
+--
++ChangedStart(function&lt;time()&gt;&amp;, function&lt;unique_ptr&lt;Changed&gt;()&gt;, shared_ptr&lt;ChangedProxy&gt;&amp;)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>960</x>
+      <y>490</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=T
+&lt;&lt;datatype&gt;&gt;
+function {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>40</x>
+      <y>100</y>
+      <w>60</w>
+      <h>390</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;370.0;40.0;370.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>40</x>
+      <y>100</y>
+      <w>60</w>
+      <h>490</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;470.0;40.0;470.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>310</x>
+      <y>470</y>
+      <w>140</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+m1=1
+r1=-target\n{shared_ptr&amp;}</panel_attributes>
+    <additional_attributes>40.0;70.0;40.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>240</x>
+      <y>100</y>
+      <w>150</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+m1=1
+r1=-changed\n{unique_ptr}</panel_attributes>
+    <additional_attributes>60.0;340.0;60.0;150.0;10.0;150.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>

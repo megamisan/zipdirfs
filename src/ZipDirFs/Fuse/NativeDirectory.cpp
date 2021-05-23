@@ -2,6 +2,7 @@
  * Copyright © 2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Fuse/NativeDirectory.h"
+#include "ZipDirFs/Components/ChangedStart.h"
 #include "ZipDirFs/Components/NativeChanged.h"
 #include "ZipDirFs/Components/NativeDirectoryEnumerator.h"
 #include "ZipDirFs/Components/NativeFactory.h"
@@ -13,9 +14,45 @@
 
 namespace ZipDirFs::Fuse
 {
+	namespace
+	{
+		using namespace ::ZipDirFs::Components;
+		using ::ZipDirFs::Containers::Helpers::Changed;
+
+		struct FirstValue
+		{
+			FirstValue(const boost::filesystem::path& path) : path(path) {}
+			const std::time_t operator()() const { return NativeChanged::getTime(path); }
+
+		private:
+			const boost::filesystem::path& path;
+		};
+
+		struct BuildReal
+		{
+			BuildReal(const boost::filesystem::path& path) : path(path) {}
+			std::unique_ptr<Changed> operator()() const
+			{
+				return std::unique_ptr<Changed>(
+					std::unique_ptr<NativeChanged>(new NativeChanged(path)));
+			}
+
+		private:
+			const boost::filesystem::path& path;
+		};
+
+		inline std::shared_ptr<::ZipDirFs::Components::ChangedProxy> getChangedProxy(
+			const boost::filesystem::path& p,
+			std::shared_ptr<::ZipDirFs::Components::ChangedProxy>& t)
+		{
+			return std::shared_ptr<ChangedProxy>(new ChangedProxy(std::unique_ptr<Changed>(
+				std::unique_ptr<ChangedStart>(new ChangedStart(FirstValue(p), BuildReal(p), t)))));
+		}
+	} // namespace
+
 	NativeDirectory::NativeDirectory(const boost::filesystem::path& p) :
 		path(p), _proxy(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
-		_changed(new ::ZipDirFs::Components::NativeChanged(path)),
+		_changed(getChangedProxy(path, _changed)),
 		_generator(EntryGenerator::proxy_ptr(_proxy), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::NativeDirectoryEnumerator(path)),

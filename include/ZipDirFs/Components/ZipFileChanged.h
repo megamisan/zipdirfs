@@ -22,6 +22,7 @@ namespace ZipDirFs::Components
 		ZipFileChanged(const boost::filesystem::path&, const std::string&);
 		bool operator()();
 		operator std::time_t() const;
+		static const std::time_t getTime(const boost::filesystem::path&, const std::string&);
 
 	protected:
 		const boost::filesystem::path& path;
