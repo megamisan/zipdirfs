@@ -46,6 +46,17 @@ namespace ZipDirFs::Zip
 		protected:
 			const ::zip_t* source;
 		};
+
+		struct Version
+		{
+			Version(const char*);
+			bool operator<(const Version&) const;
+
+		private:
+			const int maj, min, rev;
+		};
+
+		bool haveFdBug = Version(::zip_libzip_version()) < Version("1.5.2");
 	} // namespace
 
 	LibData::LibData(::zip* const z) : zip(z) {}
@@ -66,6 +77,16 @@ namespace ZipDirFs::Zip
 		{
 			::zip_error_clear(const_cast<::zip_t*>(source));
 		}
+	}
+
+	Version::Version(const char* version) : maj(0), min(0), rev(0)
+	{
+		sscanf(version, "%d.%d.%d", const_cast<int*>(&maj), const_cast<int*>(&min), const_cast<int*>(&rev));
+	}
+	bool Version::operator<(const Version& other) const
+	{
+		return (maj < other.maj)
+			|| (maj == other.maj && (min < other.min || (min == other.min && rev < other.rev)));
 	}
 
 	void Lib::reset()
@@ -104,9 +125,24 @@ namespace ZipDirFs::Zip
 		{
 			throw Exception::fromErrorno("ZipFile::Zip::Lib::open", errno);
 		}
+		std::int32_t error;
+		if (haveFdBug)
+		{
+			::close(handle);
+			handle = 0;
+			if (::boost::filesystem::file_size(p) == 0) {
+				ZipError err(ZIP_ER_NOZIP);
+				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
+			}
+			zipFile = ::zip_open(p.c_str(), ZIP_RDONLY, &error);
+			if (zipFile == nullptr)
+			{
+				ZipError err(error);
+				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
+			}
+		}
 		else
 		{
-			std::int32_t error;
 			zipFile = ::zip_fdopen(handle, 0, &error);
 			if (zipFile == nullptr)
 			{
@@ -143,7 +179,8 @@ namespace ZipDirFs::Zip
 		{
 			std::__throw_runtime_error("ZipFile::Zip::Lib::stat: Incomplete stats received.");
 		}
-		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime, stats.comp_method != ZIP_CM_STORE || !(stats.valid & ZIP_STAT_COMP_METHOD));
+		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime,
+			stats.comp_method != ZIP_CM_STORE || !(stats.valid & ZIP_STAT_COMP_METHOD));
 	}
 	Base::Stat LibWrapper::stat_index(Base::Lib* const l, const uint64_t i)
 	{
@@ -159,7 +196,8 @@ namespace ZipDirFs::Zip
 		{
 			std::__throw_runtime_error("ZipFile::Zip::Lib::stat_index: Incomplete stats received.");
 		}
-		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime, stats.comp_method != ZIP_CM_STORE || !(stats.valid & ZIP_STAT_COMP_METHOD));
+		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime,
+			stats.comp_method != ZIP_CM_STORE || !(stats.valid & ZIP_STAT_COMP_METHOD));
 	}
 	std::string LibWrapper::get_name(Base::Lib* const l, std::uint64_t i)
 	{

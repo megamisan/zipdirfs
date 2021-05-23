@@ -250,6 +250,18 @@ namespace Test::ZipDirFs::Zip
 		public:
 			bool operator()(int exit_status) const;
 		};
+
+		int LibOpenFileCount()
+		{
+			auto it = ::boost::filesystem::directory_iterator("/proc/self/fd"),
+				endIt = ::boost::filesystem::directory_iterator();
+			int count = 0;
+			while (it != endIt) {
+				++count;
+				++it;
+			}
+			return count;
+		}
 	} // namespace
 
 	Buffer::Buffer(std::uint64_t reservedSize) :
@@ -523,11 +535,14 @@ namespace Test::ZipDirFs::Zip
 
 	TEST_F(LibTest, OpenNonExistant)
 	{
+		int startFdCount = LibOpenFileCount();
 		EXPECT_THROW(libData = Lib::open(tempZipPath()), ::ZipDirFs::Zip::Exception);
+		EXPECT_EQ(LibOpenFileCount(), startFdCount);
 	}
 
 	TEST_F(LibTest, OpenNonZip)
 	{
+		int startFdCount = LibOpenFileCount();
 		auto tempName(tempZipPath());
 		{
 			std::ofstream output(tempName);
@@ -538,26 +553,45 @@ namespace Test::ZipDirFs::Zip
 			}
 		}
 		EXPECT_THROW(libData = Lib::open(tempName), ::ZipDirFs::Zip::Exception);
+		EXPECT_EQ(LibOpenFileCount(), startFdCount);
+		unlink(tempName.c_str());
+	}
+
+	TEST_F(LibTest, OpenNonZipEmptyFile)
+	{
+		int startFdCount = LibOpenFileCount();
+		auto tempName(tempZipPath());
+		{
+			std::ofstream output(tempName);
+		}
+		EXPECT_THROW(libData = Lib::open(tempName), ::ZipDirFs::Zip::Exception);
+		EXPECT_EQ(LibOpenFileCount(), startFdCount);
 		unlink(tempName.c_str());
 	}
 
 	TEST_F(LibTest, OpenZip)
 	{
+		int startFdCount = LibOpenFileCount();
 		GeneratedZipFile file;
 		EXPECT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
+		EXPECT_EQ(LibOpenFileCount(), startFdCount + 1);
 	}
 
 	TEST_F(LibTest, Close)
 	{
+		int startFdCount = LibOpenFileCount();
 		GeneratedZipFile file;
 		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
-		EXPECT_EXIT(
+		ASSERT_EXIT(
 			{
 				char data[sizeof(decltype(libData)) + sizeof(std::intptr_t)];
 				memcpy(data, libData, sizeof(data));
 				Lib::close(reinterpret_cast<decltype(libData)>(data));
 			},
 			KilledBySigAbrtOrSigSegv(), "");
+		Lib::close(libData);
+		libData = nullptr;
+		EXPECT_EQ(LibOpenFileCount(), startFdCount);
 	}
 
 	TEST_F(LibTest, GetNumEntries)
@@ -601,7 +635,6 @@ namespace Test::ZipDirFs::Zip
 	{
 		GeneratedZipFile file;
 		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
-		(void)!::system((std::string("unzip -v ") + file.getZipFilePath()).c_str());
 		EXPECT_EQ(Lib::get_name(libData, file.getValidIndex()), file.getValidFileName());
 	}
 
