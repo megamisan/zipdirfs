@@ -3,6 +3,7 @@
  */
 #include "ZipDirFs/Fuse/NativeDirectory.h"
 #include "ZipDirFs/Components/ChangedStart.h"
+#include "ZipDirFs/Components/EntryListProxyIncremental.h"
 #include "ZipDirFs/Components/NativeChanged.h"
 #include "ZipDirFs/Components/NativeDirectoryEnumerator.h"
 #include "ZipDirFs/Components/NativeFactory.h"
@@ -10,6 +11,7 @@
 #include "ZipDirFs/Containers/EntryList.h"
 #include "ZipDirFs/Fuse/NativeSymlink.h"
 #include "ZipDirFs/Fuse/ZipRootDirectory.h"
+#include "ZipDirFs/Utilities/FileSystem.h"
 #include <boost/filesystem.hpp>
 
 namespace ZipDirFs::Fuse
@@ -18,6 +20,7 @@ namespace ZipDirFs::Fuse
 	{
 		using namespace ::ZipDirFs::Components;
 		using ::ZipDirFs::Containers::Helpers::Changed;
+		using ::ZipDirFs::Containers::Helpers::EntryListProxy;
 
 		struct FirstValue
 		{
@@ -41,23 +44,52 @@ namespace ZipDirFs::Fuse
 			const boost::filesystem::path& path;
 		};
 
-		inline std::shared_ptr<::ZipDirFs::Components::ChangedProxy> getChangedProxy(
-			const boost::filesystem::path& p,
-			std::shared_ptr<::ZipDirFs::Components::ChangedProxy>& t)
+		struct Resolve
+		{
+			Resolve(const EntryGenerator::factory_ptr& factory) : factory(factory) {}
+			fusekit::entry* operator()(const std::string& name) const
+			{
+				try
+				{
+					return factory->create(name);
+				}
+				catch (boost::filesystem::filesystem_error)
+				{
+					return nullptr;
+				}
+			}
+
+		private:
+			EntryGenerator::factory_ptr factory;
+		};
+
+		inline std::shared_ptr<ChangedProxy> getChangedProxy(
+			const boost::filesystem::path& p, std::shared_ptr<ChangedProxy>& t)
 		{
 			return std::shared_ptr<ChangedProxy>(new ChangedProxy(std::unique_ptr<Changed>(
 				std::unique_ptr<ChangedStart>(new ChangedStart(FirstValue(p), BuildReal(p), t)))));
 		}
+		inline std::shared_ptr<EntryListProxy> getEntryListProxy(
+			const EntryGenerator::factory_ptr& factory,
+			const std::shared_ptr<EntryListProxy>& proxy)
+		{
+			return std::shared_ptr<EntryListProxy>(
+				new EntryListProxyProxy(std::unique_ptr<EntryListProxy>(
+					std::unique_ptr<EntryListProxyIncremental>(new EntryListProxyIncremental(
+						Resolve(factory), EntryGenerator::proxy_ptr(proxy))))));
+		}
 	} // namespace
 
 	NativeDirectory::NativeDirectory(const boost::filesystem::path& p) :
-		path(p), _proxy(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
-		_changed(getChangedProxy(path, _changed)),
-		_generator(EntryGenerator::proxy_ptr(_proxy), EntryGenerator::changed_ptr(_changed),
+		path(p), _changed(getChangedProxy(path, _changed)),
+		_factory(new ::ZipDirFs::Components::NativeFactory<NativeDirectory, NativeSymlink,
+			ZipRootDirectory>(path)),
+		_proxyBase(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
+		_proxy(getEntryListProxy(_factory, _proxyBase)),
+		_generator(EntryGenerator::proxy_ptr(_proxyBase), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::NativeDirectoryEnumerator(path)),
-			EntryGenerator::factory_ptr(new ::ZipDirFs::Components::NativeFactory<NativeDirectory,
-				NativeSymlink, ZipRootDirectory>(path)))
+			EntryGenerator::factory_ptr(_factory))
 	{
 	}
 	std::time_t NativeDirectory::getChangeTime() const { return *_changed; }

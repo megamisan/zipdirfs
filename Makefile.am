@@ -14,6 +14,8 @@ noinst_LTLIBRARIES = libzipdirfs.la
 libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/Components/ChangedProxy.cpp \
 	src/ZipDirFs/Components/ChangedStart.cpp \
+	src/ZipDirFs/Components/EntryListProxyIncremental.cpp \
+	src/ZipDirFs/Components/EntryListProxyProxy.cpp \
 	src/ZipDirFs/Components/NativeChanged.cpp \
 	src/ZipDirFs/Components/NativeDirectoryEnumerator.cpp \
 	src/ZipDirFs/Components/ZipDirectoryEnumerator.cpp \
@@ -44,6 +46,8 @@ noinst_HEADERS = \
 	include/Options.h \
 	include/ZipDirFs/Components/ChangedProxy.h \
 	include/ZipDirFs/Components/ChangedStart.h \
+	include/ZipDirFs/Components/EntryListProxyIncremental.h \
+	include/ZipDirFs/Components/EntryListProxyProxy.h \
 	include/ZipDirFs/Components/NativeChanged.h \
 	include/ZipDirFs/Components/NativeDirectoryEnumerator.h \
 	include/ZipDirFs/Components/NativeFactory.h \
@@ -163,6 +167,10 @@ gtest_SOURCES = \
 	test/ZipDirFs/Components/ChangedProxy.cpp \
 	test/ZipDirFs/Components/ChangedStart.h \
 	test/ZipDirFs/Components/ChangedStart.cpp \
+	test/ZipDirFs/Components/EntryListProxyIncremental.h \
+	test/ZipDirFs/Components/EntryListProxyIncremental.cpp \
+	test/ZipDirFs/Components/EntryListProxyProxy.h \
+	test/ZipDirFs/Components/EntryListProxyProxy.cpp \
 	test/ZipDirFs/Components/NativeChanged.h \
 	test/ZipDirFs/Components/NativeChanged.cpp \
 	test/ZipDirFs/Components/NativeDirectoryEnumerator.h \

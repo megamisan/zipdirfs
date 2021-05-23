@@ -16,7 +16,6 @@ namespace ZipDirFs::Fuse
 	{
 		fusekit::entry* find(const char* name)
 		{
-			// TODO: Sync with updates / First fetch
 			return proxy()->find(name);
 		}
 		nlink_t links()

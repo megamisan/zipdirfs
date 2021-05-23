@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstring>
 
 int fileStat(int, char**);
 
@@ -19,6 +20,7 @@ int fileStat(int argc, char** argv) {
 		return -1;
 	}
 	struct stat stbuf;
+	memset(&stbuf, 0, sizeof(stbuf));
 	int result = lstat(argv[1], &stbuf);
 	if (write(3, &result, sizeof(result)) == -1) {
 		perror("Helper");

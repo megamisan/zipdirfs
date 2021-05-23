@@ -3,6 +3,7 @@
  */
 #include "ZipDirFs/Fuse/ZipRootDirectory.h"
 #include "ZipDirFs/Components/ChangedStart.h"
+#include "ZipDirFs/Components/EntryListProxyIncremental.h"
 #include "ZipDirFs/Components/NativeChanged.h"
 #include "ZipDirFs/Components/ZipDirectoryEnumerator.h"
 #include "ZipDirFs/Components/ZipFactory.h"
@@ -18,6 +19,7 @@ namespace ZipDirFs::Fuse
 	{
 		using namespace ::ZipDirFs::Components;
 		using ::ZipDirFs::Containers::Helpers::Changed;
+		using ::ZipDirFs::Containers::Helpers::EntryListProxy;
 
 		struct FirstValue
 		{
@@ -41,26 +43,47 @@ namespace ZipDirFs::Fuse
 			const boost::filesystem::path& path;
 		};
 
-		inline std::shared_ptr<::ZipDirFs::Components::ChangedProxy> getChangedProxy(
-			const boost::filesystem::path& p,
-			std::shared_ptr<::ZipDirFs::Components::ChangedProxy>& t)
+		struct Resolve
+		{
+			Resolve(const EntryGenerator::factory_ptr& factory) : factory(factory) {}
+			fusekit::entry* operator()(const std::string& name) const
+			{
+				return factory->create(name);
+			}
+
+		private:
+			EntryGenerator::factory_ptr factory;
+		};
+
+		inline std::shared_ptr<ChangedProxy> getChangedProxy(
+			const boost::filesystem::path& p, std::shared_ptr<ChangedProxy>& t)
 		{
 			return std::shared_ptr<ChangedProxy>(new ChangedProxy(std::unique_ptr<Changed>(
 				std::unique_ptr<ChangedStart>(new ChangedStart(FirstValue(p), BuildReal(p), t)))));
+		}
+		inline std::shared_ptr<EntryListProxy> getEntryListProxy(
+			const EntryGenerator::factory_ptr& factory,
+			const std::shared_ptr<EntryListProxy>& proxy)
+		{
+			return std::shared_ptr<EntryListProxy>(
+				new EntryListProxyProxy(std::unique_ptr<EntryListProxy>(
+					std::unique_ptr<EntryListProxyIncremental>(new EntryListProxyIncremental(
+						Resolve(factory), EntryGenerator::proxy_ptr(proxy))))));
 		}
 	} // namespace
 
 	std::string ZipRootDirectoryItem("");
 
 	ZipRootDirectory::ZipRootDirectory(const boost::filesystem::path& p) :
-		path(p), _proxy(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
-		_changed(getChangedProxy(path, _changed)),
-		_generator(EntryGenerator::proxy_ptr(_proxy), EntryGenerator::changed_ptr(_changed),
+		path(p), _changed(getChangedProxy(path, _changed)),
+		_factory(new ::ZipDirFs::Components::ZipFactory<ZipDirectory, ZipFile>(
+			path, ZipRootDirectoryItem, EntryGenerator::changed_ptr(_changed))),
+		_proxyBase(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
+		_proxy(getEntryListProxy(_factory, _proxyBase)),
+		_generator(EntryGenerator::proxy_ptr(_proxyBase), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::ZipDirectoryEnumerator(path, ZipRootDirectoryItem)),
-			EntryGenerator::factory_ptr(
-				new ::ZipDirFs::Components::ZipFactory<ZipDirectory, ZipFile>(
-					path, ZipRootDirectoryItem, EntryGenerator::changed_ptr(_changed))))
+			EntryGenerator::factory_ptr(_factory))
 	{
 	}
 	std::time_t ZipRootDirectory::getChangeTime() const { return *_changed; }

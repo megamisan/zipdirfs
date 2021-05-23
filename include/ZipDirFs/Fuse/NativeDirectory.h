@@ -5,6 +5,7 @@
 #define ZIPDIRFS_FUSE_NATIVEDIRECTORY_H
 
 #include "ZipDirFs/Components/ChangedProxy.h"
+#include "ZipDirFs/Components/EntryListProxyProxy.h"
 #include "ZipDirFs/Fuse/DirectoryNode.h"
 #include "ZipDirFs/Fuse/NativeTimePolicy.h"
 #include "ZipDirFs/Utilities/DefaultPermission.h"
@@ -27,8 +28,10 @@ namespace ZipDirFs::Fuse
 
 	private:
 		const boost::filesystem::path path;
-		EntryGenerator::proxy_ptr _proxy;
 		std::shared_ptr<::ZipDirFs::Components::ChangedProxy> _changed;
+		EntryGenerator::factory_ptr _factory;
+		EntryGenerator::proxy_ptr _proxyBase;
+		EntryGenerator::proxy_ptr _proxy;
 		EntryGenerator _generator;
 	};
 } // namespace ZipDirFs::Fuse

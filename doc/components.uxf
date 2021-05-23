@@ -25,7 +25,7 @@ _+getTime(path&amp;): time_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>700</x>
-      <y>430</y>
+      <y>410</y>
       <w>150</w>
       <h>40</h>
     </coordinates>
@@ -84,7 +84,7 @@ _+getTime(path&amp;, string&amp;): time_</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>840</x>
-      <y>490</y>
+      <y>470</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -97,7 +97,7 @@ bitset {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>700</x>
-      <y>490</y>
+      <y>550</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -254,7 +254,7 @@ alias mapped_type: entry*</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>870</x>
-      <y>430</y>
+      <y>410</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -325,7 +325,7 @@ ZipFactory
       <x>0</x>
       <y>0</y>
       <w>1080</w>
-      <h>670</h>
+      <h>880</h>
     </coordinates>
     <panel_attributes>ZipDirFs::Components
 --
@@ -336,7 +336,7 @@ ZipFactory
     <id>UMLClass</id>
     <coordinates>
       <x>990</x>
-      <y>430</y>
+      <y>410</y>
       <w>70</w>
       <h>40</h>
     </coordinates>
@@ -381,7 +381,7 @@ time {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>960</x>
-      <y>490</y>
+      <y>470</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -426,6 +426,154 @@ r1=-target\n{shared_ptr&amp;}</panel_attributes>
     <additional_attributes>40.0;70.0;40.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>680</y>
+      <w>310</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>/EntryListProxy {::ZipDirFs::Containers::Helpers}/
+--
+--
+/+begin(): iterator/
+/+end(): iterator/
+/+insert(iterator, key_type&amp;, mapped_type&amp;): iterator/
+/+erase(iterator): iterator/
+/+find(key_type&amp;): entry*/
+--
+alias iterator: EntryIterator
+alias key_type: string
+alias mapped_type: entry*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>680</y>
+      <w>440</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>EntryListProxyIncremental
+--
+-resolve: function&lt;entry*(string)&gt;
+--
+EntryListProxyStart(function&lt;entry*(string)&gt;, shared_ptr&lt;EntryListProxy&gt;)
+get(): shared_ptr&lt;EntryListProxy&gt;&amp;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>700</y>
+      <w>250</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;230.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>610</y>
+      <w>200</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>EntryList {::ZipDirFs::Containers}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>830</x>
+      <y>550</y>
+      <w>220</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>EntryIterator {::ZipDirFs::Containers}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>470</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=T
+&lt;&lt;datatype&gt;&gt;
+shared_ptr {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>800</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=T
+&lt;&lt;datatype&gt;&gt;
+unique_ptr {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>950</x>
+      <y>600</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+entry {::fusekit}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>510</x>
+      <y>710</y>
+      <w>250</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+m1=1
+r1=-entryListProxy {shared_ptr}</panel_attributes>
+    <additional_attributes>10.0;20.0;230.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>170</x>
+      <y>790</y>
+      <w>300</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>EntryListProxyProxy
+--
+--
+EntryListProxyProxy(unique_ptr&lt;EntryListProxy&gt;)
++swap(unique_ptr&lt;EntryListProxy&gt;&amp;): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>460</x>
+      <y>780</y>
+      <w>300</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;40.0;180.0;40.0;180.0;10.0;280.0;10.0</additional_attributes>
+  </element>
+  <element>
     <id>Relation</id>
     <coordinates>
       <x>240</x>
@@ -437,5 +585,18 @@ r1=-target\n{shared_ptr&amp;}</panel_attributes>
 m1=1
 r1=-changed\n{unique_ptr}</panel_attributes>
     <additional_attributes>60.0;340.0;60.0;150.0;10.0;150.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>460</x>
+      <y>800</y>
+      <w>300</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+m1=1
+r1=-entryListProxy {unique_ptr}</panel_attributes>
+    <additional_attributes>10.0;40.0;200.0;40.0;200.0;10.0;280.0;10.0</additional_attributes>
   </element>
 </diagram>
