@@ -54,7 +54,7 @@
       ><path d="M0 0 L0 100 L240 100 L240 0 Z"
       /></clipPath
       ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath17"
-      ><path d="M0 0 L0 110 L250 110 L250 0 Z"
+      ><path d="M0 0 L0 140 L250 140 L250 0 Z"
       /></clipPath
       ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath18"
       ><path d="M0 0 L0 30 L230 30 L230 0 Z"
@@ -105,10 +105,10 @@
       ><path d="M0 0 L0 90 L60 90 L60 0 Z"
       /></clipPath
       ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath34"
-      ><path d="M0 0 L0 280 L90 280 L90 0 Z"
+      ><path d="M0 0 L0 310 L90 310 L90 0 Z"
       /></clipPath
       ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath35"
-      ><path d="M0 0 L0 60 L70 60 L70 0 Z"
+      ><path d="M0 0 L0 70 L70 70 L70 0 Z"
       /></clipPath
       ><clipPath clipPathUnits="userSpaceOnUse" id="clipPath36"
       ><path d="M0 0 L0 220 L120 220 L120 0 Z"
@@ -381,10 +381,16 @@
       >alias mapped_type: entry*</text
     ></g
     ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(400,310)" stroke-opacity="0" stroke="rgb(255,255,255)"
-    ><rect x="0.5" width="248.5" height="108.5" y="0.5" clip-path="url(#clipPath17)" stroke="none"
+    ><rect x="0.5" width="248.5" height="138.5" y="0.5" clip-path="url(#clipPath17)" stroke="none"
     /></g
     ><g transform="translate(400,310)"
-    ><rect fill="none" x="0.5" width="248.5" height="108.5" y="0.5" clip-path="url(#clipPath17)"
+    ><rect fill="none" x="0.5" width="248.5" height="138.5" y="0.5" clip-path="url(#clipPath17)"
+    /></g
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(400,310)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><rect x="5.5" width="240" height="19.0469" y="110.7812" clip-path="url(#clipPath17)" stroke="none"
+    /></g
+    ><g transform="translate(400,310)"
+    ><rect fill="none" x="5.5" width="240" height="19.0469" y="110.7812" clip-path="url(#clipPath17)"
       /><text x="56" font-size="13px" y="17.0469" clip-path="url(#clipPath17)" font-family="sans-serif" stroke="none" xml:space="preserve"
       >ZipDirectoryEnumerator</text
       ><path fill="none" d="M1 23.0469 L249 23.0469" clip-path="url(#clipPath17)"
@@ -399,11 +405,14 @@
       ><path fill="none" d="M1 88.2344 L249 88.2344" clip-path="url(#clipPath17)"
       /><text x="5" font-size="13px" y="102.2812" clip-path="url(#clipPath17)" font-family="sans-serif" stroke="none" xml:space="preserve"
       >+ZipDirectoryEnumerator(path&amp;, string&amp;)</text
+      ><path fill="none" d="M1 108.2812 L249 108.2812" clip-path="url(#clipPath17)"
+      /><text x="91" font-size="13px" y="126.3281" clip-path="url(#clipPath17)" font-family="sans-serif" stroke="none" xml:space="preserve"
+      >HolderBase</text
     ></g
-    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(420,450)" stroke-opacity="0" stroke="rgb(255,255,255)"
+    ><g fill="rgb(255,255,255)" fill-opacity="0" transform="translate(450,490)" stroke-opacity="0" stroke="rgb(255,255,255)"
     ><rect x="0.5" width="228.5" height="28.5" y="0.5" clip-path="url(#clipPath18)" stroke="none"
     /></g
-    ><g transform="translate(420,450)"
+    ><g transform="translate(450,490)"
     ><rect fill="none" x="0.5" width="228.5" height="28.5" y="0.5" clip-path="url(#clipPath18)"
       /><text x="9" font-size="13px" y="17.0469" clip-path="url(#clipPath18)" font-family="sans-serif" stroke="none" xml:space="preserve"
       >EntryIterator {::ZipDirFs::Containers}</text
@@ -631,20 +640,21 @@
     /></g
     ><g stroke-dasharray="8,5" stroke-miterlimit="5" transform="translate(640,200)" stroke-linecap="butt"
     ><path fill="none" d="M11.5 10.5 L30.5 10.5" clip-path="url(#clipPath34)"
-      /><path fill="none" d="M30.5 10.5 L30.5 260.5" clip-path="url(#clipPath34)"
-      /><path fill="none" d="M30.5 260.5 L10.5 260.5" clip-path="url(#clipPath34)"
+      /><path fill="none" d="M30.5 10.5 L30.5 270.5" clip-path="url(#clipPath34)"
+      /><path fill="none" d="M30.5 270.5 L10.5 270.5" clip-path="url(#clipPath34)"
+      /><path fill="none" d="M10.5 270.5 L10.5 290.5" clip-path="url(#clipPath34)"
       /><path fill="none" stroke-miterlimit="10" stroke-dasharray="none" d="M22.2583 17 L11 10.5 L22.2583 4" clip-path="url(#clipPath34)" stroke-linecap="square"
     /></g
     ><g font-family="sans-serif" font-size="13px" transform="translate(640,200)"
-    ><text x="34" xml:space="preserve" y="142.5234" clip-path="url(#clipPath34)" stroke="none"
+    ><text x="34" xml:space="preserve" y="147.5234" clip-path="url(#clipPath34)" stroke="none"
       >«uses»</text
     ></g
-    ><g stroke-dasharray="8,5" stroke-miterlimit="5" transform="translate(610,410)" stroke-linecap="butt"
-    ><path fill="none" d="M10.5 11.5 L10.5 40.5" clip-path="url(#clipPath35)"
+    ><g stroke-dasharray="8,5" stroke-miterlimit="5" transform="translate(590,440)" stroke-linecap="butt"
+    ><path fill="none" d="M10.5 11.5 L10.5 50.5" clip-path="url(#clipPath35)"
       /><path fill="none" stroke-miterlimit="10" stroke-dasharray="none" d="M4 22.2583 L10.5 11 L17 22.2583" clip-path="url(#clipPath35)" stroke-linecap="square"
     /></g
-    ><g font-family="sans-serif" font-size="13px" transform="translate(610,410)"
-    ><text x="14" xml:space="preserve" y="32.5234" clip-path="url(#clipPath35)" stroke="none"
+    ><g font-family="sans-serif" font-size="13px" transform="translate(590,440)"
+    ><text x="14" xml:space="preserve" y="37.5234" clip-path="url(#clipPath35)" stroke="none"
       >«uses»</text
     ></g
     ><g transform="translate(320,140)"

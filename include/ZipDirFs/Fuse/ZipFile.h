@@ -25,12 +25,14 @@ namespace ZipDirFs::Fuse
 		std::time_t getParentModificationTime() const;
 		std::time_t getModificationTime() const;
 		std::shared_ptr<::ZipDirFs::Zip::Entry> entry() const;
+		off_t entrySize() const;
 
 	private:
 		const boost::filesystem::path zip;
 		const std::string file;
 		Components::ZipFileChanged changed;
 		std::shared_ptr<::ZipDirFs::Containers::Helpers::Changed> _rootChanged;
+		const off_t size;
 	};
 } // namespace ZipDirFs::Fuse
 

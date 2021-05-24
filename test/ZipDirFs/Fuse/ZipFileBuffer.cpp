@@ -54,7 +54,8 @@ namespace Test::ZipDirFs::Fuse
 		};
 
 		StatEntry::StatEntry(size_t size) :
-			::ZipDirFs::Zip::Entry(std::shared_ptr<::ZipDirFs::Zip::Base::Lib>(nullptr), "stat", false)
+			::ZipDirFs::Zip::Entry(
+				std::shared_ptr<::ZipDirFs::Zip::Base::Lib>(nullptr), "stat", false)
 		{
 			flags[1] = true;
 			cachedStat = ::ZipDirFs::Zip::Base::Stat(0, "stat", size, 0, false);
@@ -72,6 +73,7 @@ namespace Test::ZipDirFs::Fuse
 			std::time_t getParentModificationTime() const;
 			std::time_t getModificationTime() const;
 			std::shared_ptr<StatEntry> entry() const;
+			off_t entrySize() const;
 
 		protected:
 			const time_t _parent, _modified;
@@ -82,15 +84,13 @@ namespace Test::ZipDirFs::Fuse
 			_parent(parent), _modified(modified), _entry(new StatEntry(size))
 		{
 		}
-
 		std::time_t StatZipFile::getParentModificationTime() const { return this->_parent; }
-
 		std::time_t StatZipFile::getModificationTime() const { return this->_modified; }
-
 		std::shared_ptr<StatEntry> StatZipFile::entry() const
 		{
 			return std::shared_ptr<StatEntry>(this->_entry);
 		}
+		off_t StatZipFile::entrySize() const { return _entry->stat().getSize(); }
 
 		struct ZipFile : public basic_file<DefaultZipFileBuffer, ZipTimePolicy,
 							 default_file_permissions, no_xattr>
@@ -99,28 +99,28 @@ namespace Test::ZipDirFs::Fuse
 			std::time_t getParentModificationTime() const;
 			std::time_t getModificationTime() const;
 			std::shared_ptr<::ZipDirFs::Zip::Entry> entry() const;
+			off_t entrySize() const;
 
 		protected:
 			const filesystem::path zip;
 			const std::string file;
+			const off_t size;
 		};
 
 		ZipFile::ZipFile(const filesystem::path& zip, const std::string& file) :
-			zip(zip), file(file)
+			zip(zip), file(file), size(entry()->stat().getSize())
 		{
 		}
-
 		std::time_t ZipFile::getParentModificationTime() const
 		{
 			return ::ZipDirFs::Utilities::FileSystem::last_write_time(zip);
 		}
-
 		std::time_t ZipFile::getModificationTime() const { return entry()->stat().getChanged(); }
-
 		std::shared_ptr<::ZipDirFs::Zip::Entry> ZipFile::entry() const
 		{
 			return ::ZipDirFs::Zip::Factory::getInstance().get(zip)->open(file);
 		}
+		off_t ZipFile::entrySize() const { return size; }
 
 		struct Guard
 		{

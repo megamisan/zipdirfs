@@ -26,12 +26,16 @@ namespace ZipDirFs::Components
 		void next();
 		bool valid();
 		const std::string& current();
+		struct HolderBase
+		{
+			virtual ~HolderBase(){};
+		};
 
 	protected:
 		const boost::filesystem::path& path;
 		const std::string& item;
-		iterator currentIt;
-		iterator endIt;
+		std::unique_ptr<HolderBase> holder;
+		bool atEnd;
 
 	private:
 	};

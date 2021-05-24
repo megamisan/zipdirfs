@@ -6,6 +6,11 @@
 
 #include <gtest/gtest.h>
 
+namespace ZipDirFs::Components
+{
+	extern std::time_t zipDirectoryEnumeratorDelay;
+}
+
 namespace Test::ZipDirFs::Components
 {
 	struct ZipDirectoryEnumeratorTest : public ::testing::Test

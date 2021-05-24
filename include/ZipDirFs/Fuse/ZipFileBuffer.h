@@ -18,7 +18,7 @@ namespace ZipDirFs::Fuse
 	template <class Derived, class Entry = ::ZipDirFs::Zip::Entry>
 	struct ZipFileBuffer
 	{
-		off_t size() { return entry()->stat().getSize(); }
+		off_t size() { return entrySize(); }
 		int open(fuse_file_info& fi)
 		{
 			if ((fi.flags & O_ACCMODE) != 0)
@@ -61,6 +61,7 @@ namespace ZipDirFs::Fuse
 		int readlink(char* buf, size_t bufsize) { return -EINVAL; }
 
 		virtual std::shared_ptr<Entry> entry() const = 0;
+		virtual off_t entrySize() const = 0;
 
 	protected:
 		std::map<int, std::unique_ptr<Stream>> states;

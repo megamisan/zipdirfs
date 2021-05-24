@@ -10,7 +10,7 @@ namespace ZipDirFs::Fuse
 	ZipFile::ZipFile(const boost::filesystem::path& p, const std::string& f,
 		std::shared_ptr<::ZipDirFs::Containers::Helpers::Changed>& rc) :
 		zip(p),
-		file(f), _rootChanged(rc), changed(zip, file)
+		file(f), _rootChanged(rc), changed(zip, file), size(entry()->stat().getSize())
 	{
 		changed();
 	}
@@ -20,4 +20,5 @@ namespace ZipDirFs::Fuse
 	{
 		return ::ZipDirFs::Zip::Factory::getInstance().get(zip)->open(file);
 	}
+	off_t ZipFile::entrySize() const { return size; }
 } // namespace ZipDirFs::Fuse
