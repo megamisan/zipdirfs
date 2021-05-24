@@ -29,6 +29,7 @@ libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/Fuse/ZipFile.cpp \
 	src/ZipDirFs/Fuse/ZipRootDirectory.cpp \
 	src/ZipDirFs/Utilities/FileSystem.cpp \
+	src/ZipDirFs/Utilities/list_cleanup.cpp \
 	src/ZipDirFs/Zip/Archive.cpp \
 	src/ZipDirFs/Zip/Entry.cpp \
 	src/ZipDirFs/Zip/Exception.cpp \
@@ -74,6 +75,7 @@ noinst_HEADERS = \
 	include/ZipDirFs/Fuse/ZipTimePolicy.h \
 	include/ZipDirFs/Utilities/DefaultPermission.h \
 	include/ZipDirFs/Utilities/FileSystem.h \
+	include/ZipDirFs/Utilities/list_cleanup.h \
 	include/ZipDirFs/Utilities/type_traits.h \
 	include/ZipDirFs/Zip/Archive.h \
 	include/ZipDirFs/Zip/Entry.h \
@@ -193,6 +195,8 @@ gtest_SOURCES = \
 	test/ZipDirFs/Containers/list_map.cpp \
 	test/ZipDirFs/Utilities/FileSystem.h \
 	test/ZipDirFs/Utilities/FileSystem.cpp \
+	test/ZipDirFs/Utilities/list_cleanup.h \
+	test/ZipDirFs/Utilities/list_cleanup.cpp \
 	test/ZipDirFs/Fuse/DirectoryNode.h \
 	test/ZipDirFs/Fuse/DirectoryNode.cpp \
 	test/ZipDirFs/Fuse/EntryProxy.h \

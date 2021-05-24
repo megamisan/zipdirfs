@@ -12,6 +12,7 @@
 #include "ZipDirFs/Fuse/NativeSymlink.h"
 #include "ZipDirFs/Fuse/ZipRootDirectory.h"
 #include "ZipDirFs/Utilities/FileSystem.h"
+#include "ZipDirFs/Utilities/list_cleanup.h"
 #include <boost/filesystem.hpp>
 
 namespace ZipDirFs::Fuse
@@ -91,6 +92,10 @@ namespace ZipDirFs::Fuse
 				new ::ZipDirFs::Components::NativeDirectoryEnumerator(path)),
 			EntryGenerator::factory_ptr(_factory))
 	{
+	}
+	NativeDirectory::~NativeDirectory()
+	{
+		::ZipDirFs::Utilities::CleanupEntryList(*_proxyBase, *_factory);
 	}
 	std::time_t NativeDirectory::getChangeTime() const { return *_changed; }
 	std::time_t NativeDirectory::getModificationTime() const { return *_changed; }

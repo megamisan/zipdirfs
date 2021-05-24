@@ -21,6 +21,7 @@ namespace ZipDirFs::Fuse
 								 Utilities::DefaultDirectoryPermission, no_xattr>
 	{
 		NativeDirectory(const boost::filesystem::path& path);
+		~NativeDirectory();
 		std::time_t getChangeTime() const;
 		std::time_t getModificationTime() const;
 		EntryGenerator& generator();

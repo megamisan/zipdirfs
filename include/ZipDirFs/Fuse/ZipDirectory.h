@@ -22,6 +22,7 @@ namespace ZipDirFs::Fuse
 	{
 		ZipDirectory(const boost::filesystem::path& zip, const std::string& folder,
 			EntryGenerator::changed_ptr& rootChanged);
+		~ZipDirectory();
 		std::time_t getParentModificationTime() const;
 		std::time_t getModificationTime() const;
 		EntryGenerator& generator();

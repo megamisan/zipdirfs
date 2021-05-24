@@ -11,6 +11,7 @@
 #include "ZipDirFs/Containers/EntryList.h"
 #include "ZipDirFs/Fuse/ZipDirectory.h"
 #include "ZipDirFs/Fuse/ZipFile.h"
+#include "ZipDirFs/Utilities/list_cleanup.h"
 #include <boost/filesystem.hpp>
 
 namespace ZipDirFs::Fuse
@@ -85,6 +86,10 @@ namespace ZipDirFs::Fuse
 				new ::ZipDirFs::Components::ZipDirectoryEnumerator(path, ZipRootDirectoryItem)),
 			EntryGenerator::factory_ptr(_factory))
 	{
+	}
+	ZipRootDirectory::~ZipRootDirectory()
+	{
+		::ZipDirFs::Utilities::CleanupEntryList(*_proxyBase, *_factory);
 	}
 	std::time_t ZipRootDirectory::getChangeTime() const { return *_changed; }
 	std::time_t ZipRootDirectory::getModificationTime() const { return *_changed; }
