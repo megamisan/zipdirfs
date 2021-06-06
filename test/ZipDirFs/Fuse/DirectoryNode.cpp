@@ -45,19 +45,21 @@ namespace Test::ZipDirFs::Fuse
 			std::time_t getModificationTime() const;
 			EntryGenerator& generator();
 			EntryGenerator::proxy_ptr& proxy();
+			EntryGenerator::locker_ptr& locker();
 
 		protected:
 			const std::time_t changeTime;
 			EntryGenerator::proxy_ptr _proxy;
 			EntryGenerator::changed_ptr _changed;
+			EntryGenerator::locker_ptr _locker;
 			EntryGenerator _generator;
 		};
 
 		struct NotifiedEntryGenerator : public EntryGenerator
 		{
-			NotifiedEntryGenerator(
-				proxy_ptr&& p, changed_ptr&& c, enumerator_ptr&& e, factory_ptr&& f) :
-				EntryGenerator(std::move(p), std::move(c), std::move(e), std::move(f))
+			NotifiedEntryGenerator(proxy_ptr&& p, changed_ptr&& c, enumerator_ptr&& e,
+				factory_ptr&& f, locker_ptr&& l) :
+				EntryGenerator(std::move(p), std::move(c), std::move(e), std::move(f), std::move(l))
 			{
 			}
 			void add(::ZipDirFs::Containers::EntryIterator&& it, off_t off)
@@ -83,18 +85,22 @@ namespace Test::ZipDirFs::Fuse
 			std::time_t getModificationTime() const;
 			NotifiedEntryGenerator& generator();
 			NotifiedEntryGenerator::proxy_ptr& proxy();
+			EntryGenerator::locker_ptr& locker();
 
 		protected:
 			NotifiedEntryGenerator::proxy_ptr _proxy;
 			NotifiedEntryGenerator::changed_ptr _changed;
+			NotifiedEntryGenerator::locker_ptr _locker;
 			NotifiedEntryGenerator _generator;
 		};
 
 		EmptyRootDirectory::EmptyRootDirectory(std::time_t now, std::time_t modified) :
 			_proxy(EntryList<>::createWithProxy()), _changed(new OneChanged(modified)),
+			_locker(new EntryGenerator::locker_type()),
 			_generator(EntryGenerator::proxy_ptr(_proxy), EntryGenerator::changed_ptr(_changed),
 				EntryGenerator::enumerator_ptr(new EmptyEnumerator()),
-				EntryGenerator::factory_ptr(new NullFactory())),
+				EntryGenerator::factory_ptr(new NullFactory()),
+				EntryGenerator::locker_ptr(_locker)),
 			changeTime(now)
 		{
 		}
@@ -102,21 +108,25 @@ namespace Test::ZipDirFs::Fuse
 		std::time_t EmptyRootDirectory::getModificationTime() const { return *_changed; }
 		EntryGenerator& EmptyRootDirectory::generator() { return _generator; }
 		EntryGenerator::proxy_ptr& EmptyRootDirectory::proxy() { return _proxy; }
+		EntryGenerator::locker_ptr& EmptyRootDirectory::locker() { return _locker; }
 
 		FunctionalRootDirectory::FunctionalRootDirectory(
 			NotifiedEntryGenerator::enumerator_ptr& enumerator, std::time_t modified) :
 			_proxy(EntryList<>::createWithProxy()),
 			_changed(new OneChanged(modified)),
+			_locker(new NotifiedEntryGenerator::locker_type()),
 			_generator(NotifiedEntryGenerator::proxy_ptr(_proxy),
 				NotifiedEntryGenerator::changed_ptr(_changed),
 				NotifiedEntryGenerator::enumerator_ptr(enumerator),
-				NotifiedEntryGenerator::factory_ptr(new NullFactory()))
+				NotifiedEntryGenerator::factory_ptr(new NullFactory()),
+				EntryGenerator::locker_ptr(_locker))
 		{
 		}
 		std::time_t FunctionalRootDirectory::getChangeTime() const { return *_changed; }
 		std::time_t FunctionalRootDirectory::getModificationTime() const { return *_changed; }
 		NotifiedEntryGenerator& FunctionalRootDirectory::generator() { return _generator; }
 		NotifiedEntryGenerator::proxy_ptr& FunctionalRootDirectory::proxy() { return _proxy; }
+		NotifiedEntryGenerator::locker_ptr& FunctionalRootDirectory::locker() { return _locker; }
 
 		struct Guard
 		{
@@ -181,15 +191,17 @@ namespace Test::ZipDirFs::Fuse
 		filesystem::path mountPoint(tempFolderPath());
 		filesystem::create_directory(mountPoint);
 		std::string fsName = "DirectoryNodeTestStat";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		int statResult(-1);
 		struct stat stbuf
 		{
@@ -198,7 +210,8 @@ namespace Test::ZipDirFs::Fuse
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName,
 			std::unique_ptr<::fusekit::entry>(new EmptyRootDirectory(now, modified)),
-			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
@@ -225,15 +238,17 @@ namespace Test::ZipDirFs::Fuse
 		filesystem::path mountPoint(tempFolderPath());
 		filesystem::create_directory(mountPoint);
 		std::string fsName = "DirectoryNodeTestList";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		NotifiedEntryGenerator* generator;
 		DirectoryNodeListGenerator listGenerator(generator);
 		NotifiedEntryGenerator::enumerator_ptr enumerator(new FunctionalEnumerator(
@@ -246,7 +261,8 @@ namespace Test::ZipDirFs::Fuse
 		std::vector<std::string> result;
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName, std::unique_ptr<::fusekit::entry>(root),
-			[&mountPoint, &result, &daemon](std::vector<int> fds) {
+			[&mountPoint, &result, &daemon](std::vector<int> fds)
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};

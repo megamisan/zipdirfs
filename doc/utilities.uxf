@@ -31,7 +31,7 @@ fontfamily=SansSerif
       <x>200</x>
       <y>120</y>
       <w>820</w>
-      <h>330</h>
+      <h>420</h>
     </coordinates>
     <panel_attributes>ZipDirFs::Utilities
 --
@@ -76,7 +76,7 @@ function {::std}</panel_attributes>
     <coordinates>
       <x>220</x>
       <y>320</y>
-      <w>100</w>
+      <w>80</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>&lt;&lt;datatype&gt;&gt;
@@ -86,7 +86,7 @@ time {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>340</x>
+      <x>320</x>
       <y>320</y>
       <w>150</w>
       <h>40</h>
@@ -200,5 +200,45 @@ DefaultDirectoryPermission</panel_attributes>
 &lt;&lt;bind&gt;&gt;
 &lt; Permissions: 0555 &gt;</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;30.0;190.0;30.0;190.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>450</y>
+      <w>180</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>MutexLocker
+--
+-mutex: mutex
+--
++lock(): unique_lock&lt;mutex&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>430</x>
+      <y>450</y>
+      <w>130</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+unique_lock {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>580</x>
+      <y>450</y>
+      <w>90</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+mutex {::std}</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

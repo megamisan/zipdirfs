@@ -100,8 +100,8 @@ innerclass}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>850</x>
-      <y>1060</y>
+      <x>690</x>
+      <y>850</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -134,8 +134,8 @@ alias mapped_type: entry*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>850</x>
-      <y>1010</y>
+      <x>810</x>
+      <y>1040</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -194,8 +194,8 @@ innerclass}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>850</x>
-      <y>960</y>
+      <x>810</x>
+      <y>990</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -233,8 +233,8 @@ iterator</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>740</x>
-      <y>1110</y>
+      <x>690</x>
+      <y>1140</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -256,15 +256,15 @@ unique_ptr {std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1090</x>
+      <x>1020</x>
       <y>740</y>
-      <w>410</w>
-      <h>410</h>
+      <w>480</w>
+      <h>440</h>
     </coordinates>
     <panel_attributes>EntryGenerator
 --
 --
-+EntryGenerator(proxy_ptr, changed_ptr, enumerator_ptr, factory_ptr)
++EntryGenerator(proxy_ptr, changed_ptr, enumerator_ptr, factory_ptr, locker_ptr)
 +begin(): EntryIterator
 +end(): EntryIterator
 +remove(off): EntryIterator
@@ -275,10 +275,12 @@ alias proxy_type: EntryListProxy
 alias changed_type: Changed
 alias enumerator_type: Enumerator&lt;string&gt;
 alias factory_type: Factory
+alias locker_type: MutexLocker
 alias proxy_ptr: shared_ptr&lt;proxy_type&gt;
 alias changed_ptr: shared_ptr&lt;changed_type&gt;
 alias enumerator_ptr: shared_ptr&lt;enumerator_type&gt;
 alias factory_ptr: shared_ptr&lt;factory_type&gt;
+alias locker_ptr: shared_ptr&lt;locker_type&gt;
 --
 {innerclass
 &lt;&lt;datatype&gt;&gt;
@@ -301,8 +303,8 @@ group=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>360</x>
-      <y>1040</y>
+      <x>550</x>
+      <y>1110</y>
       <w>120</w>
       <h>70</h>
     </coordinates>
@@ -317,8 +319,8 @@ group=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>600</x>
-      <y>900</y>
+      <x>360</x>
+      <y>1070</y>
       <w>170</w>
       <h>110</h>
     </coordinates>
@@ -336,7 +338,7 @@ group=1</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>360</x>
-      <y>910</y>
+      <y>950</y>
       <w>210</w>
       <h>100</h>
     </coordinates>
@@ -353,8 +355,8 @@ alias mapped_type: entry*</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>520</x>
-      <y>1090</y>
+      <x>690</x>
+      <y>950</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -366,8 +368,8 @@ map {std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>630</x>
-      <y>1090</y>
+      <x>690</x>
+      <y>1020</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -379,8 +381,8 @@ set {std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>850</x>
-      <y>1110</y>
+      <x>800</x>
+      <y>1140</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -394,7 +396,7 @@ size {std}</panel_attributes>
       <x>340</x>
       <y>160</y>
       <w>1180</w>
-      <h>1010</h>
+      <h>1040</h>
     </coordinates>
     <panel_attributes>ZipDirFs::Containers
 --
@@ -404,8 +406,8 @@ size {std}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>950</x>
-      <y>1010</y>
+      <x>880</x>
+      <y>1040</y>
       <w>170</w>
       <h>100</h>
     </coordinates>
@@ -419,8 +421,8 @@ group=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>950</x>
-      <y>920</y>
+      <x>880</x>
+      <y>950</y>
       <w>170</w>
       <h>110</h>
     </coordinates>
@@ -470,8 +472,8 @@ group=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>740</x>
-      <y>1060</y>
+      <x>690</x>
+      <y>1090</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -482,13 +484,26 @@ time {std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>960</x>
-      <y>1110</y>
+      <x>800</x>
+      <y>850</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>&lt;&lt;datatype&gt;&gt;
 off {std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>690</x>
+      <y>900</y>
+      <w>200</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+MutexLocker {ZipDirFs::Utilities}
+</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

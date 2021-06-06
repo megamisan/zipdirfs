@@ -41,6 +41,7 @@ libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/Fuse/ZipRootDirectory.cpp \
 	src/ZipDirFs/Utilities/FileSystem.cpp \
 	src/ZipDirFs/Utilities/list_cleanup.cpp \
+	src/ZipDirFs/Utilities/MutexLocker.cpp \
 	src/ZipDirFs/Zip/Archive.cpp \
 	src/ZipDirFs/Zip/Entry.cpp \
 	src/ZipDirFs/Zip/Exception.cpp \
@@ -87,6 +88,7 @@ noinst_HEADERS = \
 	include/ZipDirFs/Utilities/DefaultPermission.h \
 	include/ZipDirFs/Utilities/FileSystem.h \
 	include/ZipDirFs/Utilities/list_cleanup.h \
+	include/ZipDirFs/Utilities/MutexLocker.h \
 	include/ZipDirFs/Utilities/type_traits.h \
 	include/ZipDirFs/Zip/Archive.h \
 	include/ZipDirFs/Zip/Entry.h \

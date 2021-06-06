@@ -87,10 +87,11 @@ namespace ZipDirFs::Fuse
 			ZipRootDirectory>(path)),
 		_proxyBase(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
 		_proxy(getEntryListProxy(_factory, _proxyBase)),
+		_locker(new EntryGenerator::locker_type()),
 		_generator(EntryGenerator::proxy_ptr(_proxyBase), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::NativeDirectoryEnumerator(path)),
-			EntryGenerator::factory_ptr(_factory))
+			EntryGenerator::factory_ptr(_factory), EntryGenerator::locker_ptr(_locker))
 	{
 	}
 	NativeDirectory::~NativeDirectory()
@@ -101,4 +102,5 @@ namespace ZipDirFs::Fuse
 	std::time_t NativeDirectory::getModificationTime() const { return *_changed; }
 	EntryGenerator& NativeDirectory::generator() { return _generator; }
 	EntryGenerator::proxy_ptr& NativeDirectory::proxy() { return _proxy; }
+	EntryGenerator::locker_ptr& NativeDirectory::locker() { return _locker; }
 } // namespace ZipDirFs::Fuse

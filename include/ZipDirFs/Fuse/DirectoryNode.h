@@ -16,6 +16,7 @@ namespace ZipDirFs::Fuse
 	{
 		fusekit::entry* find(const char* name)
 		{
+			auto guard(locker()->lock());
 			return proxy()->find(name);
 		}
 		nlink_t links()
@@ -72,6 +73,7 @@ namespace ZipDirFs::Fuse
 
 		virtual Generator& generator() = 0;
 		virtual typename Generator::proxy_ptr& proxy() = 0;
+		virtual typename Generator::locker_ptr& locker() = 0;
 	};
 
 	template <class Derived>

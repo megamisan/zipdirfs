@@ -81,10 +81,11 @@ namespace ZipDirFs::Fuse
 			path, ZipRootDirectoryItem, EntryGenerator::changed_ptr(_changed))),
 		_proxyBase(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
 		_proxy(getEntryListProxy(_factory, _proxyBase)),
+		_locker(new EntryGenerator::locker_type()),
 		_generator(EntryGenerator::proxy_ptr(_proxyBase), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::ZipDirectoryEnumerator(path, ZipRootDirectoryItem)),
-			EntryGenerator::factory_ptr(_factory))
+			EntryGenerator::factory_ptr(_factory), EntryGenerator::locker_ptr(_locker))
 	{
 	}
 	ZipRootDirectory::~ZipRootDirectory()
@@ -95,4 +96,5 @@ namespace ZipDirFs::Fuse
 	std::time_t ZipRootDirectory::getModificationTime() const { return *_changed; }
 	EntryGenerator& ZipRootDirectory::generator() { return _generator; }
 	EntryGenerator::proxy_ptr& ZipRootDirectory::proxy() { return _proxy; }
+	EntryGenerator::locker_ptr& ZipRootDirectory::locker() { return _locker; }
 } // namespace ZipDirFs::Fuse

@@ -9,6 +9,7 @@
 #include "ZipDirFs/Containers/Helpers/EntryListProxy.h"
 #include "ZipDirFs/Containers/Helpers/Enumerator.h"
 #include "ZipDirFs/Containers/Helpers/Factory.h"
+#include "ZipDirFs/Utilities/MutexLocker.h"
 #include <map>
 #include <memory>
 #include <set>
@@ -36,11 +37,13 @@ namespace ZipDirFs::Containers
 		typedef Helpers::Changed changed_type;
 		typedef Helpers::Enumerator<std::string> enumerator_type;
 		typedef Helpers::Factory factory_type;
+		typedef Utilities::MutexLocker locker_type;
 		typedef std::shared_ptr<proxy_type> proxy_ptr;
 		typedef std::shared_ptr<changed_type> changed_ptr;
 		typedef std::shared_ptr<enumerator_type> enumerator_ptr;
 		typedef std::shared_ptr<factory_type> factory_ptr;
-		EntryGenerator(proxy_ptr&&, changed_ptr&&, enumerator_ptr&&, factory_ptr&&);
+		typedef std::shared_ptr<locker_type> locker_ptr;
+		EntryGenerator(proxy_ptr&&, changed_ptr&&, enumerator_ptr&&, factory_ptr&&, locker_ptr&&);
 		virtual ~EntryGenerator();
 
 		EntryIterator begin();

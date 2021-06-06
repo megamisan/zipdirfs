@@ -27,7 +27,8 @@ namespace Test::ZipDirFs::Containers
 		std::move(EntryGenerator::proxy_ptr(proxy)), \
 		std::move(EntryGenerator::changed_ptr(changed)), \
 		std::move(EntryGenerator::enumerator_ptr(enumerator)), \
-		std::move(EntryGenerator::factory_ptr(factory)))
+		std::move(EntryGenerator::factory_ptr(factory)), \
+		EntryGenerator::locker_ptr(new EntryGenerator::locker_type()))
 
 	bool WrapperAccess::invokeEquals(const EntryIterator::Wrapper& w1, const EntryIterator::Wrapper& w2)
 	{

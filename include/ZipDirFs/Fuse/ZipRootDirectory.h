@@ -26,6 +26,7 @@ namespace ZipDirFs::Fuse
 		std::time_t getModificationTime() const;
 		EntryGenerator& generator();
 		EntryGenerator::proxy_ptr& proxy();
+		EntryGenerator::locker_ptr& locker();
 
 	private:
 		const boost::filesystem::path path;
@@ -33,6 +34,7 @@ namespace ZipDirFs::Fuse
 		EntryGenerator::factory_ptr _factory;
 		EntryGenerator::proxy_ptr _proxyBase;
 		EntryGenerator::proxy_ptr _proxy;
+		EntryGenerator::locker_ptr _locker;
 		EntryGenerator _generator;
 	};
 } // namespace ZipDirFs::Fuse
