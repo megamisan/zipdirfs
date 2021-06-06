@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 64 64" version="1.1">
+  <defs>
+    <filter style="color-interpolation-filters:sRGB;" id="shadow">
+      <feFlood flood-opacity="1" flood-color="rgb(255,255,255)" result="flood" />
+      <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1" />
+      <feGaussianBlur in="composite1" stdDeviation="3" result="blur" id="feGaussianBlur1322" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" result="composite2" />
+    </filter>
+  </defs>
+  <g>
+    <path fill="gray" d="M11,22h4v8h8v4h-8v17h8v4h-12z" />
+    <g aria-label="ZIP" fill="black" style="font-weight:bold;font-size:16px;font-family:sans-serif;filter:url(#shadow)">
+      <path d="M 37.773437,18.632803 H 28 V 16.453115 L 33.796875,9.2499905 H 28.28125 v -2.25 h 9.179687 v 2.21875 l -5.789062,7.1640625 h 6.101562 z" />
+      <path d="m 46.140625,18.632803 h -6.8125 v -2.0625 h 1.90625 V 9.0624905 h -1.90625 v -2.0625 h 6.8125 v 2.0625 h -1.90625 v 7.5078125 h 1.90625 z" />
+      <path d="m 58.1875,10.671865 q 0,0.78125 -0.273438,1.53125 -0.273437,0.742188 -0.78125,1.25 -0.695312,0.6875 -1.554687,1.039063 -0.851563,0.351562 -2.125,0.351562 h -1.867188 v 3.789063 h -3 V 6.9999905 h 4.9375 q 1.109375,0 1.867188,0.1953125 0.765625,0.1875 1.351562,0.5703125 0.703125,0.4609375 1.070313,1.1796875 0.375,0.71875 0.375,1.726562 z m -3.101563,0.07031 q 0,-0.492188 -0.265625,-0.84375 -0.265625,-0.359375 -0.617187,-0.5 -0.46875,-0.1875 -0.914063,-0.203125 -0.445312,-0.023437 -1.1875,-0.023437 H 51.585937 V 12.65624 h 0.859375 q 0.765625,0 1.257813,-0.09375 0.5,-0.09375 0.835937,-0.375 0.289063,-0.25 0.414063,-0.59375 0.132812,-0.351562 0.132812,-0.851562 z" />
+    </g>
+    <g>
+      <path fill="gray" d="M2,2h9l4,4h10v3h-23z" />
+      <path fill="#b3b3b3" d="M2,20v-11h23v11z" />
+    </g>
+    <g>
+      <path fill="gray" d="M25,23h9l4,4h10v3h-23z" />
+      <path fill="#b3b3b3" d="M25,41v-11h23v11z" />
+    </g>
+    <g>
+      <path fill="gray" d="M25,44h9l4,4h10v3h-23z" />
+      <path fill="#b3b3b3" d="M25,62v-11h23v11z" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=ZipDirFs
+Icon=zipdirfs
+NoDisplay=true
+Comment=A FUSE file system which show each mounted zip file as a directory

@@ -50,6 +50,8 @@ test_detail.xml
 # Package building
 autoreconf.*
 debhelper*
+*/.debhelper/*
 files
 */zipdirfs.*
 zipdirfs-*.tar*
+!assets/*

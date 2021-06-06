@@ -3,6 +3,17 @@ AM_CPPFLAGS = -I $(top_srcdir)/include $(BOOST_CPPFLAGS)
 AM_CXXFLAGS = -Wall -fexceptions
 AM_LDFLAGS = -Ur $(BOOST_LDFLAGS)
 
+applicationdir = $(datarootdir)/applications
+hiiconsdir = $(datarootdir)/icons/hicolor
+xpmiconsdir = $(datarootdir)/pixmaps
+48iconsdir = $(hiiconsdir)/48x48/apps
+scalableiconsdir = $(hiiconsdir)/scalable/apps
+
+dist_application_DATA = assets/zipdirfs.desktop
+dist_xpmicons_DATA = assets/zipdirfs.xpm
+dist_48icons_DATA = assets/zipdirfs.png
+dist_scalableicons_DATA = assets/zipdirfs.svg
+
 bin_PROGRAMS = zipdirfs
 zipdirfs_SOURCES = \
 	src/Main.cpp \
