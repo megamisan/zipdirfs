@@ -11,14 +11,17 @@ namespace Test::ZipDirFs::Fuse
 {
 	using ::testing::Return;
 
-	namespace{
-		struct NTPDerived{};
+	namespace
+	{
+		struct NTPDerived
+		{
+		};
 		struct NativeTimePolicyMock : public ::ZipDirFs::Fuse::NativeTimePolicy<NTPDerived>
 		{
 			MOCK_CONST_METHOD0(getChangeTime, std::time_t());
 			MOCK_CONST_METHOD0(getModificationTime, std::time_t());
 		};
-	}
+	} // namespace
 
 	TEST(NativeTimePolicyTest, change_time)
 	{

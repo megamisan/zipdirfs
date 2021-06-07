@@ -237,15 +237,17 @@ namespace Test::ZipDirFs::Fuse
 		filesystem::path mountPoint(tempFolderPath());
 		filesystem::create_directory(mountPoint);
 		std::string fsName = "ZipFileBufferTestStat";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		StatZipFile szf(parent, modified, size);
 		SimpleDirectory sd("stat", &szf);
 		int statResult(-1);
@@ -255,7 +257,8 @@ namespace Test::ZipDirFs::Fuse
 		};
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName, std::unique_ptr<::fusekit::entry>(std::move(sd.getMock())),
-			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
@@ -292,19 +295,23 @@ namespace Test::ZipDirFs::Fuse
 		std::string fsName = "ZipFileBufferTestRead";
 		Stream::char_type *expected = new Stream::char_type[size],
 						  *result = new Stream::char_type[size];
-		Guard buffer([expected, result]() {
-			delete[] expected;
-			delete[] result;
-		});
-		Guard rmdir([mountPoint]() {
-			try
+		Guard buffer(
+			[expected, result]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
+				delete[] expected;
+				delete[] result;
+			});
+		Guard rmdir(
+			[mountPoint]()
 			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		GenerateRandomData(expected, size);
 		EXPECT_CALL(fs, last_write_time(facticeZip)).WillRepeatedly(Return(parent));
 		EXPECT_CALL(lib, open(Eq(facticeZip))).WillRepeatedly(Return(&data));
@@ -314,22 +321,25 @@ namespace Test::ZipDirFs::Fuse
 		EXPECT_CALL(lib, stat(&data, Eq(facticeFile))).WillRepeatedly(Return(facticeStat));
 		EXPECT_CALL(lib, fopen_index(&data, 0)).WillRepeatedly(Return(&file));
 		EXPECT_CALL(lib, fread(&file, _, _))
-			.WillRepeatedly(Invoke([expected, &offset, size](::ZipDirFs::Zip::Base::Lib::File* file,
-									   void* buf, uint64_t len) -> uint64_t {
-				std::streamsize length = std::min<std::streamsize>(len, size - offset);
-				if (length > 0)
+			.WillRepeatedly(Invoke(
+				[expected, &offset, size](
+					::ZipDirFs::Zip::Base::Lib::File* file, void* buf, uint64_t len) -> uint64_t
 				{
-					memcpy(buf, expected, length);
-					offset += length;
-				}
-				return length;
-			}));
+					std::streamsize length = std::min<std::streamsize>(len, size - offset);
+					if (length > 0)
+					{
+						memcpy(buf, expected, length);
+						offset += length;
+					}
+					return length;
+				}));
 		EXPECT_CALL(lib, fclose(&file)).WillRepeatedly(Return());
 		ZipFile zf(facticeZip, facticeFile);
 		SimpleDirectory sd("read", &zf);
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName, std::unique_ptr<::fusekit::entry>(std::move(sd.getMock())),
-			[&daemon, &mountPoint, result, &resultSize](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, result, &resultSize](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};

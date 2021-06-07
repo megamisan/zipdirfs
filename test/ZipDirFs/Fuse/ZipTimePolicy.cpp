@@ -11,14 +11,17 @@ namespace Test::ZipDirFs::Fuse
 {
 	using ::testing::Return;
 
-	namespace{
-		struct ZTPDerived{};
+	namespace
+	{
+		struct ZTPDerived
+		{
+		};
 		struct ZipTimePolicyMock : public ::ZipDirFs::Fuse::ZipTimePolicy<ZTPDerived>
 		{
 			MOCK_CONST_METHOD0(getParentModificationTime, std::time_t());
 			MOCK_CONST_METHOD0(getModificationTime, std::time_t());
 		};
-	}
+	} // namespace
 
 	TEST(ZipTimePolicyTest, change_time)
 	{

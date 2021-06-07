@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Entry.h"
 #include "ZipDirFs/Zip/Factory.h"
@@ -10,7 +10,8 @@
 
 namespace ZipDirFs::Zip
 {
-	Entry::Entry(const std::shared_ptr<Base::Lib>& d, const std::string& n, bool isDir) : data(d), name(n), cachedStat()
+	Entry::Entry(const std::shared_ptr<Base::Lib>& d, const std::string& n, bool isDir) :
+		data(d), name(n), cachedStat()
 	{
 		if (flags[ENTRY_IS_DIR] = flags[ENTRY_STATS_FETCHED] = isDir)
 		{

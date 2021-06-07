@@ -1,11 +1,12 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Content.h"
 #include "test/gtest.h"
 #include <thread>
 
-namespace Test::ZipDirFs::Zip::Base {
+namespace Test::ZipDirFs::Zip::Base
+{
 	using ::ZipDirFs::Zip::Base::Content;
 
 	std::mutex& ContentAccess::getRead(Content& c)
@@ -91,9 +92,11 @@ namespace Test::ZipDirFs::Zip::Base {
 
 	TEST(ContentTest, DecReader)
 	{
-		const std::uint64_t val = []() {
+		const std::uint64_t val = []()
+		{
 			auto val = ::Test::rand(UINT32_MAX);
-			while (val < 2) val = ::Test::rand(UINT32_MAX);
+			while (val < 2)
+				val = ::Test::rand(UINT32_MAX);
 			return val;
 		}();
 		const std::uint64_t next = val - 1;
@@ -108,13 +111,16 @@ namespace Test::ZipDirFs::Zip::Base {
 	{
 		bool passed = false;
 		Content content;
-		std::thread check([&passed, &content]() {
-			auto lock(content.readLock());
-			if (ContentAccess::getZeroReaders(content).wait_for(lock, wait_time) == std::cv_status::no_timeout)
+		std::thread check(
+			[&passed, &content]()
 			{
-				passed = true;
-			}
-		});
+				auto lock(content.readLock());
+				if (ContentAccess::getZeroReaders(content).wait_for(lock, wait_time)
+					== std::cv_status::no_timeout)
+				{
+					passed = true;
+				}
+			});
 		std::this_thread::sleep_for(sleep_time);
 		auto lock(content.readLock());
 		ContentAccess::getReaderCount(content) = 1;
@@ -128,13 +134,16 @@ namespace Test::ZipDirFs::Zip::Base {
 	{
 		bool timedout = false;
 		Content content;
-		std::thread check([&timedout, &content]() {
-			auto lock(content.readLock());
-			if (ContentAccess::getZeroReaders(content).wait_for(lock, wait_time) == std::cv_status::timeout)
+		std::thread check(
+			[&timedout, &content]()
 			{
-				timedout = true;
-			}
-		});
+				auto lock(content.readLock());
+				if (ContentAccess::getZeroReaders(content).wait_for(lock, wait_time)
+					== std::cv_status::timeout)
+				{
+					timedout = true;
+				}
+			});
 		std::this_thread::sleep_for(sleep_time);
 		auto lock(content.readLock());
 		ContentAccess::getReaderCount(content) = 0;
@@ -149,18 +158,21 @@ namespace Test::ZipDirFs::Zip::Base {
 		std::vector<std::uint8_t> values{1, 2};
 		std::uint8_t waiter = 0, trigerer = 0;
 		std::mutex valuesExtract;
-		auto pop = [&values, &valuesExtract](std::uint8_t& target) {
+		auto pop = [&values, &valuesExtract](std::uint8_t& target)
+		{
 			std::lock_guard<std::mutex> lock(valuesExtract);
 			target = values.back();
 			values.pop_back();
 		};
 		Content content;
-		std::thread check([&pop, &waiter, &content]() {
-			auto lock(content.readLock());
-			ContentAccess::getReaderCount(content) = 1;
-			content.waitNoReaders(lock);
-			pop(waiter);
-		});
+		std::thread check(
+			[&pop, &waiter, &content]()
+			{
+				auto lock(content.readLock());
+				ContentAccess::getReaderCount(content) = 1;
+				content.waitNoReaders(lock);
+				pop(waiter);
+			});
 		std::this_thread::sleep_for(sleep_time);
 		auto lock(content.readLock());
 		content.decReadersAtomic(lock);
@@ -171,4 +183,4 @@ namespace Test::ZipDirFs::Zip::Base {
 		check.join();
 		ASSERT_LT(trigerer, waiter);
 	}
-} // namespace Test
+} // namespace Test::ZipDirFs::Zip::Base

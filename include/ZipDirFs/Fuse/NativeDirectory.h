@@ -17,6 +17,10 @@ namespace ZipDirFs::Fuse
 {
 	using namespace fusekit;
 
+	/**
+	 * @brief A directory entry representing a real filesystem directory
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct NativeDirectory : public basic_directory<DefaultDirectoryNode, NativeTimePolicy,
 								 Utilities::DefaultDirectoryPermission, no_xattr>
 	{

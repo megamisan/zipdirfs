@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipFactory.h"
 #include "../../fusekit/Fixtures/EntryMock.h"
@@ -60,8 +60,7 @@ namespace Test::ZipDirFs::Components
 		Lib lib;
 		Fixtures::LibInstance libInstance;
 		const std::string inner(std::to_string(::Test::rand(UINT32_MAX))),
-			item(std::to_string(::Test::rand(UINT32_MAX))),
-			expected(inner + "/" + item + "/");
+			item(std::to_string(::Test::rand(UINT32_MAX))), expected(inner + "/" + item + "/");
 		std::shared_ptr<Changed> changed(new NullChanged());
 		const path parent(path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		EXPECT_CALL(lib, open(parent)).WillOnce(Return(&libInstance));

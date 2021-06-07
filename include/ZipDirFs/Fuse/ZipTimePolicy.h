@@ -10,6 +10,11 @@ namespace ZipDirFs::Fuse
 {
 	using std::time_t;
 
+	/**
+	 * @brief A fusekit time policy for zip archive entry
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Derived Recursive templating parameter.
+	 */
 	template <class Derived>
 	struct ZipTimePolicy
 	{

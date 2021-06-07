@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_ENTRY_H
 #define ZIPDIRFS_ZIP_ENTRY_H
@@ -14,6 +14,12 @@
 namespace ZipDirFs::Zip
 {
 	struct Stream;
+
+	/**
+	 * @brief Represents a zip archive entry
+	 * @remarks Must be created using @link ZipDirFs::Zip::Archive::open Archive::open @endlink.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Entry
 	{
 	public:

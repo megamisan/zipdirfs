@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Stream.h"
 #include "ZipDirFs/Zip/Archive.h"
@@ -169,18 +169,20 @@ namespace ZipDirFs::Zip
 	{
 		auto lastWrite = content.lastWrite;
 		auto write(content.writeLock());
-		reader_lock.synchronize([&content, lastWrite]() {
-			auto& c = content;
-			if (lastWrite == c.lastWrite && c.data != nullptr)
+		reader_lock.synchronize(
+			[&content, lastWrite]()
 			{
-				auto len = Lib::fread(c.data, c.buffer + lastWrite, chunksize);
-				c.lastWrite += len;
-				if (c.lastWrite == c.length)
+				auto& c = content;
+				if (lastWrite == c.lastWrite && c.data != nullptr)
 				{
-					Lib::fclose(c.data);
-					c.data = nullptr;
+					auto len = Lib::fread(c.data, c.buffer + lastWrite, chunksize);
+					c.lastWrite += len;
+					if (c.lastWrite == c.length)
+					{
+						Lib::fclose(c.data);
+						c.data = nullptr;
+					}
 				}
-			}
-		});
+			});
 	}
 } // namespace ZipDirFs::Zip

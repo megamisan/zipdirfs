@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Containers/list_map.h"
 #include "Fixtures/helpers.h"
@@ -35,8 +35,8 @@ namespace Test::ZipDirFs::Containers
 	}
 
 	list_map_test::list_map_test() :
-		::testing::Test(), first_value(::Test::rand(UINT32_MAX)), second_value(::Test::rand(UINT32_MAX)),
-		first_key(generateKey()), second_key(generateKey())
+		::testing::Test(), first_value(::Test::rand(UINT32_MAX)),
+		second_value(::Test::rand(UINT32_MAX)), first_key(generateKey()), second_key(generateKey())
 	{
 	}
 	void list_map_test::SetUp()
@@ -86,56 +86,64 @@ namespace Test::ZipDirFs::Containers
 	TEST_F(list_map_mock_test, begin)
 	{
 		list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), begin()).WillOnce(Return(list_type::iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), begin())
+			.WillOnce(Return(list_type::iterator()));
 		lm.begin();
 	}
 
 	TEST_F(list_map_mock_test, begin_const)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), begin()).WillOnce(Return(list_type::const_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), begin())
+			.WillOnce(Return(list_type::const_iterator()));
 		lm.begin();
 	}
 
 	TEST_F(list_map_mock_test, end)
 	{
 		list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), end()).WillOnce(Return(list_type::iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), end())
+			.WillOnce(Return(list_type::iterator()));
 		lm.end();
 	}
 
 	TEST_F(list_map_mock_test, end_const)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), end()).WillOnce(Return(list_type::const_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), end())
+			.WillOnce(Return(list_type::const_iterator()));
 		lm.end();
 	}
 
 	TEST_F(list_map_mock_test, rbegin)
 	{
 		list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), rbegin()).WillOnce(Return(list_type::reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), rbegin())
+			.WillOnce(Return(list_type::reverse_iterator()));
 		lm.rbegin();
 	}
 
 	TEST_F(list_map_mock_test, rbegin_const)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), rbegin()).WillOnce(Return(list_type::const_reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), rbegin())
+			.WillOnce(Return(list_type::const_reverse_iterator()));
 		lm.rbegin();
 	}
 
 	TEST_F(list_map_mock_test, rend)
 	{
 		list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), rend()).WillOnce(Return(list_type::reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), rend())
+			.WillOnce(Return(list_type::reverse_iterator()));
 		lm.rend();
 	}
 
 	TEST_F(list_map_mock_test, rend_const)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), rend()).WillOnce(Return(list_type::const_reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), rend())
+			.WillOnce(Return(list_type::const_reverse_iterator()));
 		lm.rend();
 	}
 
@@ -143,28 +151,32 @@ namespace Test::ZipDirFs::Containers
 	TEST_F(list_map_mock_test, cbegin)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), cbegin()).WillOnce(Return(list_type::const_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), cbegin())
+			.WillOnce(Return(list_type::const_iterator()));
 		lm.cbegin();
 	}
 
 	TEST_F(list_map_mock_test, cend)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), cend()).WillOnce(Return(list_type::const_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), cend())
+			.WillOnce(Return(list_type::const_iterator()));
 		lm.cend();
 	}
 
 	TEST_F(list_map_mock_test, crbegin)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), crbegin()).WillOnce(Return(list_type::const_reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), crbegin())
+			.WillOnce(Return(list_type::const_reverse_iterator()));
 		lm.crbegin();
 	}
 
 	TEST_F(list_map_mock_test, crend)
 	{
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
-		EXPECT_CALL(list_map_mocked_access::list(lm), crend()).WillOnce(Return(list_type::const_reverse_iterator()));
+		EXPECT_CALL(list_map_mocked_access::list(lm), crend())
+			.WillOnce(Return(list_type::const_reverse_iterator()));
 		lm.crend();
 	}
 #endif
@@ -226,7 +238,8 @@ namespace Test::ZipDirFs::Containers
 		std::string key("key");
 		std::int32_t value(INT32_MAX);
 		::testing::InSequence seq;
-		EXPECT_CALL(list_map_mocked_access::map(lm), insert(std::pair<const std::string, std::int32_t>(key, value)))
+		EXPECT_CALL(list_map_mocked_access::map(lm),
+			insert(std::pair<const std::string, std::int32_t>(key, value)))
 			.WillOnce(Return(std::make_pair<map_type::iterator, bool>(map_type::iterator(), true)));
 		EXPECT_CALL(list_map_mocked_access::list(lm), insert(position, Eq(ByRef(key))))
 			.WillOnce(Return(list_type::iterator()));
@@ -242,8 +255,10 @@ namespace Test::ZipDirFs::Containers
 			node._M_valptr(), [](std::string* s) { s->~basic_string(); });
 		list_type::const_iterator position(&node);
 		::testing::InSequence seq;
-		EXPECT_CALL(list_map_mocked_access::map(lm), erase(Eq(ByRef(*position)))).WillOnce(Return(1));
-		EXPECT_CALL(list_map_mocked_access::list(lm), erase(position)).WillOnce(Return(list_type::iterator()));
+		EXPECT_CALL(list_map_mocked_access::map(lm), erase(Eq(ByRef(*position))))
+			.WillOnce(Return(1));
+		EXPECT_CALL(list_map_mocked_access::list(lm), erase(position))
+			.WillOnce(Return(list_type::iterator()));
 		lm.erase(position);
 	}
 
@@ -253,7 +268,8 @@ namespace Test::ZipDirFs::Containers
 		std::_Rb_tree_node<map_type::value_type> node;
 		map_type::iterator result(&node);
 		const std::string name("key");
-		EXPECT_CALL(list_map_mocked_access::map(lm), find(Eq(ByRef(name)))).WillOnce(Return(result));
+		EXPECT_CALL(list_map_mocked_access::map(lm), find(Eq(ByRef(name))))
+			.WillOnce(Return(result));
 		lm.find(name);
 	}
 
@@ -263,7 +279,8 @@ namespace Test::ZipDirFs::Containers
 		std::_Rb_tree_node<map_type::value_type> node;
 		map_type::const_iterator result(&node);
 		const std::string name("key");
-		EXPECT_CALL(list_map_mocked_access::map(lm), find(Eq(ByRef(name)))).WillOnce(Return(result));
+		EXPECT_CALL(list_map_mocked_access::map(lm), find(Eq(ByRef(name))))
+			.WillOnce(Return(result));
 		lm.find(name);
 	}
 
@@ -281,7 +298,8 @@ namespace Test::ZipDirFs::Containers
 		const list_map_mocked lm(compare, map_allocator, list_allocator);
 		std::_Rb_tree_node<map_type::value_type> node;
 		map_type::const_iterator result(&node);
-		EXPECT_CALL(list_map_mocked_access::map(lm), end()).WillOnce(Return(map_type::const_iterator()));
+		EXPECT_CALL(list_map_mocked_access::map(lm), end())
+			.WillOnce(Return(map_type::const_iterator()));
 		EXPECT_TRUE(lm.valid(result));
 	}
 

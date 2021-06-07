@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_FACTORY_H
 #define ZIPDIRFS_ZIP_FACTORY_H
@@ -17,6 +17,11 @@ namespace boost::filesystem
 namespace ZipDirFs::Zip
 {
 	struct FactoryInstantiate;
+
+	/**
+	 * @brief A Factory to create or access zip archives
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Factory
 	{
 	public:

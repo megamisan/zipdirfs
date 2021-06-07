@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_ENTRYGENERATOR_H
 #define ZIPDIRFS_CONTAINERS_ENTRYGENERATOR_H
@@ -25,10 +25,10 @@ namespace Test::ZipDirFs::Containers::Fixtures
 namespace ZipDirFs::Containers
 {
 	/**
-	 * A utility to maintain the entry lists.
-	 *
-	 * Using the different helpers, it helps iterating over the list
+	 * @brief A utility to maintain the entry lists
+	 * @remarks Using the different helpers, it helps iterating over the list
 	 * entries and synchronizes it to the underlying source.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
 	class EntryGenerator
 	{

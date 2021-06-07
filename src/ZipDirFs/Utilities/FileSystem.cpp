@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Utilities/FileSystem.h"
 #include <boost/filesystem.hpp>
@@ -36,9 +36,7 @@ namespace ZipDirFs::Utilities
 			return EntryIterator(new DirectoryIteratorWrapper(directory_iterator()));
 		}
 
-		filesystem::file_status fileSystemStatus(const path& p) {
-			return filesystem::status(p);
-		}
+		filesystem::file_status fileSystemStatus(const path& p) { return filesystem::status(p); }
 	} // namespace
 
 	FileSystem::FileSystem() {}
@@ -56,7 +54,8 @@ namespace ZipDirFs::Utilities
 	std::function<EntryIterator()> FileSystem::directory_iterator_end;
 	std::function<filesystem::file_status(const path&)> FileSystem::status;
 
-	bool init = [] {
+	bool init = []
+	{
 		FileSystem::reset();
 		return true;
 	}();
@@ -65,7 +64,8 @@ namespace ZipDirFs::Utilities
 		currentIt(std::move(it)), valid(false), value("")
 	{
 	}
-	DirectoryIteratorWrapper::DirectoryIteratorWrapper(const directory_iterator& it) : currentIt(it), valid(false), value("")
+	DirectoryIteratorWrapper::DirectoryIteratorWrapper(const directory_iterator& it) :
+		currentIt(it), valid(false), value("")
 	{
 	}
 	DirectoryIteratorWrapper::~DirectoryIteratorWrapper() {}
@@ -75,13 +75,18 @@ namespace ZipDirFs::Utilities
 	}
 	DirectoryIteratorWrapper::reference DirectoryIteratorWrapper::dereference() const
 	{
-		if (!valid) {
+		if (!valid)
+		{
 			*const_cast<std::string*>(&value) = currentIt->path().leaf().native();
 			*const_cast<bool*>(&valid) = true;
 		}
 		return value;
 	}
-	void DirectoryIteratorWrapper::increment() { ++currentIt; valid = false; }
+	void DirectoryIteratorWrapper::increment()
+	{
+		++currentIt;
+		valid = false;
+	}
 	bool DirectoryIteratorWrapper::equals(const Wrapper& w) const
 	{
 		const DirectoryIteratorWrapper* other = dynamic_cast<const DirectoryIteratorWrapper*>(&w);

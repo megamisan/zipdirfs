@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Lib.h"
 #include "ZipDirFs/Zip/Exception.h"
@@ -227,7 +227,7 @@ namespace Test::ZipDirFs::Zip
 			ptrdiff_t operator-(const random_iterator<_Tp>& other) { return other.count - count; }
 
 		protected:
-			void __attribute__ ((noinline)) increment()
+			void __attribute__((noinline)) increment()
 			{
 				do
 				{
@@ -254,9 +254,10 @@ namespace Test::ZipDirFs::Zip
 		int LibOpenFileCount()
 		{
 			auto it = ::boost::filesystem::directory_iterator("/proc/self/fd"),
-				endIt = ::boost::filesystem::directory_iterator();
+				 endIt = ::boost::filesystem::directory_iterator();
 			int count = 0;
-			while (it != endIt) {
+			while (it != endIt)
+			{
 				++count;
 				++it;
 			}
@@ -418,25 +419,28 @@ namespace Test::ZipDirFs::Zip
 	std::string GeneratedZipFile::GenerateName()
 	{
 		std::string::value_type last = 0;
-		return std::string(random_iterator<std::string::value_type>(::Test::rand(10, 64),
-							   [&last](std::string::value_type c) -> bool {
-								   //  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
-								   // oo-ooooooo-ooooooooooooooo-o-o--oooooooooooooooooooooooooooo-ooooooooooooooooooooooooooooooo-oo
-								   bool result = (c == '/' && (last == '.' || (last != '/' && last != 0))) ||
-									   ((c >= 32) && (std::strchr("\"*:<>?\\|", c) == nullptr)); // Windows name restriction with "/" allowed
-								   if (result)
-									   last = c;
-								   return result;
-							   }),
+		return std::string(
+			random_iterator<std::string::value_type>(::Test::rand(10, 64),
+				[&last](std::string::value_type c) -> bool
+				{
+					//  !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+					// oo-ooooooo-ooooooooooooooo-o-o--oooooooooooooooooooooooooooo-ooooooooooooooooooooooooooooooo-oo
+					bool result = (c == '/' && (last == '.' || (last != '/' && last != 0)))
+						|| ((c >= 32)
+							&& (std::strchr("\"*:<>?\\|", c)
+								== nullptr)); // Windows name restriction with "/" allowed
+					if (result)
+						last = c;
+					return result;
+				}),
 			random_iterator<std::string::value_type>());
 	}
 
 	std::string GeneratedZipFile::GenerateComment()
 	{
-		return std::string(random_iterator<std::string::value_type>(::Test::rand(256),
-							   [](std::string::value_type c) -> bool {
-								   return c == '\n' || c >= 32;
-							   }),
+		return std::string(
+			random_iterator<std::string::value_type>(::Test::rand(256),
+				[](std::string::value_type c) -> bool { return c == '\n' || c >= 32; }),
 			random_iterator<std::string::value_type>());
 	}
 
@@ -455,8 +459,8 @@ namespace Test::ZipDirFs::Zip
 		std::get<2>(fh) = std::get<0>(mtime);
 		std::get<6>(fh) = GenerateData();
 		std::get<3>(fh) = compressed ?
-			::Test::rand(UINT32_MAX) :
-			ComputeCrc32(std::get<6>(fh).c_str(), std::get<6>(fh).length());
+			  ::Test::rand(UINT32_MAX) :
+			  ComputeCrc32(std::get<6>(fh).c_str(), std::get<6>(fh).length());
 		std::get<4>(fh) = std::get<6>(fh).length();
 		std::get<5>(fh) = compressed ? ::Test::rand(UINT32_MAX) : std::get<4>(fh);
 		std::get<7>(fh) = GenerateName();
@@ -670,8 +674,8 @@ namespace Test::ZipDirFs::Zip
 		char buffer[4096];
 		std::size_t read;
 		EXPECT_NO_THROW(read = Lib::fread(fileData, buffer, 4096));
-		EXPECT_PRED2(
-			[read](const char* a, const char* b) -> bool { return std::memcmp(a, b, read) == 0; },
+		EXPECT_PRED2([read](const char* a, const char* b) -> bool
+			{ return std::memcmp(a, b, read) == 0; },
 			buffer, file.getValidContent().data());
 	}
 

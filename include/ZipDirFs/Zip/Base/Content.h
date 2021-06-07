@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_BASE_CONTENT_H
 #define ZIPDIRFS_ZIP_BASE_CONTENT_H
@@ -11,6 +11,10 @@
 
 namespace ZipDirFs::Zip::Base
 {
+	/**
+	 * @brief Helper class to allow random access to zip archive file content
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct Content
 	{
 		typedef std::unique_lock<std::mutex> lock_type;

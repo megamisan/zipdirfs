@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_ZIP_ARCHIVE_H
 #define TEST_ZIPDIRFS_ZIP_ARCHIVE_H
@@ -18,7 +18,8 @@ namespace Test::ZipDirFs::Zip
 	{
 		static ::ZipDirFs::Zip::Base::Lib* const& getData(::ZipDirFs::Zip::Archive&);
 		static std::vector<std::string>& getNames(::ZipDirFs::Zip::Archive&);
-		static std::map<std::string, std::tuple<std::uint64_t, bool>>& getNameAttributes(::ZipDirFs::Zip::Archive&);
+		static std::map<std::string, std::tuple<std::uint64_t, bool>>& getNameAttributes(
+			::ZipDirFs::Zip::Archive&);
 		static std::map<std::uint64_t, std::weak_ptr<::ZipDirFs::Zip::Entry>>& getEntries(
 			::ZipDirFs::Zip::Archive&);
 		static void invokePopulate(::ZipDirFs::Zip::Archive&);
@@ -58,8 +59,7 @@ namespace Test::ZipDirFs::Zip
 		ArchiveIteratorAccess(const std::shared_ptr<::ZipDirFs::Zip::Archive>&);
 		ArchiveIteratorAccess(
 			const std::shared_ptr<::ZipDirFs::Zip::Archive>&, std::vector<std::string>::iterator&&);
-		ArchiveIteratorAccess(
-			const std::shared_ptr<::ZipDirFs::Zip::Archive>&, const std::string&);
+		ArchiveIteratorAccess(const std::shared_ptr<::ZipDirFs::Zip::Archive>&, const std::string&);
 	};
 
 	struct ArchiveTest : public ::testing::Test

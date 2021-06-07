@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_CONTAINERS_FIXTURES_ENTRYITERATORENDWRAPPER_H
 #define TEST_ZIPDIRFS_CONTAINERS_FIXTURES_ENTRYITERATORENDWRAPPER_H
@@ -23,6 +23,7 @@ namespace Test::ZipDirFs::Containers
 			void increment();
 			bool equals(const EntryIteratorWrapperBase& w) const;
 			operator const std::int64_t() const;
+
 		protected:
 			const std::int64_t value;
 		};

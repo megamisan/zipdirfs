@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Options.h"
 #include "Main.h"
@@ -7,17 +7,17 @@
 
 Options::Options(int argc, const char* argv[]) : arguments_(argc), self_(*argv)
 {
-	argc--; argv++;
+	argc--;
+	argv++;
 	while (argc)
 	{
 		this->arguments_.push_back(Options::string(*argv));
-		argc--; argv++;
+		argc--;
+		argv++;
 	}
 }
 
-Options::~Options()
-{
-}
+Options::~Options() {}
 
 void Options::addHandler(Options::string argument, Options::handler handler)
 {
@@ -30,9 +30,13 @@ void Options::parseArguments()
 	bool hasMountSource = false;
 	bool inValuedOption = false;
 	std::string lastOption;
-	for (Options::stringVector::iterator it = this->arguments_.begin(); it != this->arguments_.end(); it++)
+	for (Options::stringVector::iterator it = this->arguments_.begin();
+		 it != this->arguments_.end(); it++)
 	{
-		if (it->empty()) { continue; } // TODO: Investigate bug
+		if (it->empty())
+		{
+			continue;
+		} // TODO: Investigate bug
 		if ((*it)[0] == '-')
 		{
 			if (inValuedOption && (lastOption != "-o"))
@@ -50,15 +54,15 @@ void Options::parseArguments()
 			{
 				switch ((*it)[1])
 				{
-					case '-':
-						this->executeHandler(it->substr(2));
-						this->unknownArguments_.push_back(*it);
-						break;
-					case 'o':
-						this->explodeMountOptions(it->substr(2));
-						break;
-					default:
-						this->unknownArguments_.push_back(*it);
+				case '-':
+					this->executeHandler(it->substr(2));
+					this->unknownArguments_.push_back(*it);
+					break;
+				case 'o':
+					this->explodeMountOptions(it->substr(2));
+					break;
+				default:
+					this->unknownArguments_.push_back(*it);
 				}
 			}
 			continue;
@@ -67,7 +71,11 @@ void Options::parseArguments()
 		{
 			if (lastOption == "-o")
 			{
-				if (std::find(this->fuseArguments_.begin(), this->fuseArguments_.end(), *it) == this->fuseArguments_.end()) { this->fuseArguments_.push_back(*it); }
+				if (std::find(this->fuseArguments_.begin(), this->fuseArguments_.end(), *it)
+					== this->fuseArguments_.end())
+				{
+					this->fuseArguments_.push_back(*it);
+				}
 			}
 			else
 			{
@@ -102,44 +110,56 @@ void Options::parseArguments()
 
 void Options::explodeMountOptions(Options::string option)
 {
-	Options::string::iterator
-	nameStart = option.begin(),
-	nameEnd = option.begin(),
-	valueStart = option.end();
+	Options::string::iterator nameStart = option.begin(), nameEnd = option.begin(),
+							  valueStart = option.end();
 	bool hasValue = false;
 	for (Options::string::iterator it = option.begin(); it != option.end(); it++)
 	{
 		switch (*it)
 		{
-			case '=':
-				nameEnd = it;
-				hasValue = true;
-				valueStart = it;
-				valueStart++;
-				break;
-			case ',':
-				if (hasValue)
+		case '=':
+			nameEnd = it;
+			hasValue = true;
+			valueStart = it;
+			valueStart++;
+			break;
+		case ',':
+			if (hasValue)
+			{
+				if (nameStart != nameEnd)
 				{
-					if (nameStart != nameEnd) { this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, it); }
-					hasValue = false;
+					this->mountOptions_[Options::string(nameStart, nameEnd)] =
+						Options::string(valueStart, it);
 				}
-				else
+				hasValue = false;
+			}
+			else
+			{
+				if (nameStart != it)
 				{
-					if (nameStart != it) { this->mountOptions_[Options::string(nameStart, it)] = ""; }
+					this->mountOptions_[Options::string(nameStart, it)] = "";
 				}
-				nameStart = it;
-				nameStart++;
-				nameEnd = nameStart;
-				break;
+			}
+			nameStart = it;
+			nameStart++;
+			nameEnd = nameStart;
+			break;
 		}
 	}
 	if (hasValue)
 	{
-		if (nameStart != nameEnd) { this->mountOptions_[Options::string(nameStart, nameEnd)] = Options::string(valueStart, option.end()); }
+		if (nameStart != nameEnd)
+		{
+			this->mountOptions_[Options::string(nameStart, nameEnd)] =
+				Options::string(valueStart, option.end());
+		}
 	}
 	else
 	{
-		if (nameStart != option.end()) { this->mountOptions_[Options::string(nameStart, option.end())] = ""; }
+		if (nameStart != option.end())
+		{
+			this->mountOptions_[Options::string(nameStart, option.end())] = "";
+		}
 	}
 }
 

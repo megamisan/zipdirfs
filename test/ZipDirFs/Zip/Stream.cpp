@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #define BUILD_TEST
 #include "Stream.h"
@@ -17,9 +17,9 @@ namespace Test::ZipDirFs::Zip
 {
 	using Fixtures::StreamBufferInitializer;
 	using ::testing::_;
-	using ::testing::Throw;
-	using ::testing::Return;
 	using ::testing::Invoke;
+	using ::testing::Return;
+	using ::testing::Throw;
 	using ::ZipDirFs::Zip::Stream;
 	using ::ZipDirFs::Zip::Base::Content;
 	template <Fixtures::SimpleSpanImpl::size_type size>
@@ -59,12 +59,14 @@ namespace Test::ZipDirFs::Zip
 
 	StreamAccess::GlobalHelper::GlobalHelper(std::uint64_t length) :
 		data(reinterpret_cast<decltype(data)>(::Test::rand(INT32_MAX))), lib(),
-		path("archive" + std::to_string(::Test::rand(INT32_MAX))), name("file" + std::to_string(::Test::rand(INT32_MAX))),
-		archiveInstance(data), archive(std::shared_ptr<::ZipDirFs::Zip::Archive>(
-								   &archiveInstance, [](::ZipDirFs::Zip::Archive*) {})),
+		path("archive" + std::to_string(::Test::rand(INT32_MAX))),
+		name("file" + std::to_string(::Test::rand(INT32_MAX))), archiveInstance(data),
+		archive(std::shared_ptr<::ZipDirFs::Zip::Archive>(
+			&archiveInstance, [](::ZipDirFs::Zip::Archive*) {})),
 		entryInstance(std::shared_ptr<LibBase>(archive, data), name, false),
-		entry(std::shared_ptr<::ZipDirFs::Zip::Entry>(
-			&entryInstance, [this](::ZipDirFs::Zip::Entry*) {
+		entry(std::shared_ptr<::ZipDirFs::Zip::Entry>(&entryInstance,
+			[this](::ZipDirFs::Zip::Entry*)
+			{
 				auto& content = EntryAccess::getContent(entryInstance);
 				delete[] content.buffer;
 				content.buffer = nullptr;
@@ -74,9 +76,9 @@ namespace Test::ZipDirFs::Zip
 		std::uint64_t index(::Test::rand(INT32_MAX));
 		FactoryAccess::getArchivesByPath().emplace(path, archive);
 		FactoryAccess::getArchivesByData().emplace(data, archive);
-		ArchiveAccess::getNames(archiveInstance)
-			.emplace_back(name);
-		ArchiveAccess::getNameAttributes(archiveInstance).emplace(name, std::tuple<std::uint64_t, bool>{index, false});
+		ArchiveAccess::getNames(archiveInstance).emplace_back(name);
+		ArchiveAccess::getNameAttributes(archiveInstance)
+			.emplace(name, std::tuple<std::uint64_t, bool>{index, false});
 		ArchiveAccess::getEntries(archiveInstance).emplace(index, entry);
 		auto& content = EntryAccess::getContent(entryInstance);
 		content.buffer = new char[length];
@@ -113,8 +115,8 @@ namespace Test::ZipDirFs::Zip
 	{
 		return reinterpret_cast<ArchiveAccess*>(&a)->names;
 	}
-	std::map<std::string, std::tuple<std::uint64_t, bool>>& StreamAccess::ArchiveAccess::getNameAttributes(
-		::ZipDirFs::Zip::Archive& a)
+	std::map<std::string, std::tuple<std::uint64_t, bool>>&
+		StreamAccess::ArchiveAccess::getNameAttributes(::ZipDirFs::Zip::Archive& a)
 	{
 		return reinterpret_cast<ArchiveAccess*>(&a)->nameAttributes;
 	}
@@ -364,7 +366,8 @@ namespace Test::ZipDirFs::Zip
 		GenerateRandomCompletedContentState();
 		StreamBufferInitializer::invokeSetg(buffer.get(), content->buffer,
 			content->buffer + ::Test::rand(content->length), content->buffer + content->length);
-		std::streamoff newpos = ::Test::rand(std::streamoff(-content->length - randomLenBase()), std::streamoff(-content->length));
+		std::streamoff newpos = ::Test::rand(
+			std::streamoff(-content->length - randomLenBase()), std::streamoff(-content->length));
 		Stream::char_type* expected = content->buffer;
 		EXPECT_EQ(buffer->pubseekoff(
 					  newpos, std::ios_base::seekdir::_S_end, std::ios_base::openmode::_S_in),
@@ -450,7 +453,8 @@ namespace Test::ZipDirFs::Zip
 	TEST_F(StreamBufferTest, UnderflowNotYetAvailableFull)
 	{
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		char random[randomLenBase()];
 		GenerateRandomSegment(random, sizeof(random));
 		auto bufferPtr = GenerateRandomBufferedContentState();
@@ -459,10 +463,12 @@ namespace Test::ZipDirFs::Zip
 			content->buffer + content->lastWrite, content->buffer + content->lastWrite);
 		content->data = data;
 		EXPECT_CALL(lib, fread(data, content->buffer + content->lastWrite, randomLenBase()))
-			.WillOnce(Invoke([&random](decltype(data) d, void* b, std::uint64_t l) {
-				memcpy(b, random, l);
-				return sizeof(random);
-			}));
+			.WillOnce(Invoke(
+				[&random](decltype(data) d, void* b, std::uint64_t l)
+				{
+					memcpy(b, random, l);
+					return sizeof(random);
+				}));
 		EXPECT_EQ(StreamBufferInitializer::invokeUnderflow(buffer.get()), random[0]);
 		EXPECT_EQ(SimpleSpan<randomLenBase()>(random).content(),
 			SimpleSpan<randomLenBase()>(content->buffer + expectedPosition).content());
@@ -477,21 +483,25 @@ namespace Test::ZipDirFs::Zip
 	{
 		using Fixtures::dynamic_extend;
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		std::uint64_t length = (randomLenBase() >> 2) + (::Test::rand(randomLenBase()) >> 1);
 		std::unique_ptr<char[]> randomPtr(new char[length]);
 		GenerateRandomSegment(randomPtr.get(), length);
 		auto bufferPtr = GenerateRandomBufferedContentState();
-		content->lastWrite = std::min(content->lastWrite, std::streamsize(content->length - length));
+		content->lastWrite =
+			std::min(content->lastWrite, std::streamsize(content->length - length));
 		auto expectedPosition = content->lastWrite;
 		StreamBufferInitializer::invokeSetg(buffer.get(), content->buffer,
 			content->buffer + expectedPosition, content->buffer + expectedPosition);
 		content->data = data;
 		EXPECT_CALL(lib, fread(data, content->buffer + expectedPosition, randomLenBase()))
-			.WillOnce(Invoke([&randomPtr, length](decltype(data) d, void* b, std::uint64_t l) {
-				memcpy(b, randomPtr.get(), length);
-				return length;
-			}));
+			.WillOnce(Invoke(
+				[&randomPtr, length](decltype(data) d, void* b, std::uint64_t l)
+				{
+					memcpy(b, randomPtr.get(), length);
+					return length;
+				}));
 		EXPECT_EQ(StreamBufferInitializer::invokeUnderflow(buffer.get()), randomPtr[0]);
 		EXPECT_EQ(SimpleSpan<dynamic_extend>(randomPtr.get(), length).content(),
 			SimpleSpan<dynamic_extend>(content->buffer + expectedPosition, length).content());
@@ -526,7 +536,8 @@ namespace Test::ZipDirFs::Zip
 	{
 		using Fixtures::dynamic_extend;
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		auto bufferPtr = GenerateRandomBufferedContentState();
 		std::uint64_t position = content->lastWrite - ((::Test::rand(randomLenBase() - 4)) >> 2);
 		std::uint64_t length = (randomLenBase() >> 2) + (::Test::rand(randomLenBase()) >> 2);
@@ -538,32 +549,35 @@ namespace Test::ZipDirFs::Zip
 			.append(content->buffer + position, content->lastWrite - position)
 			.append(random, sizeof(random));
 		auto lastWrite = content->lastWrite;
-		StreamBufferInitializer::invokeSetg(buffer.get(), content->buffer,
-			content->buffer + position, content->buffer + lastWrite);
+		StreamBufferInitializer::invokeSetg(
+			buffer.get(), content->buffer, content->buffer + position, content->buffer + lastWrite);
 		content->data = data;
 		EXPECT_CALL(lib, fread(data, content->buffer + lastWrite, randomLenBase()))
-			.WillOnce(Invoke([&random](decltype(data) d, void* b, std::uint64_t l) {
-				memcpy(b, random, l);
-				return sizeof(random);
-			}));
+			.WillOnce(Invoke(
+				[&random](decltype(data) d, void* b, std::uint64_t l)
+				{
+					memcpy(b, random, l);
+					return sizeof(random);
+				}));
 		EXPECT_EQ(
 			StreamBufferInitializer::invokeXsgetn(buffer.get(), resultPtr.get(), length), length);
 		EXPECT_EQ(SimpleSpan<dynamic_extend>(resultPtr.get(), length).content(),
 			SimpleSpan<dynamic_extend>(expectedPtr.get(), length).content());
 		EXPECT_EQ(StreamBufferInitializer::invokeEback(buffer.get()), content->buffer);
 		EXPECT_EQ(StreamBufferInitializer::invokeGptr(buffer.get()), content->buffer + position);
-		EXPECT_EQ(StreamBufferInitializer::invokeEgptr(buffer.get()),
-			content->buffer + lastWrite);
+		EXPECT_EQ(StreamBufferInitializer::invokeEgptr(buffer.get()), content->buffer + lastWrite);
 	}
 
 	TEST_F(StreamBufferTest, XSGetNNotYetAvailableTwoChunks)
 	{
 		using Fixtures::dynamic_extend;
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		auto bufferPtr = GenerateRandomBufferedContentState();
 		std::uint64_t position = content->lastWrite - (::Test::rand(randomLenBase() - 4) >> 2);
-		std::uint64_t length = (randomLenBase() >> 1) + (randomLenBase() >> 2) + (::Test::rand(randomLenBase()) >> 2);
+		std::uint64_t length =
+			(randomLenBase() >> 1) + (randomLenBase() >> 2) + (::Test::rand(randomLenBase()) >> 2);
 		std::unique_ptr<char[]> expectedPtr(new char[length]);
 		std::unique_ptr<char[]> resultPtr(new char[length]);
 		char random1[randomLenBase() >> 1];
@@ -575,35 +589,38 @@ namespace Test::ZipDirFs::Zip
 			.append(random1, sizeof(random1))
 			.append(random2, sizeof(random2));
 		auto lastWrite = content->lastWrite;
-		StreamBufferInitializer::invokeSetg(buffer.get(), content->buffer,
-			content->buffer + position, content->buffer + lastWrite);
+		StreamBufferInitializer::invokeSetg(
+			buffer.get(), content->buffer, content->buffer + position, content->buffer + lastWrite);
 		content->data = data;
 		EXPECT_CALL(lib, fread(data, content->buffer + lastWrite, randomLenBase()))
-			.WillOnce(Invoke([&random1](decltype(data) d, void* b, std::uint64_t l) {
-				memcpy(b, random1, l);
-				return sizeof(random1);
-			}));
-		EXPECT_CALL(lib,
-			fread(data, content->buffer + lastWrite + (randomLenBase() >> 1),
-				randomLenBase()))
-			.WillOnce(Invoke([&random2](decltype(data) d, void* b, std::uint64_t l) {
-				memcpy(b, random2, l);
-				return sizeof(random2);
-			}));
+			.WillOnce(Invoke(
+				[&random1](decltype(data) d, void* b, std::uint64_t l)
+				{
+					memcpy(b, random1, l);
+					return sizeof(random1);
+				}));
+		EXPECT_CALL(
+			lib, fread(data, content->buffer + lastWrite + (randomLenBase() >> 1), randomLenBase()))
+			.WillOnce(Invoke(
+				[&random2](decltype(data) d, void* b, std::uint64_t l)
+				{
+					memcpy(b, random2, l);
+					return sizeof(random2);
+				}));
 		EXPECT_EQ(
 			StreamBufferInitializer::invokeXsgetn(buffer.get(), resultPtr.get(), length), length);
 		EXPECT_EQ(SimpleSpan<dynamic_extend>(resultPtr.get(), length).content(),
 			SimpleSpan<dynamic_extend>(expectedPtr.get(), length).content());
 		EXPECT_EQ(StreamBufferInitializer::invokeEback(buffer.get()), content->buffer);
 		EXPECT_EQ(StreamBufferInitializer::invokeGptr(buffer.get()), content->buffer + position);
-		EXPECT_EQ(StreamBufferInitializer::invokeEgptr(buffer.get()),
-			content->buffer + lastWrite);
+		EXPECT_EQ(StreamBufferInitializer::invokeEgptr(buffer.get()), content->buffer + lastWrite);
 	}
 
 	TEST_F(StreamBufferTest, LastRead)
 	{
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		content->length = 1;
 		content->lastWrite = 0;
 		char val = 'a';
@@ -611,16 +628,17 @@ namespace Test::ZipDirFs::Zip
 		content->data = data;
 		buffer = std::shared_ptr<streambuf>(StreamBufferInitializer::create(content));
 		::testing::ExpectationSet set;
-		set += EXPECT_CALL(lib, fread(data, content->buffer, randomLenBase()))
-			.WillOnce(Return(1));
+		set += EXPECT_CALL(lib, fread(data, content->buffer, randomLenBase())).WillOnce(Return(1));
 		EXPECT_CALL(lib, fclose(data)).After(set);
-		EXPECT_NE(StreamBufferInitializer::invokeUnderflow(buffer.get()), streambuf::traits_type::eof());
+		EXPECT_NE(
+			StreamBufferInitializer::invokeUnderflow(buffer.get()), streambuf::traits_type::eof());
 	}
 
 	TEST_F(StreamBufferTest, ReadFailure)
 	{
 		Fixtures::Lib lib;
-		::ZipDirFs::Zip::Base::Lib::File* data = reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
+		::ZipDirFs::Zip::Base::Lib::File* data =
+			reinterpret_cast<decltype(data)>(::Test::rand(UINT32_MAX));
 		content->data = data;
 		auto bufferPtr = GenerateRandomBufferedContentState();
 		StreamBufferInitializer::invokeSetg(buffer.get(), content->buffer,

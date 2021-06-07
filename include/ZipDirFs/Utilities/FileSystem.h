@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_UTILITIES_FILESYSTEM_H
 #define ZIPDIRFS_UTILITIES_FILESYSTEM_H
@@ -13,13 +13,18 @@ namespace boost::filesystem
 {
 	struct path;
 	struct file_status;
-}
+} // namespace boost::filesystem
 
 namespace ZipDirFs::Utilities
 {
 	using namespace boost::filesystem;
 	using ZipDirFs::Containers::EntryIterator;
 
+	/**
+	 * @brief Global file system call wrapper
+	 * @remarks Used to help in executing unit tests.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class FileSystem
 	{
 	public:

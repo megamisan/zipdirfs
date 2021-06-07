@@ -60,10 +60,7 @@ namespace ZipDirFs::Fuse
 
 	int EntryProxy::utimens(const timespec times[2]) { return target->utimens(times); }
 
-	int EntryProxy::readlink(char* buf, size_t bufsize)
-	{
-		return target->readlink(buf, bufsize);
-	}
+	int EntryProxy::readlink(char* buf, size_t bufsize) { return target->readlink(buf, bufsize); }
 
 	int EntryProxy::symlink(const char* name, const char* target)
 	{

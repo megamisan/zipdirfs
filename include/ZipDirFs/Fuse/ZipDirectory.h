@@ -17,6 +17,10 @@ namespace ZipDirFs::Fuse
 {
 	using namespace fusekit;
 
+	/**
+	 * @brief A directory entry representing a virtual directory in a zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct ZipDirectory : public basic_directory<DefaultDirectoryNode, ZipTimePolicy,
 							  Utilities::DefaultDirectoryPermission, no_xattr>
 	{

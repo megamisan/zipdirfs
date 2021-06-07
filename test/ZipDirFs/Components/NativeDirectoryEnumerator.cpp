@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "NativeDirectoryEnumerator.h"
 #include "../Containers/Fixtures/EntryIteratorEndWrapper.h"
@@ -81,7 +81,8 @@ namespace Test::ZipDirFs::Components
 		const boost::filesystem::path p(
 			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		std::string currentValue = std::string("current") + std::to_string(::Test::rand(UINT32_MAX));
+		std::string currentValue =
+			std::string("current") + std::to_string(::Test::rand(UINT32_MAX));
 		auto endWrapper = new EntryIteratorEndWrapper(endValue);
 		auto wrapperMock = new EntryIteratorWrapperMock();
 		EXPECT_CALL(fs, directory_iterator_end()).WillOnce(Return(wrapperMock));

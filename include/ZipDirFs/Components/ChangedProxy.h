@@ -10,6 +10,11 @@
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief A proxy to a @link ZipDirFs::Container::Helpers::Changed Changed @endlink helper
+	 * @remarks Used to change the underlying helper for all references.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class ChangedProxy : public ZipDirFs::Containers::Helpers::Changed
 	{
 	public:

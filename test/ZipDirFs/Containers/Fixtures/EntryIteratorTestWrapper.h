@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_CONTAINERS_FIXTURES_ENTRYITERATORTESTWRAPPER_H
 #define TEST_ZIPDIRFS_CONTAINERS_FIXTURES_ENTRYITERATORTESTWRAPPER_H
@@ -24,6 +24,7 @@ namespace Test::ZipDirFs::Containers
 			reference dereference() const;
 			void increment();
 			bool equals(const EntryIteratorWrapperBase& w) const;
+
 		protected:
 			list_type::iterator value;
 		};

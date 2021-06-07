@@ -89,7 +89,6 @@ noinst_HEADERS = \
 	include/ZipDirFs/Utilities/FileSystem.h \
 	include/ZipDirFs/Utilities/list_cleanup.h \
 	include/ZipDirFs/Utilities/MutexLocker.h \
-	include/ZipDirFs/Utilities/type_traits.h \
 	include/ZipDirFs/Zip/Archive.h \
 	include/ZipDirFs/Zip/Entry.h \
 	include/ZipDirFs/Zip/Exception.h \

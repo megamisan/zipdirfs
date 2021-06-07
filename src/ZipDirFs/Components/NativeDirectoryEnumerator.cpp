@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Components/NativeDirectoryEnumerator.h"
 #include "ZipDirFs/Utilities/FileSystem.h"
@@ -18,10 +18,7 @@ namespace ZipDirFs::Components
 		currentIt = FileSystem::directory_iterator_from_path(path);
 	}
 	void NativeDirectoryEnumerator::next() { ++currentIt; }
-	bool NativeDirectoryEnumerator::valid()
-	{
-		return !(currentIt == endIt);
-	}
+	bool NativeDirectoryEnumerator::valid() { return !(currentIt == endIt); }
 	const std::string& NativeDirectoryEnumerator::current() { return *currentIt; }
 
 } // namespace ZipDirFs::Components

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_ZIP_STREAM_H
 #define TEST_ZIPDIRFS_ZIP_STREAM_H
@@ -59,7 +59,8 @@ namespace Test::ZipDirFs::Zip
 		struct ArchiveAccess : public ::ZipDirFs::Zip::Archive
 		{
 			static std::vector<std::string>& getNames(::ZipDirFs::Zip::Archive&);
-			static std::map<std::string, std::tuple<std::uint64_t, bool>>& getNameAttributes(::ZipDirFs::Zip::Archive&);
+			static std::map<std::string, std::tuple<std::uint64_t, bool>>& getNameAttributes(
+				::ZipDirFs::Zip::Archive&);
 			static std::map<std::uint64_t, std::weak_ptr<::ZipDirFs::Zip::Entry>>& getEntries(
 				::ZipDirFs::Zip::Archive&);
 		};

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Factory.h"
 #include "ZipDirFs/Zip/Lib.h"
@@ -34,15 +34,17 @@ namespace ZipDirFs::Zip
 		if (it == archivesByPath.end())
 		{
 			auto data = Lib::open(p);
-			result = std::shared_ptr<Archive>(new Archive(data), [this, data](Archive* a) {
-				std::lock_guard<std::mutex> guard(zip_factory_get);
-				auto it = this->archivesByData.find(data);
-				if (it != this->archivesByData.end())
+			result = std::shared_ptr<Archive>(new Archive(data),
+				[this, data](Archive* a)
 				{
-					this->archivesByData.erase(it);
-				}
-				delete a;
-			});
+					std::lock_guard<std::mutex> guard(zip_factory_get);
+					auto it = this->archivesByData.find(data);
+					if (it != this->archivesByData.end())
+					{
+						this->archivesByData.erase(it);
+					}
+					delete a;
+				});
 			archivesByPath.insert({p, result});
 			archivesByData.insert({data, result});
 		}

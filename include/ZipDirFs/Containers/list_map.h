@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_LIST_MAP_H_INCLUDED
 #define ZIPDIRFS_LIST_MAP_H_INCLUDED
@@ -10,10 +10,10 @@
 namespace ZipDirFs::Containers
 {
 	/**
-	 * A container assembling a list and a map.
-	 *
-	 * The list maintains the element's order. The map associates the elements
+	 * @brief A container assembling a list and a map
+	 * @remarks The list maintains the element's order. The map associates the elements
 	 * with their values.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
 	template <class Key, class T, class Compare = std::less<Key>,
 		class MapAllocator = std::allocator<std::pair<const Key, T>>,

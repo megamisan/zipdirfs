@@ -15,6 +15,7 @@ namespace Test::ZipDirFs::Fuse
 			OneChanged(std::time_t);
 			bool operator()();
 			operator std::time_t() const;
+
 		private:
 			bool called;
 			std::time_t time;

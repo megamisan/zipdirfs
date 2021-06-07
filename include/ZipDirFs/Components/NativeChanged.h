@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_COMPONENTS_NATIVECHANGED_H
 #define ZIPDIRFS_COMPONENTS_NATIVECHANGED_H
@@ -14,6 +14,10 @@ namespace boost::filesystem
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief A @link ZipDirFs::Container::Helpers::Changed Changed @endlink helper for real files and directories
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class NativeChanged : public ZipDirFs::Containers::Helpers::Changed
 	{
 	public:
@@ -25,6 +29,7 @@ namespace ZipDirFs::Components
 	protected:
 		const boost::filesystem::path& path;
 		std::time_t lastChanged;
+
 	private:
 	};
 

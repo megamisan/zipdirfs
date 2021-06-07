@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "NativeChanged.h"
 #include "../Utilities/Fixtures/FileSystem.h"
@@ -32,8 +32,7 @@ namespace Test::ZipDirFs::Components
 		const boost::filesystem::path p(
 			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		std::time_t origin(::Test::rand(UINT32_MAX));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(p))))
-			.Times(2).WillRepeatedly(Return(origin));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(p)))).Times(2).WillRepeatedly(Return(origin));
 		NativeChanged dc(p);
 		ASSERT_TRUE(dc());
 		ASSERT_FALSE(dc());

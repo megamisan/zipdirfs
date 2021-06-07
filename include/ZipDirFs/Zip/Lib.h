@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_LIB_H
 #define ZIPDIRFS_ZIP_LIB_H
@@ -17,6 +17,12 @@ namespace boost::filesystem
 namespace ZipDirFs::Zip
 {
 	using namespace boost::filesystem;
+
+	/**
+	 * @brief Global libzip call wrapper
+	 * @remarks Used to help in executing unit tests and simplifying error handling from source library.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Lib
 	{
 	public:

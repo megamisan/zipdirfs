@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_BASE_STAT_H
 #define ZIPDIRFS_ZIP_BASE_STAT_H
@@ -9,11 +9,16 @@
 
 namespace ZipDirFs::Zip::Base
 {
+	/**
+	 * @brief Helper class to represents a zip archive entry stats
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Stat
 	{
 	public:
 		Stat() = default;
-		Stat(const std::uint64_t, const std::string&, const std::uint64_t, const std::time_t, const bool);
+		Stat(const std::uint64_t, const std::string&, const std::uint64_t, const std::time_t,
+			const bool);
 		const std::uint64_t getIndex() const;
 		const std::string& getName() const;
 		const std::uint64_t getSize() const;

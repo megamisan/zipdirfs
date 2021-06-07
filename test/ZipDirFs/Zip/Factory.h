@@ -1,12 +1,12 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_ZIP_FACTORY_H
 #define TEST_ZIPDIRFS_ZIP_FACTORY_H
 
 #include "ZipDirFs/Zip/Factory.h"
-#include <gtest/gtest.h>
 #include <boost/filesystem.hpp>
+#include <gtest/gtest.h>
 
 namespace Test::ZipDirFs::Zip
 {

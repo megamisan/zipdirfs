@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H
 #define ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H
@@ -17,6 +17,13 @@ namespace ZipDirFs::Components
 	using ::ZipDirFs::Zip::Exception;
 	using ::ZipDirFs::Zip::Lib;
 
+	/**
+	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries under a real directory
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Directory Implementation class for real directory.
+	 * @tparam Symlink Implementation class for symlink to real file.
+	 * @tparam Zip Implementation class for zip directory representing the archive root.
+	 */
 	template <class Directory, class Symlink, class Zip>
 	class NativeFactory : public ::ZipDirFs::Containers::Helpers::Factory
 	{
@@ -42,8 +49,7 @@ namespace ZipDirFs::Components
 				{
 					zip = false;
 				}
-				return zip ? (mapped_type) new Zip(fullPath) :
-							   (mapped_type) new Symlink(fullPath);
+				return zip ? (mapped_type) new Zip(fullPath) : (mapped_type) new Symlink(fullPath);
 			}
 			if (is_symlink(status))
 			{

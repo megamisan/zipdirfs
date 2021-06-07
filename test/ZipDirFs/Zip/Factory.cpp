@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Factory.h"
 #include "Fixtures/Lib.h"
@@ -39,7 +39,8 @@ namespace Test::ZipDirFs::Zip
 
 	boost::filesystem::path FactoryTest::generatePath()
 	{
-		return boost::filesystem::path(std::string("root") + std::to_string(::Test::rand(UINT32_MAX)))
+		return boost::filesystem::path(
+			std::string("root") + std::to_string(::Test::rand(UINT32_MAX)))
 			.concat(std::string("inner") + std::to_string(::Test::rand(UINT32_MAX)));
 	}
 
@@ -72,7 +73,8 @@ namespace Test::ZipDirFs::Zip
 	{
 		Fixtures::Lib lib;
 		const boost::filesystem::path path(generatePath());
-		std::shared_ptr<Archive> archive(reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
+		std::shared_ptr<Archive> archive(
+			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
 		FactoryAccess::getArchivesByPath().insert({path, archive});
 		EXPECT_EQ(Factory::getInstance().get(path), archive);
 	}
@@ -84,7 +86,8 @@ namespace Test::ZipDirFs::Zip
 		const boost::filesystem::path path(generatePath());
 		EXPECT_CALL(lib, open(Eq(ByRef(path)))).WillOnce(Return(opened));
 		EXPECT_CALL(lib, close(opened)); // Expected call by Archive destructor.
-		std::shared_ptr<Archive> archive(reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
+		std::shared_ptr<Archive> archive(
+			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
 		auto archivePtr(archive.get());
 		FactoryAccess::getArchivesByPath().insert({path, archive});
 		archive = nullptr;
@@ -105,7 +108,8 @@ namespace Test::ZipDirFs::Zip
 	TEST_F(FactoryTest, GetByDataUse)
 	{
 		BaseLib* const searched = reinterpret_cast<decltype(searched)>(::Test::rand(UINT32_MAX));
-		std::shared_ptr<Archive> archive(reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
+		std::shared_ptr<Archive> archive(
+			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
 		FactoryAccess::getArchivesByData().insert({searched, archive});
 		EXPECT_EQ(Factory::getInstance().get(searched), archive);
 	}
@@ -113,7 +117,8 @@ namespace Test::ZipDirFs::Zip
 	TEST_F(FactoryTest, GetByDataExpired)
 	{
 		BaseLib* const searched = reinterpret_cast<decltype(searched)>(::Test::rand(UINT32_MAX));
-		std::shared_ptr<Archive> archive(reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
+		std::shared_ptr<Archive> archive(
+			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
 		FactoryAccess::getArchivesByData().insert({searched, archive});
 		archive = nullptr;
 		EXPECT_EQ(Factory::getInstance().get(searched), nullptr);

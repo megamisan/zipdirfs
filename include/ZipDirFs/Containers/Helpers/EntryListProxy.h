@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_HELPERS_ENTRYLISTPROXY_H
 #define ZIPDIRFS_CONTAINERS_HELPERS_ENTRYLISTPROXY_H
@@ -18,7 +18,8 @@ namespace ZipDirFs::Containers
 	namespace Helpers
 	{
 		/**
-		 * A proxy definition to an EntryList without irrelevant templating information
+		 * @brief A proxy definition to an @link ZipDirFs::Containers::EntryList EntryList @endlink without irrelevant templating information
+		 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 		 */
 		class EntryListProxy
 		{

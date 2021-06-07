@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Archive.h"
 #include "Factory.h"
@@ -555,14 +555,17 @@ namespace Test::ZipDirFs::Zip
 		const std::uint8_t segmentLength = ::Test::rand(1, 9);
 		const std::string firstSegment(
 			"seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength)),
-			expectedSegment([&firstSegment](std::uint8_t segmentLength) {
-				std::string result;
-				do
+			expectedSegment(
+				[&firstSegment](std::uint8_t segmentLength)
 				{
-					result = "seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength);
-				} while (result == firstSegment);
-				return result;
-			}(segmentLength)),
+					std::string result;
+					do
+					{
+						result =
+							"seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength);
+					} while (result == firstSegment);
+					return result;
+				}(segmentLength)),
 			expectedFilename(ArchiveGeneratePath(0, false)),
 			expected(expectedSegment + "/" + expectedFilename);
 		InitializeNames(*archive,
@@ -585,14 +588,17 @@ namespace Test::ZipDirFs::Zip
 		const std::uint8_t segmentLength = ::Test::rand(1, 9);
 		const std::string firstSegment(
 			"seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength)),
-			expectedSegment([&firstSegment](std::uint8_t segmentLength) {
-				std::string result;
-				do
+			expectedSegment(
+				[&firstSegment](std::uint8_t segmentLength)
 				{
-					result = "seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength);
-				} while (result == firstSegment);
-				return result;
-			}(segmentLength)),
+					std::string result;
+					do
+					{
+						result =
+							"seg" + ArchiveGenerateValue(segmentLength).substr(0, segmentLength);
+					} while (result == firstSegment);
+					return result;
+				}(segmentLength)),
 			expectedFilename(ArchiveGeneratePath(0, false)),
 			expected(expectedSegment + "/" + expectedFilename);
 		InitializeNames(*archive,

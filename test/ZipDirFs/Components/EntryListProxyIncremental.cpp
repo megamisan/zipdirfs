@@ -131,8 +131,8 @@ namespace Test::ZipDirFs::Components
 		EXPECT_CALL(*proxyMock, find(key)).WillOnce(Return(nullptr));
 		EXPECT_CALL(*proxyMock, end()).WillOnce(Return(it));
 		EXPECT_CALL(*proxyMock, insert(it, key, entry)).WillOnce(Return(it2));
-		EntryListProxyIncremental proxy(
-			[key, entry](const std::string& n) { return key == n ? entry : nullptr; },
+		EntryListProxyIncremental proxy([key, entry](const std::string& n)
+			{ return key == n ? entry : nullptr; },
 			std::shared_ptr<::ZipDirFs::Containers::Helpers::EntryListProxy>(std::move(proxyMock)));
 		EXPECT_EQ(proxy.find(key), entry);
 	}

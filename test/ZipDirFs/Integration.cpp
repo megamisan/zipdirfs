@@ -6,11 +6,11 @@
 #include "Fuse/Fixtures/FuseDaemonFork.h"
 #include "Utilities/Fixtures/FileSystem.h"
 #include "Zip/Fixtures/Lib.h"
-#include "ZipDirFs/Fuse/NativeDirectory.h"
-#include "ZipDirFs/Fuse/ZipRootDirectory.h"
-#include "ZipDirFs/Fuse/ZipDirectory.h"
-#include "ZipDirFs/Zip/Exception.h"
 #include "ZipDirFs/Components/ZipFileChanged.h"
+#include "ZipDirFs/Fuse/NativeDirectory.h"
+#include "ZipDirFs/Fuse/ZipDirectory.h"
+#include "ZipDirFs/Fuse/ZipRootDirectory.h"
+#include "ZipDirFs/Zip/Exception.h"
 #include "test/gtest.h"
 #include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
@@ -24,8 +24,8 @@ namespace Test::ZipDirFs
 	using Utilities::Fixtures::FileSystem;
 	using Zip::Fixtures::Lib;
 	using ::ZipDirFs::Fuse::NativeDirectory;
-	using ::ZipDirFs::Fuse::ZipRootDirectory;
 	using ::ZipDirFs::Fuse::ZipDirectory;
+	using ::ZipDirFs::Fuse::ZipRootDirectory;
 	using ::ZipDirFs::Zip::Base::Stat;
 	using namespace ::boost;
 	using ::testing::_;
@@ -310,21 +310,25 @@ namespace Test::ZipDirFs
 			subItem1Stat(1, subItem1Path, subItem1Size, modifiedSubItem1, false);
 		filesystem::create_directory(mountPoint);
 		const std::string fsName = "IntegrationTestFull";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		const strings rootDirectoryItems({normal1, zip1});
 		char *item1Content = new char[item1Size], *subItem1Content = new char[subItem1Size];
-		Guard content([item1Content, subItem1Content]() {
-			delete[] item1Content;
-			delete[] subItem1Content;
-		});
+		Guard content(
+			[item1Content, subItem1Content]()
+			{
+				delete[] item1Content;
+				delete[] subItem1Content;
+			});
 		std::uint64_t item1Offset = 0, subItem1Offset = 0;
 		GenerateRandomData(item1Content, item1Size);
 		GenerateRandomData(subItem1Content, subItem1Size);
@@ -356,7 +360,8 @@ namespace Test::ZipDirFs
 		EXPECT_CALL(lib, fread(&itemInstance1, _, _))
 			.WillRepeatedly(Invoke(
 				[item1Content, item1Size, &item1Offset](::ZipDirFs::Zip::Base::Lib::File* file,
-					void* buf, std::uint64_t len) -> std::uint64_t {
+					void* buf, std::uint64_t len) -> std::uint64_t
+				{
 					std::uint64_t length = std::min(len, item1Size - item1Offset);
 					if (length > 0)
 					{
@@ -366,23 +371,23 @@ namespace Test::ZipDirFs
 					return length;
 				}));
 		EXPECT_CALL(lib, fread(&subItemInstance1, _, _))
-			.WillRepeatedly(Invoke([subItem1Content, subItem1Size, &subItem1Offset](
-									   ::ZipDirFs::Zip::Base::Lib::File* file, void* buf,
-									   std::uint64_t len) -> std::uint64_t {
-				std::uint64_t length = std::min(len, subItem1Size - subItem1Offset);
-				if (length > 0)
+			.WillRepeatedly(Invoke(
+				[subItem1Content, subItem1Size, &subItem1Offset](
+					::ZipDirFs::Zip::Base::Lib::File* file, void* buf,
+					std::uint64_t len) -> std::uint64_t
 				{
-					memcpy(buf, subItem1Content + subItem1Offset, length);
-					subItem1Offset += length;
-				}
-				return length;
-			}));
-		EXPECT_CALL(lib, fclose(&itemInstance1)).WillRepeatedly(WithoutArgs([&item1Offset]() {
-			item1Offset = 0;
-		}));
-		EXPECT_CALL(lib, fclose(&subItemInstance1)).WillRepeatedly(WithoutArgs([&subItem1Offset]() {
-			subItem1Offset = 0;
-		}));
+					std::uint64_t length = std::min(len, subItem1Size - subItem1Offset);
+					if (length > 0)
+					{
+						memcpy(buf, subItem1Content + subItem1Offset, length);
+						subItem1Offset += length;
+					}
+					return length;
+				}));
+		EXPECT_CALL(lib, fclose(&itemInstance1))
+			.WillRepeatedly(WithoutArgs([&item1Offset]() { item1Offset = 0; }));
+		EXPECT_CALL(lib, fclose(&subItemInstance1))
+			.WillRepeatedly(WithoutArgs([&subItem1Offset]() { subItem1Offset = 0; }));
 		// Initialize expected result
 		std::vector<char> expected, result;
 		expected.reserve(ComputeDirectory("") + ComputeLink("/" + normal1, fakeNormal1.native())
@@ -402,7 +407,8 @@ namespace Test::ZipDirFs
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName,
 			std::unique_ptr<::fusekit::entry>(new NativeDirectory(fakeRoot)),
-			[&daemon, &mountPoint, &result](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, &result](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
@@ -433,15 +439,17 @@ namespace Test::ZipDirFs
 			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeFile(fakeRoot / file);
 		filesystem::create_directory(mountPoint);
 		const std::string fsName = "IntegrationTestNativeDirectoryDirectAccess";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(now));
 		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeFile)))).WillRepeatedly(Return(modifiedFile));
 		EXPECT_CALL(fs, status(Eq(ByRef(fakeFile))))
@@ -455,7 +463,8 @@ namespace Test::ZipDirFs
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName,
 			std::unique_ptr<::fusekit::entry>(new NativeDirectory(fakeRoot)),
-			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
@@ -489,15 +498,17 @@ namespace Test::ZipDirFs
 		const Stat itemStat(0, itemPath, itemSize, modifiedItem, false);
 		filesystem::create_directory(mountPoint);
 		const std::string fsName = "IntegrationTestZipRootDirectoryDirectAccess";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(now));
 		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(&zipInstance));
 		EXPECT_CALL(lib, close(&zipInstance)).WillRepeatedly(Return());
@@ -512,7 +523,8 @@ namespace Test::ZipDirFs
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName,
 			std::unique_ptr<::fusekit::entry>(new ZipRootDirectory(fakeZip)),
-			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void {
+			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
@@ -540,25 +552,27 @@ namespace Test::ZipDirFs
 			modifiedItem((std::time_t)::Test::rand(now));
 		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX))),
 			itemParent("folder" + std::to_string(::Test::rand(UINT32_MAX))),
-			item("item" + std::to_string(::Test::rand(UINT32_MAX))), itemPath(itemParent + "/" + item);
+			item("item" + std::to_string(::Test::rand(UINT32_MAX))),
+			itemPath(itemParent + "/" + item);
 		const filesystem::path mountPoint(tempFolderPath()),
 			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeZip(fakeRoot / zip);
 		::ZipDirFs::Containers::EntryGenerator::changed_ptr rootChanged(
-			new ::ZipDirFs::Components::ZipFileChanged(fakeZip, "")
-		);
+			new ::ZipDirFs::Components::ZipFileChanged(fakeZip, ""));
 		const std::streamsize itemSize(::Test::rand<std::streamsize>(UINT8_MAX, UINT16_MAX));
 		const Stat itemStat(0, itemPath, itemSize, modifiedItem, false);
 		filesystem::create_directory(mountPoint);
 		const std::string fsName = "IntegrationTestZipDirectoryDirectAccess";
-		Guard rmdir([mountPoint]() {
-			try
+		Guard rmdir(
+			[mountPoint]()
 			{
-				filesystem::remove(mountPoint);
-			}
-			catch (boost::filesystem::filesystem_error e)
-			{
-			}
-		});
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
 		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(now));
 		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(&zipInstance));
 		EXPECT_CALL(lib, close(&zipInstance)).WillRepeatedly(Return());
@@ -572,8 +586,10 @@ namespace Test::ZipDirFs
 		};
 		FuseDaemonFork daemon(
 			mountPoint.native(), fsName,
-			std::unique_ptr<::fusekit::entry>(new ZipDirectory(fakeZip, itemParent + "/", rootChanged)),
-			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void {
+			std::unique_ptr<::fusekit::entry>(
+				new ZipDirectory(fakeZip, itemParent + "/", rootChanged)),
+			[&daemon, &mountPoint, &statResult, &stbuf](std::vector<int> fds) -> void
+			{
 				Guard readFd([&fds]() { close(fds[0]); });
 				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
 				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};

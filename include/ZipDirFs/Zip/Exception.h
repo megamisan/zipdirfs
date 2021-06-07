@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_EXCEPTION_H
 #define ZIPDIRFS_ZIP_EXCEPTION_H
@@ -10,6 +10,10 @@
 
 namespace ZipDirFs::Zip
 {
+	/**
+	 * @brief An exception thrown when accessing zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Exception : public std::exception
 	{
 	public:

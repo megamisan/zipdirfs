@@ -21,6 +21,10 @@ namespace ZipDirFs::Fuse
 {
 	using namespace fusekit;
 
+	/**
+	 * @brief A file entry representing a symlink to a real filesystem file
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct NativeSymlink
 		: public basic_symlink<NativeTimePolicy, Utilities::DefaultLinkPermission, no_xattr>
 	{

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_ENTRYITERATOR_H
 #define ZIPDIRFS_CONTAINERS_ENTRYITERATOR_H
@@ -11,9 +11,9 @@
 namespace ZipDirFs::Containers
 {
 	/**
-	 * An iterator definition to work with non templated entry list.
-	 *
-	 * Uses instances of the inner class Wrapper to do the real work.
+	 * @brief An iterator definition to work with non templated @link ZipDirFs::Containers::EntryList entry list @endlink
+	 * @remarks Uses instances of the inner class Wrapper to do the real work.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
 	class EntryIterator : public std::iterator<std::forward_iterator_tag, const std::string, size_t>
 	{

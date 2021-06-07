@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_STREAM_H
 #define ZIPDIRFS_ZIP_STREAM_H
@@ -28,7 +28,15 @@ namespace ZipDirFs::Zip
 {
 	struct Archive;
 	struct Entry;
-	namespace Base { struct Content; }
+	namespace Base
+	{
+		struct Content;
+	}
+
+	/**
+	 * @brief An input stream for randomly accessing a zip file entry content
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Stream : public std::istream
 	{
 	public:
@@ -36,6 +44,7 @@ namespace ZipDirFs::Zip
 		Stream(Archive&, const std::string&);
 		Stream(Entry&);
 		~Stream();
+
 	private:
 		static std::basic_streambuf<char_type>* createBuffer(const std::shared_ptr<Base::Content>&);
 #ifdef BUILD_TEST

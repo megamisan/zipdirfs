@@ -17,6 +17,10 @@ namespace ZipDirFs::Fuse
 {
 	using namespace fusekit;
 
+	/**
+	 * @brief A file entry representing a file in a zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct ZipFile : public basic_file<DefaultZipFileBuffer, ZipTimePolicy,
 						 Utilities::DefaultFilePermission, no_xattr>
 	{

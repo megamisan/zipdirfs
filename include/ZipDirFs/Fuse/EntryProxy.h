@@ -9,6 +9,11 @@
 
 namespace ZipDirFs::Fuse
 {
+	/**
+	 * @brief A fusekit entry which proxy calls to another and can be changed
+	 * @remarks Mainly used to bootstrap the daemon.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class EntryProxy : public fusekit::entry
 	{
 	public:

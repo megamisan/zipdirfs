@@ -20,7 +20,10 @@ namespace Test::ZipDirFs::Fuse
 			delete[] argv;
 			daemon.root() = nullptr;
 		}
-		void FuseDaemon::stop() { (void)!::system(std::string("fusermount -u " + mountPoint).c_str()); }
+		void FuseDaemon::stop()
+		{
+			(void)!::system(std::string("fusermount -u " + mountPoint).c_str());
+		}
 		::fusekit::daemon<EntryProxy>& FuseDaemon::initDaemon(
 			std::unique_ptr<::fusekit::entry>&& root)
 		{

@@ -36,7 +36,8 @@ namespace ZipDirFs::Components
 	{
 		return entryListProxy->erase(it);
 	}
-	EntryListProxyIncremental::mapped_type EntryListProxyIncremental::find(const key_type& name) const
+	EntryListProxyIncremental::mapped_type EntryListProxyIncremental::find(
+		const key_type& name) const
 	{
 		auto entry = entryListProxy->find(name);
 		if (entry == nullptr)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_COMPONENTS_ZIPFILECHANGED_H
 #define ZIPDIRFS_COMPONENTS_ZIPFILECHANGED_H
@@ -16,6 +16,10 @@ namespace boost::filesystem
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief A @link ZipDirFs::Container::Helpers::Changed Changed @endlink helper for entry in zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class ZipFileChanged : public ZipDirFs::Containers::Helpers::Changed
 	{
 	public:

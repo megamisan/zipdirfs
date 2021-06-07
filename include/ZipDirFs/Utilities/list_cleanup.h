@@ -10,7 +10,13 @@
 
 namespace ZipDirFs::Utilities
 {
-	void CleanupEntryList(::ZipDirFs::Containers::Helpers::EntryListProxy&, ::ZipDirFs::Containers::Helpers::Factory&);
+	/**
+	 * @brief Helper function to clean an entry
+	 * @remarks Requires the associated factory to correctly free objects.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
+	void CleanupEntryList(::ZipDirFs::Containers::Helpers::EntryListProxy&,
+		::ZipDirFs::Containers::Helpers::Factory&);
 } // namespace ZipDirFs::Utilities
 
 #endif // ZIPDIRFS_UTILITIES_LIST_CLEANUP_H

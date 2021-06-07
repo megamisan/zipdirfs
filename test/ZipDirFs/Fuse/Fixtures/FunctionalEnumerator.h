@@ -5,16 +5,18 @@
 #define TEST_ZIPDIRFS_FUSE_FIXTURES_FUNCTIONALENUMERATOR_H
 
 #include "ZipDirFs/Containers/Helpers/Enumerator.h"
-#include <string>
 #include <functional>
+#include <string>
 
 namespace Test::ZipDirFs::Fuse
 {
 	namespace Fixtures
 	{
-		struct FunctionalEnumerator : public ::ZipDirFs::Containers::Helpers::Enumerator<std::string>
+		struct FunctionalEnumerator
+			: public ::ZipDirFs::Containers::Helpers::Enumerator<std::string>
 		{
-			FunctionalEnumerator(std::function<void()> resetFunc, std::function<void()> nextFunc, std::function<bool()> validFunc, std::function<const std::string&()> currentFunc);
+			FunctionalEnumerator(std::function<void()> resetFunc, std::function<void()> nextFunc,
+				std::function<bool()> validFunc, std::function<const std::string&()> currentFunc);
 			void reset();
 			void next();
 			bool valid();

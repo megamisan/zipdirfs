@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_CONTAINERS_HELPERS_ENTRYLISTPROXYMOCK_H
 #define TEST_ZIPDIRFS_CONTAINERS_HELPERS_ENTRYLISTPROXYMOCK_H
@@ -27,8 +27,12 @@ namespace Test::ZipDirFs::Containers::Helpers
 			~EntryListProxyMock();
 			MOCK_METHOD0(begin, iterator());
 			MOCK_METHOD0(end, iterator());
-			iterator insert(iterator it, const key_type& k, const mapped_type& m) { return insert_proxy(it, k, m); }
-			MOCK_METHOD3(insert_proxy, iterator(const iterator&, const key_type&, const mapped_type&));
+			iterator insert(iterator it, const key_type& k, const mapped_type& m)
+			{
+				return insert_proxy(it, k, m);
+			}
+			MOCK_METHOD3(
+				insert_proxy, iterator(const iterator&, const key_type&, const mapped_type&));
 			iterator erase(iterator it) { return erase_proxy(it); }
 			MOCK_METHOD1(erase_proxy, iterator(const iterator&));
 			MOCK_CONST_METHOD1(find, fusekit::entry*(const key_type&));

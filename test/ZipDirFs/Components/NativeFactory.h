@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H
 #define TEST_ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H

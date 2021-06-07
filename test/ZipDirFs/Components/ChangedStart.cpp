@@ -43,9 +43,9 @@ namespace Test::ZipDirFs::Components
 	{
 		std::unique_ptr<ChangedMock> changedMock(new ChangedMock());
 		EXPECT_CALL(*changedMock, changed()).WillOnce(Return(false));
-		std::shared_ptr<ChangedProxy> proxy(new ChangedProxy(
-			std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(std::unique_ptr<ChangedStart>(
-				new ChangedStart([]() -> std::time_t { return 0; },
+		std::shared_ptr<ChangedProxy> proxy(
+			new ChangedProxy(std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
+				std::unique_ptr<ChangedStart>(new ChangedStart([]() -> std::time_t { return 0; },
 					[&changedMock]() -> std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> {
 						return std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
 							std::move(changedMock));
@@ -59,9 +59,9 @@ namespace Test::ZipDirFs::Components
 	{
 		std::unique_ptr<ChangedMock> changedMock(new ChangedMock());
 		EXPECT_CALL(*changedMock, changed()).WillOnce(Return(true));
-		std::shared_ptr<ChangedProxy> proxy(new ChangedProxy(
-			std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(std::unique_ptr<ChangedStart>(
-				new ChangedStart([]() -> std::time_t { return 0; },
+		std::shared_ptr<ChangedProxy> proxy(
+			new ChangedProxy(std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
+				std::unique_ptr<ChangedStart>(new ChangedStart([]() -> std::time_t { return 0; },
 					[&changedMock]() -> std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> {
 						return std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
 							std::move(changedMock));
@@ -94,7 +94,8 @@ namespace Test::ZipDirFs::Components
 		ChangedStart* changedStart;
 		std::shared_ptr<ChangedProxy> proxy(new ChangedProxy(
 			std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(std::unique_ptr<ChangedStart>(
-				changedStart = new ChangedStart([expected]() -> std::time_t { return ::Test::rand(UINT32_MAX); },
+				changedStart = new ChangedStart([expected]() -> std::time_t
+					{ return ::Test::rand(UINT32_MAX); },
 					[]() -> std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> {
 						return std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
 							std::unique_ptr<ChangedMock>());

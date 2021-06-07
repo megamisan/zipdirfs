@@ -11,6 +11,13 @@ namespace ZipDirFs::Fuse
 {
 	using ::ZipDirFs::Containers::EntryGenerator;
 
+	/**
+	 * @brief A fusekit node representing whatever directory
+	 * @remarks Implementations use the provided abstract methods to provides required components.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Derived Recursive templating parameter.
+	 * @tparam Generator Implementation class for list management.
+	 */
 	template <class Derived, class Generator = EntryGenerator>
 	struct DirectoryNode
 	{
@@ -76,6 +83,12 @@ namespace ZipDirFs::Fuse
 		virtual typename Generator::locker_ptr& locker() = 0;
 	};
 
+	/**
+	 * @brief A fusekit node for representing whatever directory
+	 * @remarks Uses the default @link ZipDirFs::Containers::EntryGenerator Generator @endlink.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Derived Recursive templating parameter.
+	 */
 	template <class Derived>
 	struct DefaultDirectoryNode : public DirectoryNode<Derived>
 	{

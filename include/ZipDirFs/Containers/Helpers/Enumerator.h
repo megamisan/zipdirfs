@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_HELPERS_ENUMERATOR_H
 #define ZIPDIRFS_CONTAINERS_HELPERS_ENUMERATOR_H
@@ -9,7 +9,9 @@ namespace ZipDirFs::Containers
 	namespace Helpers
 	{
 		/**
-		 * A templated enumerator definition.
+		 * @brief A templated enumerator definition
+		 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+		 * @tparam T Value type
 		 */
 		template <typename T>
 		class Enumerator

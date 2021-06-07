@@ -12,6 +12,11 @@
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief A @link ZipDirFs::Container::Helpers::Changed Changed @endlink helper for initial state
+	 * @remarks Enables access to real file time before using the final @link ZipDirFs::Container::Helpers::Changed Changed @endlink helper.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class ChangedStart : public ZipDirFs::Containers::Helpers::Changed
 	{
 	public:

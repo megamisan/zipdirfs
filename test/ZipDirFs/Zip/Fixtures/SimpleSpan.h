@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef TEST_ZIPDIRFS_ZIP_FIXTURES_SIMPLESPAN_H
 #define TEST_ZIPDIRFS_ZIP_FIXTURES_SIMPLESPAN_H
@@ -17,7 +17,7 @@ namespace Test::ZipDirFs::Zip
 			using difference_type = std::ptrdiff_t;
 
 		protected:
-			constexpr SimpleSpanImpl(void* d, size_type s) : _data(d), _size(s) {};
+			constexpr SimpleSpanImpl(void* d, size_type s) : _data(d), _size(s){};
 			~SimpleSpanImpl() noexcept;
 			size_type size() const;
 			void set(void*, size_type);
@@ -77,11 +77,13 @@ namespace Test::ZipDirFs::Zip
 			using iterator = pointer;
 			constexpr SimpleSpan() noexcept : SimpleSpanImpl(nullptr, 0) {}
 			template <size_type N>
-			constexpr SimpleSpan(element_type (&arr)[N]) noexcept : SimpleSpanImpl(arr, N * sizeof(element_type))
+			constexpr SimpleSpan(element_type (&arr)[N]) noexcept :
+				SimpleSpanImpl(arr, N * sizeof(element_type))
 			{
 			}
 			template <typename It>
-			constexpr SimpleSpan(It first, size_type count) : SimpleSpanImpl(&*first, count * sizeof(element_type))
+			constexpr SimpleSpan(It first, size_type count) :
+				SimpleSpanImpl(&*first, count * sizeof(element_type))
 			{
 			}
 			constexpr size_type size() { return SimpleSpanImpl::size() / sizeof(element_type); }

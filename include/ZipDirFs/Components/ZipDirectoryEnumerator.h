@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_COMPONENTS_ZIPDIRECTORYENUMERATOR_H
 #define ZIPDIRFS_COMPONENTS_ZIPDIRECTORYENUMERATOR_H
@@ -15,6 +15,10 @@ namespace boost::filesystem
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief An @link ZipDirFs::Containers::Helpers::Enumerator Enumerator @endlink for virtual directories in zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class ZipDirectoryEnumerator : public ZipDirFs::Containers::Helpers::Enumerator<std::string>
 	{
 		using iterator = ::ZipDirFs::Containers::EntryIterator;

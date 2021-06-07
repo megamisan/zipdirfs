@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_ENTRYLIST_H
 #define ZIPDIRFS_CONTAINERS_ENTRYLIST_H
@@ -17,9 +17,13 @@ namespace fusekit
 namespace ZipDirFs::Containers
 {
 	/**
-	 * A templatable list of named fusekit entries.
-	 *
-	 * A non templated proxy to the list can be obtained.
+	 * @brief A templatable list of named fusekit entries
+	 * @remarks A non templated proxy to the list can be obtained using @link ZipDirFs::Containers::EntryList::createWithProxy createWithProxy() @endlink.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Compare A binary predicate that takes two element keys as arguments and returns a `bool`. The predicate shall return `true` if its first argument should go before its second.
+	 * @tparam MapAllocator Type of the allocator object used to define the storage allocation model for the underlying map.
+	 * @tparam ListAllocator Type of the allocator object used to define the storage allocation model for the underlying list.
+	 * @tparam ListMap Type of the underlying combined list and map object.
 	 */
 	template <typename Compare = std::less<std::string>,
 		typename MapAllocator = std::allocator<std::pair<const std::string, fusekit::entry*>>,

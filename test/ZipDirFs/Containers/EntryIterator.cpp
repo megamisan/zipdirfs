@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "EntryIterator.h"
 #include "ZipDirFs/Containers/EntryIterator.h"
@@ -33,8 +33,7 @@ namespace Test::ZipDirFs::Containers
 
 	WrapperMock* EntryIteratorTest::getWrapper(EntryIterator& ei)
 	{
-		return reinterpret_cast<WrapperMock*>(
-			EntryIteratorAccess::getWrapper(ei).get());
+		return reinterpret_cast<WrapperMock*>(EntryIteratorAccess::getWrapper(ei).get());
 	}
 	void EntryIteratorTest::setWrapper(EntryIterator& ei, EntryIterator::Wrapper* w)
 	{

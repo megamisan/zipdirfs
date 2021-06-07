@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 
 #include "ZipDirFs/Containers/EntryList.h"
@@ -102,12 +102,14 @@ namespace Test::ZipDirFs::Containers
 	{
 		return [expected](const char* nameA, const char* nameB,
 				   const ::ZipDirFs::Containers::EntryIterator::Wrapper& a,
-				   const ::ZipDirFs::Containers::EntryIterator::Wrapper& b) {
+				   const ::ZipDirFs::Containers::EntryIterator::Wrapper& b)
+		{
 			auto result = EntryListForProxyMockedAccess::WrapperAccess::invokeEquals(a, b);
 			if (result == expected)
 				return ::testing::AssertionSuccess();
 			else
-				return ::testing::internal::CmpHelperOpFailure(nameA, nameB, a, b, expected ? "==" : "!=");
+				return ::testing::internal::CmpHelperOpFailure(
+					nameA, nameB, a, b, expected ? "==" : "!=");
 		};
 	}
 
@@ -315,7 +317,8 @@ namespace Test::ZipDirFs::Containers
 		list_for_proxy_destruct_helper<std::string> d;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
 		EXPECT_CALL(d, destruct(&created->get_list()));
 		entryListProxy = nullptr;
 	}
@@ -325,7 +328,8 @@ namespace Test::ZipDirFs::Containers
 		list_map_for_proxy_create_helper c;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
 		list_for_proxy<std::string>::iterator expectedBase(&created->get_list(), 0);
 		EXPECT_CALL(created->get_list(), begin()).WillOnce(Return(expectedBase));
 		::ZipDirFs::Containers::EntryIterator expected =
@@ -339,7 +343,8 @@ namespace Test::ZipDirFs::Containers
 		list_map_for_proxy_create_helper c;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
 		list_for_proxy<std::string>::iterator expectedBase(&created->get_list(), -1);
 		EXPECT_CALL(created->get_list(), end()).WillOnce(Return(expectedBase));
 		::ZipDirFs::Containers::EntryIterator expected =
@@ -353,9 +358,12 @@ namespace Test::ZipDirFs::Containers
 		list_map_for_proxy_create_helper c;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
-		list_for_proxy<std::string>::iterator insertBase(&created->get_list(), ::Test::rand(UINT32_MAX));
-		list_for_proxy<std::string>::iterator expectedBase(&created->get_list(), ::Test::rand(UINT32_MAX));
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
+		list_for_proxy<std::string>::iterator insertBase(
+			&created->get_list(), ::Test::rand(UINT32_MAX));
+		list_for_proxy<std::string>::iterator expectedBase(
+			&created->get_list(), ::Test::rand(UINT32_MAX));
 		EXPECT_CALL(created->get_map(), insert(_));
 		EXPECT_CALL(created->get_list(), insert(insertBase, "")).WillOnce(Return(expectedBase));
 		::ZipDirFs::Containers::EntryIterator insert =
@@ -372,9 +380,12 @@ namespace Test::ZipDirFs::Containers
 		list_map_for_proxy_create_helper c;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
-		list_for_proxy<std::string>::iterator eraseBase(&created->get_list(), ::Test::rand(UINT32_MAX));
-		list_for_proxy<std::string>::iterator expectedBase(&created->get_list(), ::Test::rand(UINT32_MAX));
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
+		list_for_proxy<std::string>::iterator eraseBase(
+			&created->get_list(), ::Test::rand(UINT32_MAX));
+		list_for_proxy<std::string>::iterator expectedBase(
+			&created->get_list(), ::Test::rand(UINT32_MAX));
 		const std::string value("");
 		EXPECT_CALL(created->get_list(), getValue(eraseBase.getPosition()))
 			.WillOnce(ReturnRef(value));
@@ -393,7 +404,8 @@ namespace Test::ZipDirFs::Containers
 		list_map_for_proxy_create_helper c;
 		list_map_for_proxy* created;
 		EXPECT_CALL(c, create(_)).WillOnce(Capture(&created));
-		std::shared_ptr<EntryListProxy> entryListProxy(EntryListForProxyMockedAccess::createWithProxy());
+		std::shared_ptr<EntryListProxy> entryListProxy(
+			EntryListForProxyMockedAccess::createWithProxy());
 		list_map_for_proxy::map_type::const_iterator expectedBase;
 		EXPECT_CALL(const_cast<const list_map_for_proxy::map_type&>(created->get_map()), find(""))
 			.WillOnce(Return(expectedBase));

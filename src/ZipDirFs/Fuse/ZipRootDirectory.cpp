@@ -80,8 +80,7 @@ namespace ZipDirFs::Fuse
 		_factory(new ::ZipDirFs::Components::ZipFactory<ZipDirectory, ZipFile>(
 			path, ZipRootDirectoryItem, EntryGenerator::changed_ptr(_changed))),
 		_proxyBase(std::move(::ZipDirFs::Containers::EntryList<>::createWithProxy())),
-		_proxy(getEntryListProxy(_factory, _proxyBase)),
-		_locker(new EntryGenerator::locker_type()),
+		_proxy(getEntryListProxy(_factory, _proxyBase)), _locker(new EntryGenerator::locker_type()),
 		_generator(EntryGenerator::proxy_ptr(_proxyBase), EntryGenerator::changed_ptr(_changed),
 			EntryGenerator::enumerator_ptr(
 				new ::ZipDirFs::Components::ZipDirectoryEnumerator(path, ZipRootDirectoryItem)),

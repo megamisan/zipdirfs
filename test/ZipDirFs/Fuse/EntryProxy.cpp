@@ -2,18 +2,18 @@
  * Copyright © 2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "EntryProxy.h"
-#include "ZipDirFs/Fuse/EntryProxy.h"
 #include "../../fusekit/Fixtures/EntryMock.h"
+#include "ZipDirFs/Fuse/EntryProxy.h"
 #include "test/gtest.h"
 #include <gtest/gtest.h>
 
 namespace Test::ZipDirFs::Fuse
 {
 	using ::Test::fusekit::Fixtures::EntryMock;
-	using ::ZipDirFs::Fuse::EntryProxy;
-	using ::testing::Ref;
 	using ::testing::Eq;
+	using ::testing::Ref;
 	using ::testing::Return;
+	using ::ZipDirFs::Fuse::EntryProxy;
 
 	TEST(EntryProxyTest, child)
 	{
@@ -199,7 +199,8 @@ namespace Test::ZipDirFs::Fuse
 	TEST(EntryProxyTest, utimens)
 	{
 		std::unique_ptr<EntryMock> mock(new EntryMock());
-		timespec times[2]{{::Test::rand(UINT32_MAX), ::Test::rand(UINT32_MAX)}, {::Test::rand(UINT32_MAX), ::Test::rand(UINT32_MAX)}};
+		timespec times[2]{{::Test::rand(UINT32_MAX), ::Test::rand(UINT32_MAX)},
+			{::Test::rand(UINT32_MAX), ::Test::rand(UINT32_MAX)}};
 		int res(::Test::rand(UINT32_MAX));
 		EXPECT_CALL(*mock, utimens(times)).WillOnce(Return(res));
 		EntryProxy proxy;

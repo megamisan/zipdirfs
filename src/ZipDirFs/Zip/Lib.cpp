@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Lib.h"
 #include "ZipDirFs/Zip/Exception.h"
@@ -81,7 +81,8 @@ namespace ZipDirFs::Zip
 
 	Version::Version(const char* version) : maj(0), min(0), rev(0)
 	{
-		sscanf(version, "%d.%d.%d", const_cast<int*>(&maj), const_cast<int*>(&min), const_cast<int*>(&rev));
+		sscanf(version, "%d.%d.%d", const_cast<int*>(&maj), const_cast<int*>(&min),
+			const_cast<int*>(&rev));
 	}
 	bool Version::operator<(const Version& other) const
 	{
@@ -112,7 +113,8 @@ namespace ZipDirFs::Zip
 	std::function<std::uint64_t(Base::Lib::File* const, void*, std::uint64_t)> Lib::fread;
 	std::function<void(Base::Lib::File* const)> Lib::fclose;
 
-	bool init = [] {
+	bool init = []
+	{
 		Lib::reset();
 		return true;
 	}();
@@ -130,7 +132,8 @@ namespace ZipDirFs::Zip
 		{
 			::close(handle);
 			handle = 0;
-			if (::boost::filesystem::file_size(p) == 0) {
+			if (::boost::filesystem::file_size(p) == 0)
+			{
 				ZipError err(ZIP_ER_NOZIP);
 				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
 			}

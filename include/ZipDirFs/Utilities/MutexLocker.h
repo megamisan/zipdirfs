@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_UTILITIES_MUTEXLOCKER_H
 #define ZIPDIRFS_UTILITIES_MUTEXLOCKER_H
@@ -9,8 +9,8 @@
 namespace ZipDirFs::Utilities
 {
 	/**
-	 * \brief Provides unique locking feature
-	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @brief Provides unique locking feature
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
 	class MutexLocker
 	{

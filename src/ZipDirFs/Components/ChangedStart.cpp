@@ -8,12 +8,14 @@ namespace ZipDirFs::Components
 	ChangedStart::ChangedStart(std::function<std::time_t()>&& firstValue,
 		std::function<std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>()>&& buildReal,
 		std::shared_ptr<ChangedProxy>& target) :
-		lastChanged(0), called(false),
-		firstValue(std::move(firstValue)), buildReal(std::move(buildReal)), target(target)
+		lastChanged(0),
+		called(false), firstValue(std::move(firstValue)), buildReal(std::move(buildReal)),
+		target(target)
 	{
 	}
 
-	bool ChangedStart::operator()() {
+	bool ChangedStart::operator()()
+	{
 		std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> newChanged(buildReal());
 		bool result = (*newChanged)();
 		target->swap(newChanged);

@@ -10,6 +10,11 @@
 
 namespace ZipDirFs::Components
 {
+	/**
+	 * @brief A proxy to an @link ZipDirFs::Containers::Helpers::EntryListProxy Entry List Proxy @endlink
+	 * @remarks Used to change the underlying helper for all references.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class EntryListProxyProxy : public ZipDirFs::Containers::Helpers::EntryListProxy
 	{
 	public:

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_UTILITIES_DEFAULTPERMISSION_H
 #define ZIPDIRFS_UTILITIES_DEFAULTPERMISSION_H
@@ -10,8 +10,10 @@
 namespace ZipDirFs::Utilities
 {
 	/**
-	 * \brief Represents some fixed permissions
-	 * \author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @brief Represents some fixed permissions
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Permissions The file mode as integer, better written as octal.
+	 * @tparam Derived Recursive templating parameter.
 	 */
 	template <::mode_t Permissions, class Derived>
 	class DefaultPermission
@@ -28,8 +30,10 @@ namespace ZipDirFs::Utilities
 	};
 
 	/**
-	 * \brief Fixed permissions for directories.
-	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @brief Fixed permissions for directories
+	 * @remarks Sets read and execute permissions
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @see ZipDirFs::Utilities::DefaultPermission
 	 */
 	template <class Derived>
 	class DefaultDirectoryPermission : public DefaultPermission<0555, Derived>
@@ -37,8 +41,10 @@ namespace ZipDirFs::Utilities
 	};
 
 	/**
-	 * \brief Fixed permissions for files.
-	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @brief Fixed permissions for files
+	 * @remarks Sets read permissions
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @see ZipDirFs::Utilities::DefaultPermission
 	 */
 	template <class Derived>
 	class DefaultFilePermission : public DefaultPermission<0444, Derived>
@@ -46,8 +52,10 @@ namespace ZipDirFs::Utilities
 	};
 
 	/**
-	 * \brief Fixed permissions for links.
-	 * @author Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @brief Fixed permissions for links
+	 * @remarks Sets all permissions
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @see ZipDirFs::Utilities::DefaultPermission
 	 */
 	template <class Derived>
 	class DefaultLinkPermission : public DefaultPermission<0777, Derived>

@@ -113,8 +113,7 @@ namespace Test::ZipDirFs::Fuse
 		FunctionalRootDirectory::FunctionalRootDirectory(
 			NotifiedEntryGenerator::enumerator_ptr& enumerator, std::time_t modified) :
 			_proxy(EntryList<>::createWithProxy()),
-			_changed(new OneChanged(modified)),
-			_locker(new NotifiedEntryGenerator::locker_type()),
+			_changed(new OneChanged(modified)), _locker(new NotifiedEntryGenerator::locker_type()),
 			_generator(NotifiedEntryGenerator::proxy_ptr(_proxy),
 				NotifiedEntryGenerator::changed_ptr(_changed),
 				NotifiedEntryGenerator::enumerator_ptr(enumerator),

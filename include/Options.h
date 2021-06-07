@@ -1,18 +1,23 @@
 /*
- * Copyright © 2012-2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2012-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
+/**
+ * @brief Helper for parsing application options
+ * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ */
 class Options
 {
 	typedef std::string string;
 	typedef void (*const handler)(Options&);
 	typedef std::map<string, handler> handlerMap;
+
 public:
 	typedef std::vector<string> stringVector;
 	typedef std::map<string, string> stringMap;
@@ -27,9 +32,11 @@ public:
 	const stringVector& unknownArguments() const { return this->unknownArguments_; }
 	const stringVector& fuseArguments() const { return this->fuseArguments_; }
 	const stringMap& mountOptions() const { return this->mountOptions_; }
+
 protected:
 	void explodeMountOptions(string option);
 	void executeHandler(string option);
+
 private:
 	stringVector arguments_;
 	stringVector unknownArguments_;

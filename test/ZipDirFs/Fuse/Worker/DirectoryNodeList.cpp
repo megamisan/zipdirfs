@@ -11,7 +11,8 @@ int directoryNodeList(int, char**);
 
 TEST_HELPER(DirectoryNodeList, &directoryNodeList);
 
-int directoryNodeList(int argc, char** argv) {
+int directoryNodeList(int argc, char** argv)
+{
 	if (argc != 2)
 	{
 		std::cerr << "Helper: Missing path" << std::endl;
@@ -28,7 +29,8 @@ int directoryNodeList(int argc, char** argv) {
 	}
 	for (auto it = result.begin(), endIt = result.end(); it != endIt; ++it)
 	{
-		if (write(3, it->c_str(), it->length() + 1) == -1) {
+		if (write(3, it->c_str(), it->length() + 1) == -1)
+		{
 			perror("Helper");
 			return -1;
 		}

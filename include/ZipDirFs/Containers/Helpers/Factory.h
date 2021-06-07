@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_CONTAINERS_HELPERS_FACTORY_H
 #define ZIPDIRFS_CONTAINERS_HELPERS_FACTORY_H
@@ -16,7 +16,8 @@ namespace ZipDirFs::Containers
 	namespace Helpers
 	{
 		/**
-		 * A factory definition to manage list entries
+		 * @brief A factory definition to manage list entries
+		 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 		 */
 		class Factory
 		{

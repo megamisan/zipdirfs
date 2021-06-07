@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "EntryListProxyMock.h"
 
@@ -9,7 +9,10 @@ namespace Test::ZipDirFs::Containers::Helpers
 	{
 		EntryListProxyMockDestructHelper* EntryListProxyMockDestructHelper::instance;
 		EntryListProxyMockDestructHelper::EntryListProxyMockDestructHelper() { instance = this; }
-		EntryListProxyMockDestructHelper::~EntryListProxyMockDestructHelper() { instance = nullptr; }
+		EntryListProxyMockDestructHelper::~EntryListProxyMockDestructHelper()
+		{
+			instance = nullptr;
+		}
 		EntryListProxyMock::EntryListProxyMock() {}
 		EntryListProxyMock::~EntryListProxyMock()
 		{

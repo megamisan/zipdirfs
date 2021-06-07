@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Containers/EntryIterator.h"
 #include <utility>
@@ -31,8 +31,8 @@ namespace ZipDirFs::Containers
 	bool EntryIterator::operator==(const EntryIterator& it) const
 	{
 		return (wrapper == nullptr) ?
-			((it.wrapper == nullptr) ? true : false) :
-			((it.wrapper == nullptr) ? false : wrapper->equals(*it.wrapper));
+			  ((it.wrapper == nullptr) ? true : false) :
+			  ((it.wrapper == nullptr) ? false : wrapper->equals(*it.wrapper));
 	}
 	void EntryIterator::swap(EntryIterator& it) { wrapper.swap(it.wrapper); }
 	EntryIterator::Wrapper::~Wrapper() {}

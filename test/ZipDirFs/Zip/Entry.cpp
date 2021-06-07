@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Entry.h"
 #include "test/gtest.h"
@@ -134,7 +134,8 @@ namespace Test::ZipDirFs::Zip
 				char c;
 				EntryAccess::getContent(entry).buffer = &c;
 			},
-			[](int status) {
+			[](int status)
+			{
 				return ::testing::KilledBySignal(SIGABRT)(status)
 					|| ::testing::KilledBySignal(SIGSEGV)(status);
 			},
@@ -195,9 +196,9 @@ namespace Test::ZipDirFs::Zip
 		EntryAccess::getCachedStat(entry) = stat;
 		EntryAccess::getFlags(entry)[1] = true;
 		EXPECT_CALL(lib, fopen_index(data.get(), stat.getIndex())).WillOnce(Return(file));
-		EntryAccess::GlobalHelper helper(lib, std::shared_ptr<Entry>(&entry, [](Entry* e) {
-			EntryAccess::getContent(*e).data = nullptr;
-		}));
+		EntryAccess::GlobalHelper helper(lib,
+			std::shared_ptr<Entry>(
+				&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; }));
 		auto content(EntryAccess::invokeOpen(entry));
 		EXPECT_EQ(content.get(), &EntryAccess::getContent(entry));
 		EXPECT_EQ(EntryAccess::getContent(entry).data, file);

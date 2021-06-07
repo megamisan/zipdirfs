@@ -15,6 +15,12 @@ namespace ZipDirFs::Fuse
 	using ::ZipDirFs::Zip::Exception;
 	using ::ZipDirFs::Zip::Stream;
 
+	/**
+	 * @brief A fusekit buffer for zip archive file
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Derived Recursive templating parameter.
+	 * @tparam Entry Implementation class of an entry of a zip archive.
+	 */
 	template <class Derived, class Entry = ::ZipDirFs::Zip::Entry>
 	struct ZipFileBuffer
 	{
@@ -49,7 +55,8 @@ namespace ZipDirFs::Fuse
 			auto& stream = *(it->second);
 			auto current = buf, end = buf + size;
 			stream.seekg(offset);
-			while (current < end && !stream.eof()) {
+			while (current < end && !stream.eof())
+			{
 				stream.read(current, end - current);
 				current += stream.gcount();
 			}
@@ -71,6 +78,12 @@ namespace ZipDirFs::Fuse
 	template <class Derived, class Entry>
 	uint64_t ZipFileBuffer<Derived, Entry>::nextId = 1;
 
+	/**
+	 * @brief A fusekit buffer for zip archive file
+	 * @remarks Uses the default @link ZipDirFs::Zip::Entry Entry @endlink.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 * @tparam Derived Recursive templating parameter.
+	 */
 	template <class Derived>
 	struct DefaultZipFileBuffer : public ZipFileBuffer<Derived>
 	{

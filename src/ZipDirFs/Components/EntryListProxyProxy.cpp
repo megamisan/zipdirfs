@@ -11,7 +11,8 @@ namespace ZipDirFs::Components
 	{
 	}
 
-	void EntryListProxyProxy::swap(std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>& other)
+	void EntryListProxyProxy::swap(
+		std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>& other)
 	{
 		entryListProxy.swap(other);
 	}

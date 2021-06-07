@@ -17,6 +17,10 @@ namespace ZipDirFs::Fuse
 {
 	using namespace fusekit;
 
+	/**
+	 * @brief A directory entry representing the root of a zip archive
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	struct ZipRootDirectory : public basic_directory<DefaultDirectoryNode, NativeTimePolicy,
 								  Utilities::DefaultDirectoryPermission, no_xattr>
 	{

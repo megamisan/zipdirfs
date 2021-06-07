@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #ifndef ZIPDIRFS_ZIP_ARCHIVE_H
 #define ZIPDIRFS_ZIP_ARCHIVE_H
@@ -10,8 +10,8 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <vector>
 #include <tuple>
+#include <vector>
 
 namespace boost::filesystem
 {
@@ -20,6 +20,11 @@ namespace boost::filesystem
 
 namespace ZipDirFs::Zip
 {
+	/**
+	 * @brief Represents a zip archive
+	 * @remarks Must be created using @link ZipDirFs::Zip::Factory::open Factory::open @endlink.
+	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+	 */
 	class Archive
 	{
 	public:

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019-2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2019-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "gtest.h"
 #include <boost/filesystem.hpp>
@@ -10,7 +10,8 @@
 namespace
 {
 	unsigned init();
-	unsigned gtest_rand_init = []() {
+	unsigned gtest_rand_init = []()
+	{
 		unsigned seed = std::time(nullptr);
 		std::srand(seed);
 		return seed;
@@ -50,9 +51,6 @@ namespace boost
 {
 	namespace filesystem
 	{
-		void PrintTo(const boost::filesystem::path& path, std::ostream* os)
-		{
-			*os << path;
-		}
+		void PrintTo(const boost::filesystem::path& path, std::ostream* os) { *os << path; }
 	} // namespace filesystem
 } // namespace boost

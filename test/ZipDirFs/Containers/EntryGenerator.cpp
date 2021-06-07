@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
+ * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #define BUILD_TEST
 #include "ZipDirFs/Containers/EntryGenerator.h"
@@ -23,14 +23,14 @@ namespace Test::ZipDirFs::Containers
 	using ::ZipDirFs::Containers::EntryGenerator;
 
 #define ENTRY_GENERATOR(var, proxy, changed, enumerator, factory) \
-	EntryGenerator var( \
-		std::move(EntryGenerator::proxy_ptr(proxy)), \
+	EntryGenerator var(std::move(EntryGenerator::proxy_ptr(proxy)), \
 		std::move(EntryGenerator::changed_ptr(changed)), \
 		std::move(EntryGenerator::enumerator_ptr(enumerator)), \
 		std::move(EntryGenerator::factory_ptr(factory)), \
 		EntryGenerator::locker_ptr(new EntryGenerator::locker_type()))
 
-	bool WrapperAccess::invokeEquals(const EntryIterator::Wrapper& w1, const EntryIterator::Wrapper& w2)
+	bool WrapperAccess::invokeEquals(
+		const EntryIterator::Wrapper& w1, const EntryIterator::Wrapper& w2)
 	{
 		return reinterpret_cast<const WrapperAccess*>(&w1)->equals(w2);
 	}
@@ -87,18 +87,24 @@ namespace Test::ZipDirFs::Containers
 		makeMocks();
 		EXPECT_CALL(*changed, invoke()).WillOnce(Return(false));
 		EXPECT_CALL(*elp, begin())
-			.WillOnce(ReturnIterator(&wrapperMock, [](EntryIteratorWrapperMock** output) {
-				return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>;
-			}));
+			.WillOnce(ReturnIterator(&wrapperMock,
+				[](EntryIteratorWrapperMock** output)
+				{ return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>; }));
 		ENTRY_GENERATOR(eg, elp, changed, enumerator, factory);
 		Fixtures::HolderStateInitializer state(eg);
 		auto it = eg.begin();
 		EXPECT_CALL(*wrapperMock, equals_proxy(wrapperMock)).WillOnce(Return(true));
 		EXPECT_NE(wrapperMock, it.getWrapper());
-		EXPECT_PRED_FORMAT2([](const char* nameA, const char* nameB, const EntryIterator::Wrapper& a, const EntryIterator::Wrapper& b) {
-			if (WrapperAccess::invokeEquals(a, b)) return ::testing::AssertionSuccess();
-			else return ::testing::internal::CmpHelperEQFailure(nameA, nameB, a, b);
-		}, *it.getWrapper(), *static_cast<EntryIterator::Wrapper*>(wrapperMock));
+		EXPECT_PRED_FORMAT2(
+			[](const char* nameA, const char* nameB, const EntryIterator::Wrapper& a,
+				const EntryIterator::Wrapper& b)
+			{
+				if (WrapperAccess::invokeEquals(a, b))
+					return ::testing::AssertionSuccess();
+				else
+					return ::testing::internal::CmpHelperEQFailure(nameA, nameB, a, b);
+			},
+			*it.getWrapper(), *static_cast<EntryIterator::Wrapper*>(wrapperMock));
 		EXPECT_EQ(state.allWrappers().size(), 1);
 	}
 
@@ -112,15 +118,16 @@ namespace Test::ZipDirFs::Containers
 		EXPECT_CALL(*enumerator, valid()).WillOnce(Return(false));
 		EXPECT_CALL(*elp, begin())
 			.Times(2)
-			.WillRepeatedly(
-				ReturnIterator(&wrapperMock, [endValue](EntryIteratorWrapperMock** output) {
+			.WillRepeatedly(ReturnIterator(&wrapperMock,
+				[endValue](EntryIteratorWrapperMock** output)
+				{
 					*output = new ::testing::StrictMock<EntryIteratorWrapperMock>;
 					EXPECT_CALL(**output, equals_proxy(IsEnd(endValue))).WillOnce(Return(true));
 					return *output;
 				}));
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		ENTRY_GENERATOR(eg, elp, changed, enumerator, factory);
 		Fixtures::HolderStateInitializer state(eg);
 		auto it = eg.begin();
@@ -135,9 +142,9 @@ namespace Test::ZipDirFs::Containers
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
 		makeMocks();
 		EXPECT_CALL(*elp, end())
-			.WillOnce(ReturnIterator(&endWrapper, [endValue](EntryIteratorEndWrapper** output) {
-				return *output = new EntryIteratorEndWrapper(endValue);
-			}));
+			.WillOnce(ReturnIterator(&endWrapper,
+				[endValue](EntryIteratorEndWrapper** output)
+				{ return *output = new EntryIteratorEndWrapper(endValue); }));
 		ENTRY_GENERATOR(eg, elp, changed, enumerator, factory);
 		auto it = eg.end();
 		EXPECT_EQ(endWrapper, it.getWrapper());
@@ -146,9 +153,8 @@ namespace Test::ZipDirFs::Containers
 	TEST_F(EntryGeneratorTest, beginNotEmptyNotChanged)
 	{
 		EntryIteratorWrapperMock *wrapperMock, *wrapperMock2;
-		auto buildWrapper = [](EntryIteratorWrapperMock** output) {
-			return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>;
-		};
+		auto buildWrapper = [](EntryIteratorWrapperMock** output)
+		{ return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>; };
 		makeMocks();
 		EXPECT_CALL(*changed, invoke()).WillOnce(Return(false));
 		EXPECT_CALL(*elp, begin())
@@ -169,16 +175,17 @@ namespace Test::ZipDirFs::Containers
 	{
 		EntryIteratorWrapperMock *wrapperMock, *wrapperMock2;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		const std::string firstValue = std::string("first") + std::to_string(::Test::rand(UINT32_MAX));
-		auto buildWrapper1 = [firstValue, endValue](EntryIteratorWrapperMock** output) {
+		const std::string firstValue =
+			std::string("first") + std::to_string(::Test::rand(UINT32_MAX));
+		auto buildWrapper1 = [firstValue, endValue](EntryIteratorWrapperMock** output)
+		{
 			*output = new ::testing::StrictMock<EntryIteratorWrapperMock>;
 			EXPECT_CALL(**output, dereference()).WillOnce(ReturnRef(firstValue));
 			EXPECT_CALL(**output, equals_proxy(IsEnd(endValue))).WillOnce(Return(false));
 			return *output;
 		};
-		auto buildWrapper2 = [](EntryIteratorWrapperMock** output) {
-			return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>;
-		};
+		auto buildWrapper2 = [](EntryIteratorWrapperMock** output)
+		{ return *output = new ::testing::StrictMock<EntryIteratorWrapperMock>; };
 		makeMocks();
 		EXPECT_CALL(*changed, invoke()).WillOnce(Return(true));
 		EXPECT_CALL(*enumerator, reset());
@@ -189,9 +196,9 @@ namespace Test::ZipDirFs::Containers
 			.WillOnce(ReturnIterator(&wrapperMock, buildWrapper2))
 			.WillOnce(ReturnIterator(&wrapperMock2, buildWrapper2))
 			.RetiresOnSaturation();
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		ENTRY_GENERATOR(eg, elp, changed, enumerator, factory);
 		Fixtures::HolderStateInitializer state(eg);
 		auto it = eg.begin();
@@ -234,9 +241,9 @@ namespace Test::ZipDirFs::Containers
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
 		makeMocks();
 		EXPECT_CALL(*elp, end())
-			.WillOnce(ReturnIterator(&endWrapper, [endValue](EntryIteratorEndWrapper** output) {
-				return *output = new EntryIteratorEndWrapper(endValue);
-			}));
+			.WillOnce(ReturnIterator(&endWrapper,
+				[endValue](EntryIteratorEndWrapper** output)
+				{ return *output = new EntryIteratorEndWrapper(endValue); }));
 		ENTRY_GENERATOR(eg, elp, changed, enumerator, factory);
 		auto it = eg.remove(offsetValue);
 		EXPECT_EQ(it.getWrapper(), endWrapper);
@@ -257,7 +264,8 @@ namespace Test::ZipDirFs::Containers
 	{
 		::testing::InSequence seq;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		const std::string nextValue = std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string nextValue =
+			std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
 		makeMocks();
@@ -266,9 +274,9 @@ namespace Test::ZipDirFs::Containers
 		EXPECT_CALL(*enumerator, next());
 		EXPECT_CALL(*enumerator, valid()).WillOnce(Return(true));
 		EXPECT_CALL(*enumerator, current()).WillOnce(ReturnRef(nextValue));
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		EXPECT_CALL(*wrapperMockBase, equals_proxy(IsEnd(endValue))).WillOnce(Return(false));
 		EXPECT_CALL(*wrapperMockBase, dereference()).WillOnce(ReturnRef(nextValue));
 		EXPECT_CALL(*wrapperMockPos, increment());
@@ -283,9 +291,12 @@ namespace Test::ZipDirFs::Containers
 	{
 		::testing::InSequence seq;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		fusekit::entry* const foundEntry = reinterpret_cast<decltype(foundEntry)>(::Test::rand(UINT32_MAX));
-		const std::string nextValue = std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
-		const std::string otherValue = std::string("other") + std::to_string(::Test::rand(UINT32_MAX));
+		fusekit::entry* const foundEntry =
+			reinterpret_cast<decltype(foundEntry)>(::Test::rand(UINT32_MAX));
+		const std::string nextValue =
+			std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string otherValue =
+			std::string("other") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockBase2 = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
@@ -298,9 +309,9 @@ namespace Test::ZipDirFs::Containers
 		EXPECT_CALL(*enumerator, next());
 		EXPECT_CALL(*enumerator, valid()).WillOnce(Return(true));
 		EXPECT_CALL(*enumerator, current()).WillOnce(ReturnRef(nextValue));
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		EXPECT_CALL(*wrapperMockBase, equals_proxy(IsEnd(endValue))).WillOnce(Return(false));
 		EXPECT_CALL(*wrapperMockBase, dereference()).WillOnce(ReturnRef(otherValue));
 		EXPECT_CALL(*elp, find(Eq(ByRef(nextValue)))).WillOnce(Return(foundEntry));
@@ -313,9 +324,8 @@ namespace Test::ZipDirFs::Containers
 		}
 		EXPECT_CALL(*wrapperMockClone, dereference()).WillOnce(ReturnRef(nextValue));
 		EXPECT_CALL(*wrapperMockClone, clone()).WillOnce(Return(wrapperMockClone2));
-		EXPECT_CALL(*elp, erase_proxy(HaveWrapper(wrapperMockClone2))).WillOnce(ReturnIterator([] {
-			return nullptr;
-		}));
+		EXPECT_CALL(*elp, erase_proxy(HaveWrapper(wrapperMockClone2)))
+			.WillOnce(ReturnIterator([] { return nullptr; }));
 		EXPECT_CALL(*wrapperMockBase, clone()).WillOnce(Return(wrapperMockClone3));
 		EXPECT_CALL(*elp,
 			insert_proxy(
@@ -333,9 +343,12 @@ namespace Test::ZipDirFs::Containers
 	{
 		::testing::InSequence seq;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		fusekit::entry* const createdEntry = reinterpret_cast<decltype(createdEntry)>(::Test::rand(UINT32_MAX));
-		const std::string nextValue = std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
-		const std::string otherValue = std::string("other") + std::to_string(::Test::rand(UINT32_MAX));
+		fusekit::entry* const createdEntry =
+			reinterpret_cast<decltype(createdEntry)>(::Test::rand(UINT32_MAX));
+		const std::string nextValue =
+			std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string otherValue =
+			std::string("other") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockBase2 = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
@@ -346,9 +359,9 @@ namespace Test::ZipDirFs::Containers
 		EXPECT_CALL(*enumerator, next());
 		EXPECT_CALL(*enumerator, valid()).WillOnce(Return(true));
 		EXPECT_CALL(*enumerator, current()).WillOnce(ReturnRef(nextValue));
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		EXPECT_CALL(*wrapperMockBase, equals_proxy(IsEnd(endValue))).WillOnce(Return(false));
 		EXPECT_CALL(*wrapperMockBase, dereference()).WillOnce(ReturnRef(otherValue));
 		EXPECT_CALL(*elp, find(Eq(ByRef(nextValue)))).WillOnce(Return(nullptr));
@@ -370,7 +383,8 @@ namespace Test::ZipDirFs::Containers
 	{
 		::testing::InSequence seq;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		const std::string nextValue = std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string nextValue =
+			std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
 		std::vector<EntryIteratorWrapperMock*> wrappers;
@@ -391,9 +405,9 @@ namespace Test::ZipDirFs::Containers
 		entries.resize(iterations);
 		for (int i = 0; i <= iterations; i++)
 		{
-			EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-				return new EntryIteratorEndWrapper(endValue);
-			}));
+			EXPECT_CALL(*elp, end())
+				.WillOnce(
+					ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 			EXPECT_CALL(*wrapperIt, equals_proxy(IsEnd(endValue)))
 				.WillOnce(Return(i == iterations));
 			if (i < iterations)
@@ -423,8 +437,10 @@ namespace Test::ZipDirFs::Containers
 	{
 		::testing::InSequence seq;
 		const std::int64_t endValue = ::Test::rand(UINT32_MAX);
-		fusekit::entry* const createdEntry = reinterpret_cast<decltype(createdEntry)>(::Test::rand(UINT32_MAX));
-		const std::string nextValue = std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
+		fusekit::entry* const createdEntry =
+			reinterpret_cast<decltype(createdEntry)>(::Test::rand(UINT32_MAX));
+		const std::string nextValue =
+			std::string("next") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockBase2 = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
@@ -435,9 +451,9 @@ namespace Test::ZipDirFs::Containers
 		EXPECT_CALL(*enumerator, next());
 		EXPECT_CALL(*enumerator, valid()).WillOnce(Return(true));
 		EXPECT_CALL(*enumerator, current()).WillOnce(ReturnRef(nextValue));
-		EXPECT_CALL(*elp, end()).WillOnce(ReturnIterator([endValue]() {
-			return new EntryIteratorEndWrapper(endValue);
-		}));
+		EXPECT_CALL(*elp, end())
+			.WillOnce(
+				ReturnIterator([endValue]() { return new EntryIteratorEndWrapper(endValue); }));
 		EXPECT_CALL(*wrapperMockBase, equals_proxy(IsEnd(endValue))).WillOnce(Return(true));
 		EXPECT_CALL(*factory, create(nextValue)).WillOnce(Return(createdEntry));
 		EXPECT_CALL(*wrapperMockBase, clone()).WillOnce(Return(wrapperMockClone));
@@ -489,7 +505,8 @@ namespace Test::ZipDirFs::Containers
 
 	TEST_F(EntryGeneratorTest, itDirectDereference)
 	{
-		const std::string usedValue = std::string("used") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string usedValue =
+			std::string("used") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
 		makeMocks();
 		EXPECT_CALL(*wrapperMockPos, dereference()).WillOnce(ReturnRef(usedValue));
@@ -501,7 +518,8 @@ namespace Test::ZipDirFs::Containers
 
 	TEST_F(EntryGeneratorTest, itCombinedDereference)
 	{
-		const std::string usedValue = std::string("used") + std::to_string(::Test::rand(UINT32_MAX));
+		const std::string usedValue =
+			std::string("used") + std::to_string(::Test::rand(UINT32_MAX));
 		EntryIteratorWrapperMock* wrapperMockBase = new EntryIteratorWrapperMock;
 		EntryIteratorWrapperMock* wrapperMockPos = new EntryIteratorWrapperMock;
 		makeMocks();

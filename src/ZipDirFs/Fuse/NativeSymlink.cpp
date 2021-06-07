@@ -12,7 +12,8 @@ namespace ZipDirFs::Fuse
 	std::unique_ptr<std::string> NativeSymlinkOwnTarget(const boost::filesystem::path&);
 
 	NativeSymlink::NativeSymlink(const boost::filesystem::path& p) :
-		basic_symlink(NativeSymlinkInitTarget(p)), path(p), changed(path), target(NativeSymlinkOwnTarget(p))
+		basic_symlink(NativeSymlinkInitTarget(p)), path(p), changed(path),
+		target(NativeSymlinkOwnTarget(p))
 	{
 		changed();
 	}
