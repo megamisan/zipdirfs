@@ -21,7 +21,7 @@ namespace ZipDirFs::Zip
 
 	Factory& Factory::getInstance() { return *instance; }
 
-	std::shared_ptr<Archive> Factory::get(const boost::filesystem::path& p) throw()
+	std::shared_ptr<Archive> Factory::get(const boost::filesystem::path& p)
 	{
 		std::shared_ptr<Archive> result;
 		std::lock_guard<std::mutex> guard(zip_factory_get);
@@ -55,7 +55,7 @@ namespace ZipDirFs::Zip
 		return result;
 	}
 
-	std::shared_ptr<Archive> Factory::get(const Base::Lib* const& d)
+	std::shared_ptr<Archive> Factory::get(const Base::Lib* const& d) throw()
 	{
 		std::shared_ptr<Archive> result;
 		std::lock_guard<std::mutex> guard(zip_factory_get);

@@ -32,6 +32,7 @@ namespace Test::ZipDirFs
 	using ::testing::ByRef;
 	using ::testing::Eq;
 	using ::testing::Invoke;
+	using ::testing::NiceMock;
 	using ::testing::Return;
 	using ::testing::ReturnNew;
 	using ::testing::StrEq;
@@ -606,5 +607,157 @@ namespace Test::ZipDirFs
 			"FileStat", {0, 1}, std::vector<std::string>({(mountPoint / item).native()}));
 		EXPECT_EQ(statResult, 0);
 		ASSERT_EQ(stbuf.st_mtim.tv_sec, modifiedItem);
+	}
+
+	TEST(IntegrationTest, ZipStatException)
+	{
+		const std::time_t now(time(NULL));
+		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX))),
+			itemParent("folder" + std::to_string(::Test::rand(UINT32_MAX)));
+		const filesystem::path mountPoint(tempFolderPath()),
+			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeZip(fakeRoot / zip);
+		filesystem::create_directory(mountPoint);
+		const std::string fsName = "IntegrationTestZipRootDirectoryDirectAccess";
+		Guard rmdir(
+			[mountPoint]()
+			{
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
+		auto executeStatWithException = [fakeZip, now, itemParent, fsName, mountPoint]()
+		{
+			{
+				NiceMock<FileSystem> fs;
+				NiceMock<Lib> lib;
+				::ZipDirFs::Containers::EntryGenerator::changed_ptr rootChanged(
+					new ::ZipDirFs::Components::ZipFileChanged(fakeZip, ""));
+				ON_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillByDefault(Return(now));
+				ON_CALL(lib, open(Eq(ByRef(fakeZip))))
+					.WillByDefault(Throw(::ZipDirFs::Zip::Exception::fromErrorno(
+						"ZipFile::Zip::Lib::open", EMFILE)));
+				FuseDaemonFork daemon(
+					mountPoint.native(), fsName,
+					std::unique_ptr<::fusekit::entry>(
+						new ZipDirectory(fakeZip, itemParent + "/", rootChanged)),
+					[&daemon, &mountPoint](std::vector<int> fds) -> void
+					{
+						Guard readFd([&fds]() { close(fds[0]); });
+						Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
+						struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
+						ppoll(descriptors, 1, nullptr, nullptr);
+						char c;
+						while (read(fds[0], &c, 1) > 0)
+							;
+					},
+					"FileStat", {0, 1}, std::vector<std::string>({(mountPoint).native()}));
+			}
+			exit(0);
+		};
+		EXPECT_EXIT(executeStatWithException(), ::testing::ExitedWithCode(0), "");
+	}
+
+	TEST(IntegrationTest, ZipRootExploreException)
+	{
+		const std::time_t now(time(NULL));
+		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX)));
+		const filesystem::path mountPoint(tempFolderPath()),
+			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeZip(fakeRoot / zip);
+		filesystem::create_directory(mountPoint);
+		const std::string fsName = "IntegrationTestZipRootDirectoryDirectAccess";
+		Guard rmdir(
+			[mountPoint]()
+			{
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
+		auto executeExploreWithException = [fakeZip, now, fsName, mountPoint]()
+		{
+			{
+				NiceMock<FileSystem> fs;
+				NiceMock<Lib> lib;
+				ON_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillByDefault(Return(now));
+				ON_CALL(lib, open(Eq(ByRef(fakeZip))))
+					.WillByDefault(Throw(::ZipDirFs::Zip::Exception::fromErrorno(
+						"ZipFile::Zip::Lib::open", EMFILE)));
+				FuseDaemonFork daemon(
+					mountPoint.native(), fsName,
+					std::unique_ptr<::fusekit::entry>(new ZipRootDirectory(fakeZip)),
+					[&daemon, &mountPoint](std::vector<int> fds) -> void
+					{
+						Guard readFd([&fds]() { close(fds[0]); });
+						Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
+						struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
+						ppoll(descriptors, 1, nullptr, nullptr);
+						char c;
+						while (read(fds[0], &c, 1) > 0)
+							;
+					},
+					"Explore", {0, 1}, std::vector<std::string>({(mountPoint).native()}));
+			}
+			exit(0);
+		};
+		EXPECT_EXIT(executeExploreWithException(), ::testing::ExitedWithCode(0), "");
+	}
+
+	TEST(IntegrationTest, ZipExploreException)
+	{
+		const std::time_t now(time(NULL));
+		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX))),
+			itemParent("folder" + std::to_string(::Test::rand(UINT32_MAX)));
+		const filesystem::path mountPoint(tempFolderPath()),
+			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeZip(fakeRoot / zip);
+		filesystem::create_directory(mountPoint);
+		const std::string fsName = "IntegrationTestZipRootDirectoryDirectAccess";
+		Guard rmdir(
+			[mountPoint]()
+			{
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
+		auto executeExploreWithException = [fakeZip, now, itemParent, fsName, mountPoint]()
+		{
+			{
+				NiceMock<FileSystem> fs;
+				NiceMock<Lib> lib;
+				::ZipDirFs::Containers::EntryGenerator::changed_ptr rootChanged(
+					new ::ZipDirFs::Components::ZipFileChanged(fakeZip, ""));
+				ON_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillByDefault(Return(now));
+				ON_CALL(lib, open(Eq(ByRef(fakeZip))))
+					.WillByDefault(Throw(::ZipDirFs::Zip::Exception::fromErrorno(
+						"ZipFile::Zip::Lib::open", EMFILE)));
+				FuseDaemonFork daemon(
+					mountPoint.native(), fsName,
+					std::unique_ptr<::fusekit::entry>(
+						new ZipDirectory(fakeZip, itemParent + "/", rootChanged)),
+					[&daemon, &mountPoint](std::vector<int> fds) -> void
+					{
+						Guard readFd([&fds]() { close(fds[0]); });
+						Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
+						struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
+						ppoll(descriptors, 1, nullptr, nullptr);
+						char c;
+						while (read(fds[0], &c, 1) > 0)
+							;
+					},
+					"Explore", {0, 1}, std::vector<std::string>({(mountPoint).native()}));
+			}
+			exit(0);
+		};
+		EXPECT_EXIT(executeExploreWithException(), ::testing::ExitedWithCode(0), "");
 	}
 } // namespace Test::ZipDirFs

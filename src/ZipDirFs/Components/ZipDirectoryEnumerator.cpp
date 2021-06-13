@@ -2,6 +2,7 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Components/ZipDirectoryEnumerator.h"
+#include "ZipDirFs/Zip/Exception.h"
 #include "ZipDirFs/Zip/Factory.h"
 #include <boost/filesystem.hpp>
 #include <condition_variable>
@@ -33,6 +34,7 @@ namespace ZipDirFs::Components
 			Cleaner(const std::time_t);
 			~Cleaner();
 			static void CollectFor(ZipDirectoryEnumerator*);
+			static void CollectAllKeepSome();
 			static void Add(std::unique_ptr<Holder>&& holder, ZipDirectoryEnumerator*);
 
 		private:
@@ -98,6 +100,22 @@ namespace ZipDirFs::Components
 			{
 				++it;
 			}
+		}
+		cleaner.stopWhenEmpty = true;
+		cleaner.wakeup.notify_all();
+	}
+	void Cleaner::CollectAllKeepSome()
+	{
+		auto cleanerLock = Cleaner::GetCleaner(false);
+		if (std::get<1>(cleanerLock) == nullptr)
+		{
+			return;
+		}
+		auto& cleaner = *std::get<1>(cleanerLock);
+		auto it = cleaner.cleanQueue.begin();
+		while (cleaner.cleanQueue.size() > 16)
+		{
+			it = cleaner.cleanQueue.erase(it);
 		}
 		cleaner.stopWhenEmpty = true;
 		cleaner.wakeup.notify_all();
@@ -191,14 +209,35 @@ namespace ZipDirFs::Components
 
 	void ZipDirectoryEnumerator::reset()
 	{
-		auto archive = Factory::getInstance().get(path);
-		auto instance = new Holder(archive->begin(item), archive->end());
 		Cleaner::Add(std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
-		holder = std::unique_ptr<HolderBase>(std::unique_ptr<Holder>(instance));
-		if (instance->currentIt == instance->endIt)
+		auto setup = [this]()
 		{
-			Cleaner::Add(std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
-			atEnd = true;
+			auto archive = Factory::getInstance().get(path);
+			auto instance = new Holder(archive->begin(item), archive->end());
+			holder = std::unique_ptr<HolderBase>(std::unique_ptr<Holder>(instance));
+			if (instance->currentIt == instance->endIt)
+			{
+				Cleaner::Add(
+					std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
+				atEnd = true;
+			}
+		};
+		try
+		{
+			setup();
+		}
+		catch (ZipDirFs::Zip::Exception ex)
+		{
+			Cleaner::CollectAllKeepSome();
+			try
+			{
+				setup();
+			}
+			catch (ZipDirFs::Zip::Exception ex)
+			{
+				atEnd = false;
+				throw;
+			}
 		}
 	}
 	void ZipDirectoryEnumerator::next()

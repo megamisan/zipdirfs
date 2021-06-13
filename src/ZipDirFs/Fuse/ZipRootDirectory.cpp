@@ -96,4 +96,22 @@ namespace ZipDirFs::Fuse
 	EntryGenerator& ZipRootDirectory::generator() { return _generator; }
 	EntryGenerator::proxy_ptr& ZipRootDirectory::proxy() { return _proxy; }
 	EntryGenerator::locker_ptr& ZipRootDirectory::locker() { return _locker; }
+
+	int ZipRootDirectory::opendir(fuse_file_info& finfo)
+	{
+		try
+		{
+			generator().begin();
+		}
+		catch (ZipDirFs::Zip::Exception ex)
+		{
+			if (ex.code() != 0)
+			{
+				return -ex.code();
+			}
+			return -EIO;
+		}
+		return base<DefaultDirectoryNode>().opendir(finfo);
+	}
+
 } // namespace ZipDirFs::Fuse

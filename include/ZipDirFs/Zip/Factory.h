@@ -25,8 +25,8 @@ namespace ZipDirFs::Zip
 	class Factory
 	{
 	public:
-		std::shared_ptr<Archive> get(const boost::filesystem::path&) throw();
-		std::shared_ptr<Archive> get(const Base::Lib* const&);
+		std::shared_ptr<Archive> get(const boost::filesystem::path&);
+		std::shared_ptr<Archive> get(const Base::Lib* const&) throw();
 		static Factory& getInstance();
 
 	protected:

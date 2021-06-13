@@ -107,4 +107,38 @@ namespace ZipDirFs::Fuse
 	EntryGenerator& ZipDirectory::generator() { return _generator; }
 	EntryGenerator::proxy_ptr& ZipDirectory::proxy() { return _proxy; }
 	EntryGenerator::locker_ptr& ZipDirectory::locker() { return _locker; }
+
+	int ZipDirectory::stat(struct stat& stbuf)
+	{
+		try
+		{
+			return basic_directory<DefaultDirectoryNode, ZipTimePolicy,
+				Utilities::DefaultDirectoryPermission, no_xattr>::stat(stbuf);
+		}
+		catch (::ZipDirFs::Zip::Exception ex)
+		{
+			if (ex.code() != 0)
+			{
+				return -ex.code();
+			}
+			return -EIO;
+		}
+	}
+
+	int ZipDirectory::opendir(fuse_file_info& finfo)
+	{
+		try
+		{
+			generator().begin();
+		}
+		catch (ZipDirFs::Zip::Exception ex)
+		{
+			if (ex.code() != 0)
+			{
+				return -ex.code();
+			}
+			return -EIO;
+		}
+		return base<DefaultDirectoryNode>().opendir(finfo);
+	}
 } // namespace ZipDirFs::Fuse

@@ -31,6 +31,7 @@ namespace ZipDirFs::Fuse
 		EntryGenerator& generator();
 		EntryGenerator::proxy_ptr& proxy();
 		EntryGenerator::locker_ptr& locker();
+		int opendir(fuse_file_info&);
 
 	private:
 		const boost::filesystem::path path;
