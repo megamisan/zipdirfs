@@ -6,27 +6,97 @@
 namespace ZipDirFs::Zip::Base
 {
 	Content::Content() noexcept :
-		buffer(nullptr), lastWrite(0), length(0), data(nullptr), readerCount(0)
+		buffer(nullptr), lastWrite(0), length(0), data(nullptr), readersActive(0), writersWaiting(0)
 	{
 	}
-	Content::read_lock Content::readLock() { return read_lock(read); }
-	Content::write_lock Content::writeLock() { return write_lock(write); }
-	void Content::incReadersAtomic(Content::read_lock& lock) noexcept { ++readerCount; }
-	void Content::decReadersAtomic(Content::read_lock& lock) noexcept
+	Content::lock Content::readLock() { return lock(this, false); }
+	Content::lock Content::writeLock() { return lock(this, true); }
+	Content::lock::lock(Content* c, bool w) : content(c), writer(w)
 	{
-		--readerCount;
-		if (readerCount == 0)
+		if (content != nullptr)
 		{
-			zeroReaders.notify_all();
+			std::unique_lock<std::mutex> guard(content->global);
+			if (writer)
+			{
+				++content->writersWaiting;
+				while (content->readersActive != 0)
+				{
+					content->released.wait(guard);
+				}
+				--content->writersWaiting;
+				--content->readersActive;
+			}
+			else
+			{
+				while (content->writersWaiting > 0 || content->readersActive < 0)
+				{
+					content->released.wait(guard);
+				}
+				++content->readersActive;
+			}
 		}
 	}
-	void Content::waitNoReaders(Content::read_lock& lock)
+	Content::lock::lock(lock&& l)
 	{
-		if (readerCount != 0)
+		content = l.content;
+		writer = l.writer;
+		l.content = nullptr;
+	}
+	Content::lock::~lock()
+	{
+		if (content != nullptr)
 		{
-			zeroReaders.wait(lock);
+			std::unique_lock<std::mutex> guard(content->global);
+			if (writer)
+			{
+				++content->readersActive;
+				content->released.notify_all();
+			}
+			else
+			{
+				--content->readersActive;
+				if (content->readersActive == 0)
+				{
+					content->released.notify_all();
+				}
+			}
 		}
 	}
-	Content::read_lock::read_lock(Content::read_lock::mutex_type& m) : Content::lock_type(m) {}
-	Content::write_lock::write_lock(Content::write_lock::mutex_type& m) : Content::lock_type(m) {}
+	void Content::lock::makeWriter()
+	{
+		if (content != nullptr)
+		{
+			std::unique_lock<std::mutex> guard(content->global);
+			if (!writer)
+			{
+				--content->readersActive;
+				++content->writersWaiting;
+				writer = true;
+				while (content->readersActive != 0)
+				{
+					content->released.wait(guard);
+				}
+				--content->writersWaiting;
+				--content->readersActive;
+			}
+		}
+	}
+	void Content::lock::makeReader()
+	{
+		if (content != nullptr)
+		{
+			std::unique_lock<std::mutex> guard(content->global);
+			if (writer)
+			{
+				++content->readersActive;
+				writer = false;
+				content->released.notify_all();
+				while (content->writersWaiting > 0 || content->readersActive < 0)
+				{
+					content->released.wait(guard);
+				}
+				++content->readersActive;
+			}
+		}
+	}
 } // namespace ZipDirFs::Zip::Base

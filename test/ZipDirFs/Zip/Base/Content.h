@@ -11,10 +11,16 @@ namespace Test::ZipDirFs::Zip::Base
 {
 	struct ContentAccess : public ::ZipDirFs::Zip::Base::Content
 	{
-		static std::mutex& getRead(::ZipDirFs::Zip::Base::Content&);
-		static std::mutex& getWrite(::ZipDirFs::Zip::Base::Content&);
-		static std::condition_variable_any& getZeroReaders(::ZipDirFs::Zip::Base::Content&);
-		static std::uint64_t& getReaderCount(::ZipDirFs::Zip::Base::Content&);
+		static std::mutex& getGlobal(Content&);
+		static std::condition_variable_any& getReleased(Content&);
+		static std::int32_t& getReadersActive(Content&);
+		static std::uint32_t& getWritersWaiting(Content&);
+	};
+
+	struct ContentLockAccess : public ::ZipDirFs::Zip::Base::Content::lock
+	{
+		static ::ZipDirFs::Zip::Base::Content*& getContent(lock&);
+		static bool& getWriter(lock&);
 	};
 
 } // namespace Test::ZipDirFs::Zip::Base

@@ -34,9 +34,7 @@ namespace ZipDirFs::Fuse
 			fi.fh = nextId++;
 			try
 			{
-				auto pair = std::pair<int, std::unique_ptr<Stream>>(
-					fi.fh, std::unique_ptr<Stream>(new Stream(*(entry()))));
-				states.insert(std::move(pair));
+				states.emplace(fi.fh, entry());
 			}
 			catch (Exception e)
 			{
@@ -52,7 +50,7 @@ namespace ZipDirFs::Fuse
 			{
 				return -EBADF;
 			}
-			auto& stream = *(it->second);
+			Stream stream(*(it->second));
 			auto current = buf, end = buf + size;
 			stream.seekg(offset);
 			while (current < end && !stream.eof())
@@ -71,7 +69,7 @@ namespace ZipDirFs::Fuse
 		virtual off_t entrySize() const = 0;
 
 	protected:
-		std::map<int, std::unique_ptr<Stream>> states;
+		std::map<int, std::shared_ptr<Entry>> states;
 		static uint64_t nextId;
 	};
 

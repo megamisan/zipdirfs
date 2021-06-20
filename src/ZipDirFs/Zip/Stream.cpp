@@ -12,16 +12,6 @@ namespace ZipDirFs::Zip
 {
 	namespace
 	{
-		struct reader_lock
-		{
-			reader_lock(Base::Content&);
-			~reader_lock();
-			void synchronize(const std::function<void()>&);
-
-		protected:
-			Base::Content& content;
-			bool acquired;
-		};
 		class StreamBuffer : public std::basic_streambuf<char>
 		{
 		public:
@@ -57,7 +47,7 @@ namespace ZipDirFs::Zip
 		return new StreamBuffer(c);
 	}
 
-	void ZipReadChunk(Base::Content&, reader_lock&);
+	void ZipReadChunk(Base::Content&, Base::Content::lock&);
 	void ZipEnsureDataAvailableUntil(Base::Content&, StreamBuffer::char_type*);
 	StreamBuffer::StreamBuffer(const std::shared_ptr<Base::Content>& c) : content(c)
 	{
@@ -109,7 +99,7 @@ namespace ZipDirFs::Zip
 	}
 	StreamBuffer::int_type StreamBuffer::underflow()
 	{
-		reader_lock lock(*content);
+		auto lock(content->readLock());
 		auto current = gptr();
 		if (current < content->buffer + content->length)
 		{
@@ -132,57 +122,29 @@ namespace ZipDirFs::Zip
 		std::memcpy(dest, source, len);
 		return len;
 	}
-	reader_lock::reader_lock(Base::Content& c) : content(c)
-	{
-		Base::Content::read_lock lock(content.readLock());
-		content.incReadersAtomic(lock);
-		acquired = true;
-	}
-	reader_lock::~reader_lock()
-	{
-		if (acquired)
-		{
-			Base::Content::read_lock lock(content.readLock());
-			content.decReadersAtomic(lock);
-			acquired = false;
-		}
-	}
-	void reader_lock::synchronize(const std::function<void()>& doWork)
-	{
-		auto read(content.readLock());
-		content.decReadersAtomic(read);
-		acquired = false;
-		content.waitNoReaders(read);
-		doWork();
-		content.incReadersAtomic(read);
-		acquired = true;
-	}
 	void ZipEnsureDataAvailableUntil(Base::Content& content, StreamBuffer::char_type* position)
 	{
-		reader_lock lock(content);
+		auto lock(content.readLock());
 		while (position > content.buffer + content.lastWrite)
 		{
 			ZipReadChunk(content, lock);
 		}
 	}
-	void ZipReadChunk(Base::Content& content, reader_lock& reader_lock)
+	void ZipReadChunk(Base::Content& content, Base::Content::lock& lock)
 	{
 		auto lastWrite = content.lastWrite;
-		auto write(content.writeLock());
-		reader_lock.synchronize(
-			[&content, lastWrite]()
+		lock.makeWriter();
+		auto& c = content;
+		if (lastWrite == c.lastWrite && c.data != nullptr)
+		{
+			auto len = Lib::fread(c.data, c.buffer + lastWrite, chunksize);
+			c.lastWrite += len;
+			if (c.lastWrite == c.length)
 			{
-				auto& c = content;
-				if (lastWrite == c.lastWrite && c.data != nullptr)
-				{
-					auto len = Lib::fread(c.data, c.buffer + lastWrite, chunksize);
-					c.lastWrite += len;
-					if (c.lastWrite == c.length)
-					{
-						Lib::fclose(c.data);
-						c.data = nullptr;
-					}
-				}
-			});
+				Lib::fclose(c.data);
+				c.data = nullptr;
+			}
+		}
+		lock.makeReader();
 	}
 } // namespace ZipDirFs::Zip

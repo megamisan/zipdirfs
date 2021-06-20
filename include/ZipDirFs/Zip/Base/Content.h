@@ -18,32 +18,32 @@ namespace ZipDirFs::Zip::Base
 	struct Content
 	{
 		typedef std::unique_lock<std::mutex> lock_type;
-		struct read_lock : public lock_type
+		struct lock
 		{
-			read_lock(read_lock&&) = default;
-			explicit read_lock(mutex_type&);
-		};
-		struct write_lock : public lock_type
-		{
-			write_lock(write_lock&&) = default;
-			explicit write_lock(mutex_type&);
+			lock(lock&&);
+			explicit lock(Content*, bool);
+			~lock();
+			void makeWriter();
+			void makeReader();
+
+		protected:
+			Content* content;
+			bool writer;
 		};
 		Content() noexcept;
 		char* buffer;
 		std::streamsize lastWrite;
 		std::streamsize length;
 		Lib::File* data;
-		read_lock readLock();
-		write_lock writeLock();
-		void incReadersAtomic(read_lock&) noexcept;
-		void decReadersAtomic(read_lock&) noexcept;
-		void waitNoReaders(read_lock&);
+		lock readLock();
+		lock writeLock();
 
 	protected:
-		std::mutex read;
-		std::mutex write;
-		std::condition_variable_any zeroReaders;
-		std::uint64_t readerCount;
+		std::mutex global;
+		std::condition_variable_any released;
+		std::int32_t readersActive;
+		std::uint32_t writersWaiting;
+		friend class lock;
 	};
 } // namespace ZipDirFs::Zip::Base
 
