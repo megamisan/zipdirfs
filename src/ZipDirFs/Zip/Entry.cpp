@@ -2,6 +2,7 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Entry.h"
+#include "StateReporter.h"
 #include "ZipDirFs/Zip/Factory.h"
 #include "ZipDirFs/Zip/Lib.h"
 #include <cstring>
@@ -19,6 +20,10 @@ namespace ZipDirFs::Zip
 			auto lock(content.readLock());
 			if (content.lastWrite < position)
 			{
+				StateReporter::Log("entry").stream
+					<< "Read zip file " << std::hex << (void*)content.data << " until " << std::dec
+					<< position << " starting from current " << content.lastWrite << " ("
+					<< Lib::ftell(content.data) << ")";
 				while (content.lastWrite < position)
 				{
 					lock.makeWriter();
@@ -27,6 +32,7 @@ namespace ZipDirFs::Zip
 					content.lastWrite += len;
 					if (content.lastWrite == content.length)
 					{
+						reportFileClosing(content.data);
 						Lib::fclose(content.data);
 						content.data = nullptr;
 					}
@@ -48,7 +54,10 @@ namespace ZipDirFs::Zip
 		if (content.buffer != nullptr)
 			delete[] content.buffer;
 		if (content.data != nullptr)
+		{
+			reportFileClosing(content.data);
 			Lib::fclose(content.data);
+		}
 	}
 	const Base::Stat& Entry::stat()
 	{
@@ -67,6 +76,7 @@ namespace ZipDirFs::Zip
 			stat();
 			content.data = Lib::fopen_index(data.get(), cachedStat.getIndex());
 			content.buffer = new char[content.length = cachedStat.getSize()];
+			reportFileOpened(data.get(), name, content.data);
 		}
 	}
 	bool Entry::isDir() const { return flags[ENTRY_IS_DIR]; }

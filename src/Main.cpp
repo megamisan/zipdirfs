@@ -3,6 +3,7 @@
  */
 #include "Main.h"
 #include "Options.h"
+#include "StateReporter.h"
 #include "ZipDirFs/Fuse/EntryProxy.h"
 #include "ZipDirFs/Fuse/NativeDirectory.h"
 #if HAVE_CONFIG_H
@@ -55,8 +56,10 @@ void Main::run()
 	daemon_type& daemon = daemon_type::instance();
 	daemon.root() =
 		std::unique_ptr<fusekit::entry>(new ZipDirFs::Fuse::NativeDirectory(options.sourcePath()));
+	reporter.start(daemon.root(), options);
 	CommandArguments arguments(options);
 	daemon.run(arguments.argc(), (char**)&(arguments.argv()[0]), false);
+	reporter.stop();
 }
 
 void Main::init()
@@ -110,6 +113,20 @@ void showUsage(const Options& options)
 	std::cerr << std::endl
 			  << getProgramName(options.self()) << " options:" << std::endl
 			  << "    originalpath           the path to mount from and filter for zip files"
+			  << std::endl
+			  << "    -o report[=list]       activate regular report if foreground" << std::endl
+			  << "                           list can be \"all\" or any number of the following "
+				 "separated by semi-colon"
+			  << std::endl
+			  << "                           * actions: Display requests actions and paths"
+			  << std::endl
+			  << "                           * locks: Display requests locks state" << std::endl
+			  << "                           * ended: Display ended requests" << std::endl
+			  << "                           * files: Display opened files and archives" << std::endl
+			  << "    -o log=filepath        activate logging into file designed as filepath"
+			  << std::endl
+			  << "    -o logcat=categories   logging categories for filtering messages "
+				 "separated by semi-colon"
 			  << std::endl;
 	throw Main::Result(0);
 }

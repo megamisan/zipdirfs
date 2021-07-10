@@ -2,6 +2,7 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Lib.h"
+#include "StateReporter.h"
 #include "ZipDirFs/Zip/Exception.h"
 #include <boost/filesystem.hpp>
 #include <fcntl.h>
@@ -72,8 +73,16 @@ namespace ZipDirFs::Zip
 	} // namespace
 	typedef std::unique_lock<std::mutex> lock_type;
 
-	LibData::LibData(::zip* const z) : zip(z) {}
-	FileData::FileData(::zip_file_t* f, std::mutex& m) : file(f), mutex(m) {}
+	LibData::LibData(::zip* const z) : zip(z)
+	{
+		StateReporter::Log("zip-lib").stream << "LibData created for " << std::hex << (void*)z
+											 << " at " << std::hex << (void*)this;
+	}
+	FileData::FileData(::zip_file_t* f, std::mutex& m) : file(f), mutex(m)
+	{
+		StateReporter::Log("zip-lib").stream << "FileData created for " << std::hex << (void*)f
+											 << " at " << std::hex << (void*)this;
+	}
 
 	ZipError::ZipError(std::int32_t error)
 	{
@@ -149,6 +158,8 @@ namespace ZipDirFs::Zip
 		int handle = ::open64(p.c_str(), O_RDONLY | O_EXCL | O_NOATIME | O_LARGEFILE);
 		if (handle < 0)
 		{
+			StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Cannot open file ("
+												 << errno << ")";
 			throw Exception::fromErrorno("ZipFile::Zip::Lib::open", errno);
 		}
 		std::int32_t error;
@@ -158,12 +169,16 @@ namespace ZipDirFs::Zip
 			handle = 0;
 			if (::boost::filesystem::file_size(p) == 0)
 			{
+				StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Empty file";
 				throw Exception("ZipFile::Zip::Lib::open", ZipError(ZIP_ER_NOZIP));
 			}
 			zipFile = ::zip_open(p.c_str(), ZIP_RDONLY, &error);
 			if (zipFile == nullptr)
 			{
-				throw Exception("ZipFile::Zip::Lib::open", ZipError(error));
+				ZipError err(error);
+				StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Error opening file ("
+													 << err << ")";
+				throw Exception("ZipFile::Zip::Lib::open", err);
 			}
 		}
 		else
@@ -172,10 +187,14 @@ namespace ZipDirFs::Zip
 			if (zipFile == nullptr)
 			{
 				ZipError err(error);
+				StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Error opening file ("
+													 << err << ")";
 				::close(handle);
 				throw Exception("ZipFile::Zip::Lib::open", err);
 			}
 		}
+		StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Success at " << std::hex
+											 << (void*)zipFile;
 		return new LibData{zipFile};
 	}
 	void LibWrapper::close(Base::Lib* const l)
@@ -199,10 +218,16 @@ namespace ZipDirFs::Zip
 		::zip_stat_init(&stats);
 		if (::zip_stat(lw->zip, n.c_str(), 0, &stats) != 0)
 		{
-			throw Exception("ZipFile::Zip::Lib::stat", ZipError(lw->zip));
+			ZipError err(lw->zip);
+			StateReporter::Log("zip-lib").stream << "Stat zip file " << n << " of " << std::hex
+												 << (void*)l << ": Error retrieving stat (" << err
+												 << ")";
+			throw Exception("ZipFile::Zip::Lib::stat", err);
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
+			StateReporter::Log("zip-lib").stream << "Stat zip file " << n << " of " << std::hex
+												 << (void*)l << ": Missing stat fields";
 			std::__throw_runtime_error("ZipFile::Zip::Lib::stat: Incomplete stats received.");
 		}
 		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime,
@@ -216,10 +241,16 @@ namespace ZipDirFs::Zip
 		::zip_stat_init(&stats);
 		if (::zip_stat_index(lw->zip, i, 0, &stats) != 0)
 		{
-			throw Exception("ZipFile::Zip::Lib::stat_index", ZipError(lw->zip));
+			ZipError err(lw->zip);
+			StateReporter::Log("zip-lib").stream << "Stat zip file index " << i << " of "
+												 << std::hex << (void*)l
+												 << ": Error retrieving stat (" << err << ")";
+			throw Exception("ZipFile::Zip::Lib::stat_index", err);
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
+			StateReporter::Log("zip-lib").stream << "Stat zip file index " << i << " of "
+												 << std::hex << (void*)l << ": Missing stat fields";
 			std::__throw_runtime_error("ZipFile::Zip::Lib::stat_index: Incomplete stats received.");
 		}
 		return Base::Stat(stats.index, stats.name, stats.size, stats.mtime,
@@ -232,8 +263,13 @@ namespace ZipDirFs::Zip
 		const char* name = ::zip_get_name(lw->zip, i, 0);
 		if (name == nullptr)
 		{
-			throw Exception("ZipFile::Zip::Lib::get_name", ZipError(lw->zip));
+			ZipError err(lw->zip);
+			StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
+												 << std::hex << (void*)l << ": " << err;
+			throw Exception("ZipFile::Zip::Lib::get_name", err);
 		}
+		StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
+											 << std::hex << (void*)l << ": Succes (" << name << ")";
 		return name;
 	}
 	Base::Lib::File* LibWrapper::fopen_index(Base::Lib* const l, std::uint64_t i)
@@ -243,8 +279,14 @@ namespace ZipDirFs::Zip
 		::zip_file_t* file = ::zip_fopen_index(lw->zip, i, 0);
 		if (file == nullptr)
 		{
-			throw Exception("ZipFile::Zip::Lib::fopen_index", ZipError(lw->zip));
+			ZipError err(lw->zip);
+			StateReporter::Log("zip-lib").stream << "Open zip file index " << i << " of "
+												 << std::hex << (void*)l << ": " << err << ')';
+			throw Exception("ZipFile::Zip::Lib::fopen_index", err);
 		}
+		StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
+											 << std::hex << (void*)l << ": Success at " << std::hex
+											 << (void*)file;
 		return new FileData{file, *lw};
 	}
 	std::uint64_t LibWrapper::fread(Base::Lib::File* const f, void* buf, std::uint64_t len)
@@ -254,7 +296,9 @@ namespace ZipDirFs::Zip
 		auto read = ::zip_fread(lf->file, buf, len);
 		if (read == -1UL)
 		{
-			ZipError(lf->file);
+			ZipError err(lf->file);
+			StateReporter::Log("zip-lib").stream << "Read zip file at " << std::hex << (void*)f
+												 << " for " << std::dec << len << ": " << err;
 			std::__throw_ios_failure("Failure reading file.");
 		}
 		return read;
@@ -266,7 +310,9 @@ namespace ZipDirFs::Zip
 		auto pos = ::zip_ftell(lf->file);
 		if (pos == -1UL)
 		{
-			ZipError(lf->file);
+			ZipError err(lf->file);
+			StateReporter::Log("zip-lib").stream << "Get position in zip file at " << std::hex
+												 << (void*)f << ": " << err;
 		}
 		return pos;
 	}

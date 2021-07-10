@@ -2,12 +2,14 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Base/Content.h"
+#include "StateReporter.h"
 
 namespace ZipDirFs::Zip::Base
 {
 	Content::Content() noexcept :
 		buffer(nullptr), lastWrite(0), length(0), data(nullptr), readersActive(0), writersWaiting(0)
 	{
+		globalId = buildId("CT", (std::uint64_t)(void*)&global, 6);
 	}
 	Content::lock Content::readLock() { return lock(this, false); }
 	Content::lock Content::writeLock() { return lock(this, true); }
@@ -15,13 +17,18 @@ namespace ZipDirFs::Zip::Base
 	{
 		if (content != nullptr)
 		{
+			StateReporter::Lock rl(content->globalId);
+			rl.init();
 			std::unique_lock<std::mutex> guard(content->global);
+			rl.set();
 			if (writer)
 			{
 				++content->writersWaiting;
 				while (content->readersActive != 0)
 				{
+					rl.condStart();
 					content->released.wait(guard);
+					rl.set();
 				}
 				--content->writersWaiting;
 				--content->readersActive;
@@ -30,7 +37,9 @@ namespace ZipDirFs::Zip::Base
 			{
 				while (content->writersWaiting > 0 || content->readersActive < 0)
 				{
+					rl.condStart();
 					content->released.wait(guard);
+					rl.set();
 				}
 				++content->readersActive;
 			}
@@ -46,7 +55,10 @@ namespace ZipDirFs::Zip::Base
 	{
 		if (content != nullptr)
 		{
+			StateReporter::Lock rl(content->globalId);
+			rl.init();
 			std::unique_lock<std::mutex> guard(content->global);
+			rl.set();
 			if (writer)
 			{
 				++content->readersActive;
@@ -66,7 +78,10 @@ namespace ZipDirFs::Zip::Base
 	{
 		if (content != nullptr)
 		{
+			StateReporter::Lock rl(content->globalId);
+			rl.init();
 			std::unique_lock<std::mutex> guard(content->global);
+			rl.set();
 			if (!writer)
 			{
 				--content->readersActive;
@@ -74,7 +89,9 @@ namespace ZipDirFs::Zip::Base
 				writer = true;
 				while (content->readersActive != 0)
 				{
+					rl.condStart();
 					content->released.wait(guard);
+					rl.set();
 				}
 				--content->writersWaiting;
 				--content->readersActive;
@@ -85,7 +102,10 @@ namespace ZipDirFs::Zip::Base
 	{
 		if (content != nullptr)
 		{
+			StateReporter::Lock rl(content->globalId);
+			rl.init();
 			std::unique_lock<std::mutex> guard(content->global);
+			rl.set();
 			if (writer)
 			{
 				++content->readersActive;
@@ -93,7 +113,9 @@ namespace ZipDirFs::Zip::Base
 				content->released.notify_all();
 				while (content->writersWaiting > 0 || content->readersActive < 0)
 				{
+					rl.condStart();
 					content->released.wait(guard);
+					rl.set();
 				}
 				++content->readersActive;
 			}

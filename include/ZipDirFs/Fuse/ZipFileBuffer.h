@@ -4,6 +4,7 @@
 #ifndef ZIPDIRFS_FUSE_ZIPFILEBUFFER_H
 #define ZIPDIRFS_FUSE_ZIPFILEBUFFER_H
 
+#include "StateReporter.h"
 #include "ZipDirFs/Zip/Entry.h"
 #include "ZipDirFs/Zip/Exception.h"
 #include <fuse.h>
@@ -31,12 +32,18 @@ namespace ZipDirFs::Fuse
 				return -EACCES;
 			}
 			{
+				StateReporter::Lock rl("NEXTID");
+				rl.init();
 				lock_type lock(idAccess);
+				rl.set();
 				fi.fh = nextId++;
 			}
 			try
 			{
+				StateReporter::Lock rl(buildId("FB", (std::uint64_t)(void*)this, 6));
+				rl.init();
 				lock_type lock(entryAccess);
+				rl.set();
 				handles.insert(fi.fh);
 				entryRef = entry();
 			}
@@ -48,7 +55,10 @@ namespace ZipDirFs::Fuse
 		}
 		int close(fuse_file_info& fi)
 		{
+			StateReporter::Lock rl(buildId("FB", (std::uint64_t)(void*)this, 6));
+			rl.init();
 			lock_type lock(entryAccess);
+			rl.set();
 			if (handles.find(fi.fh) != handles.end())
 			{
 				handles.erase(fi.fh);
@@ -68,9 +78,14 @@ namespace ZipDirFs::Fuse
 			}
 			std::shared_ptr<Entry> e;
 			{
+				StateReporter::Lock rl(buildId("FB", (std::uint64_t)(void*)this, 6));
+				rl.init();
 				lock_type lock(entryAccess);
+				rl.set();
 				e = entryRef;
 			}
+			StateReporter::Log("filebuffer").stream << "Read file from " << offset << " for "
+													<< size;
 			if (e == nullptr)
 			{
 				return -EBADF;

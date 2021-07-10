@@ -12,6 +12,12 @@ namespace ZipDirFs::Fuse
 		return *this;
 	}
 
+	EntryProxy& EntryProxy::operator=(EntryProxy&& proxy)
+	{
+		this->target = std::move(proxy.target);
+		return *this;
+	}
+
 	fusekit::entry* EntryProxy::child(const char* name) { return target->child(name); }
 
 	int EntryProxy::stat(struct stat& stbuf) { return target->stat(stbuf); }

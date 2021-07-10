@@ -19,6 +19,7 @@ namespace ZipDirFs::Fuse
 	public:
 		EntryProxy() = default;
 		EntryProxy& operator=(std::unique_ptr<fusekit::entry>&& target);
+		EntryProxy& operator=(EntryProxy&& proxy);
 		fusekit::entry* child(const char*);
 		int stat(struct stat&);
 		int access(int);

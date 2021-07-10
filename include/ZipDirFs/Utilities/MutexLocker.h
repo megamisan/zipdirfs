@@ -15,11 +15,14 @@ namespace ZipDirFs::Utilities
 	class MutexLocker
 	{
 	public:
+		MutexLocker();
 		std::unique_lock<std::mutex> lock();
+		operator const std::string&() const;
 
 	protected:
 	private:
 		std::mutex mutex;
+		std::string id;
 	};
 } // namespace ZipDirFs::Utilities
 

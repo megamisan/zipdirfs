@@ -4,6 +4,7 @@
 #ifndef ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H
 #define ZIPDIRFS_COMPONENTS_NATIVEFACTORY_H
 
+#include "StateReporter.h"
 #include "ZipDirFs/Containers/Helpers/Factory.h"
 #include "ZipDirFs/Utilities/FileSystem.h"
 #include "ZipDirFs/Zip/Exception.h"
@@ -18,7 +19,8 @@ namespace ZipDirFs::Components
 	using ::ZipDirFs::Zip::Lib;
 
 	/**
-	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries under a real directory
+	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries
+	 * under a real directory
 	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 * @tparam Directory Implementation class for real directory.
 	 * @tparam Symlink Implementation class for symlink to real file.
@@ -35,7 +37,7 @@ namespace ZipDirFs::Components
 			file_status status = FileSystem::status(fullPath);
 			if (is_directory(status))
 			{
-				return new Directory(fullPath);
+				return reportWrap(new Directory(fullPath));
 			}
 			if (is_regular_file(status))
 			{
@@ -49,11 +51,12 @@ namespace ZipDirFs::Components
 				{
 					zip = false;
 				}
-				return zip ? (mapped_type) new Zip(fullPath) : (mapped_type) new Symlink(fullPath);
+				return reportWrap(
+					zip ? (mapped_type) new Zip(fullPath) : (mapped_type) new Symlink(fullPath));
 			}
 			if (is_symlink(status))
 			{
-				return new Symlink(fullPath);
+				return reportWrap(new Symlink(fullPath));
 			}
 			return nullptr;
 		}

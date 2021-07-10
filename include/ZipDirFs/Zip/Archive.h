@@ -66,7 +66,9 @@ namespace ZipDirFs::Zip
 		void populate();
 		std::weak_ptr<Archive> weak_ptr;
 		std::mutex names_mutex;
+		std::string namesId;
 		std::mutex entries_mutex;
+		std::string entriesId;
 		Base::Lib* const data;
 		std::vector<std::string> names;
 		std::map<std::string, std::tuple<std::uint64_t, bool>> nameAttributes;

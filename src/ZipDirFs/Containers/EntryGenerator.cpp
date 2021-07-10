@@ -2,6 +2,7 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Containers/EntryGenerator.h"
+#include "StateReporter.h"
 #include "fusekit/entry.h"
 #include <mutex>
 
@@ -30,6 +31,7 @@ namespace ZipDirFs::Containers
 				changed(std::move(c)), enumerator(std::move(e)), factory(std::move(f)),
 				locker(std::move(l)), syncer(nullptr)
 			{
+				accessId = buildId("EG", (std::uint64_t)(void*)&access, 6);
 			}
 			proxy_ptr proxy;
 			changed_ptr changed;
@@ -40,6 +42,7 @@ namespace ZipDirFs::Containers
 			std::set<WrapperBase*> allWrappers;
 			std::unique_ptr<Syncer> syncer;
 			std::mutex access;
+			std::string accessId;
 		};
 
 		struct Syncer
@@ -112,7 +115,10 @@ namespace ZipDirFs::Containers
 	{
 		WrapperBase* result;
 		Holder* base(reinterpret_cast<decltype(base)>(holder.get()));
+		StateReporter::Lock rl(*(base->locker));
+		rl.init();
 		auto guard(base->locker->lock());
+		rl.set();
 		if (base->allWrappers.empty() && (*base->changed)())
 		{
 			Syncer::create(base);
@@ -129,13 +135,20 @@ namespace ZipDirFs::Containers
 	}
 	EntryIterator EntryGenerator::end()
 	{
-		auto guard(reinterpret_cast<Holder*>(holder.get())->locker->lock());
-		return reinterpret_cast<Holder*>(holder.get())->proxy->end();
+		auto h = reinterpret_cast<Holder*>(holder.get());
+		StateReporter::Lock rl(*(h->locker));
+		rl.init();
+		auto guard(h->locker->lock());
+		rl.set();
+		return h->proxy->end();
 	}
 	EntryIterator EntryGenerator::remove(off_t offset)
 	{
 		Holder* base(reinterpret_cast<decltype(base)>(holder.get()));
+		StateReporter::Lock rl(base->accessId);
+		rl.init();
 		std::unique_lock<std::mutex> guard(base->access);
+		rl.set();
 		auto it = base->offsetWrappers.find(offset);
 		if (it == base->offsetWrappers.end())
 		{
@@ -148,7 +161,10 @@ namespace ZipDirFs::Containers
 	void EntryGenerator::add(EntryIterator&& ei, off_t offset)
 	{
 		Holder* base(reinterpret_cast<decltype(base)>(holder.get()));
+		StateReporter::Lock rl(base->accessId);
+		rl.init();
 		std::unique_lock<std::mutex> guard(base->access);
+		rl.set();
 		base->offsetWrappers.insert({offset, std::move(ei)});
 	}
 
@@ -166,7 +182,10 @@ namespace ZipDirFs::Containers
 	bool Syncer::current(const EntryIterator& it) { return it == currentIt; }
 	bool Syncer::advance()
 	{
+		StateReporter::Lock rl(*(holder->locker));
+		rl.init();
 		auto guard(holder->locker->lock());
+		rl.set();
 		++currentIt;
 		holder->enumerator->next();
 		return generateCurrent();

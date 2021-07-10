@@ -260,6 +260,7 @@ namespace Test::ZipDirFs::Zip
 		auto buffer = GenerateStartContentState(EntryAccess::getContent(entry));
 		EXPECT_CALL(lib, fread(file, buffer.get(), randomLenBase()))
 			.WillOnce(Return(randomLenBase()));
+		EXPECT_CALL(lib, ftell(file)).WillOnce(Return(randomLenBase()));
 		char tmp[randomLenBase()];
 		EXPECT_EQ(randomLenBase(), entry.read(tmp, randomLenBase(), 0));
 	}
@@ -297,6 +298,7 @@ namespace Test::ZipDirFs::Zip
 		auto buffer = GenerateRandomBufferedContentState(EntryAccess::getContent(entry));
 		auto offset = EntryAccess::getContent(entry).lastWrite;
 		EXPECT_CALL(lib, fread(file, buffer.get() + offset, _)).WillOnce(ReturnArg<2>());
+		EXPECT_CALL(lib, ftell(file)).WillOnce(Return(offset + randomLenBase()));
 		char tmp[randomLenBase()];
 		std::int64_t res;
 		EXPECT_GE(randomLenBase(), res = entry.read(tmp, randomLenBase(), offset));
@@ -322,6 +324,7 @@ namespace Test::ZipDirFs::Zip
 		::testing::ExpectationSet set;
 		set += EXPECT_CALL(lib, fread(file, buffer.get() + offset, randomLenBase()))
 				   .WillOnce(Return(len));
+		EXPECT_CALL(lib, ftell(file)).WillOnce(Return(offset + len));
 		EXPECT_CALL(lib, fclose(file)).After(set);
 		char tmp[len];
 		EXPECT_EQ(len, entry.read(tmp, len, offset));

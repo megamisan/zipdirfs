@@ -371,6 +371,9 @@ namespace Test::ZipDirFs
 					}
 					return length;
 				}));
+		EXPECT_CALL(lib, ftell(&itemInstance1))
+			.WillRepeatedly(Invoke(
+				[&item1Offset](::ZipDirFs::Zip::Base::Lib::File* file) { return item1Offset; }));
 		EXPECT_CALL(lib, fread(&subItemInstance1, _, _))
 			.WillRepeatedly(Invoke(
 				[subItem1Content, subItem1Size, &subItem1Offset](
@@ -385,6 +388,9 @@ namespace Test::ZipDirFs
 					}
 					return length;
 				}));
+		EXPECT_CALL(lib, ftell(&subItemInstance1))
+			.WillRepeatedly(Invoke(
+				[&subItem1Offset](::ZipDirFs::Zip::Base::Lib::File* file) { return subItem1Offset; }));
 		EXPECT_CALL(lib, fclose(&itemInstance1))
 			.WillRepeatedly(WithoutArgs([&item1Offset]() { item1Offset = 0; }));
 		EXPECT_CALL(lib, fclose(&subItemInstance1))

@@ -4,6 +4,7 @@
 #ifndef ZIPDIRFS_COMPONENTS_ZIPFACTORY_H
 #define ZIPDIRFS_COMPONENTS_ZIPFACTORY_H
 
+#include "StateReporter.h"
 #include "ZipDirFs/Containers/Helpers/Changed.h"
 #include "ZipDirFs/Containers/Helpers/Factory.h"
 #include "ZipDirFs/Zip/Factory.h"
@@ -15,7 +16,8 @@ namespace ZipDirFs::Components
 	using RealFactory = ::ZipDirFs::Zip::Factory;
 
 	/**
-	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries under a zip archive
+	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries
+	 * under a zip archive
 	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 * @tparam Directory Implementation class for virtual directory in archive.
 	 * @tparam File Implementation class for file in archive.
@@ -38,9 +40,9 @@ namespace ZipDirFs::Components
 			{
 				if (item->isDir())
 				{
-					return new Directory(archive, innerPath + "/", changed);
+					return reportWrap(new Directory(archive, innerPath + "/", changed));
 				}
-				return new File(archive, innerPath, changed);
+				return reportWrap(new File(archive, innerPath, changed));
 			}
 			return nullptr;
 		}

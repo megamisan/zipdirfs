@@ -2,6 +2,7 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "ZipDirFs/Zip/Archive.h"
+#include "StateReporter.h"
 #include "ZipDirFs/Zip/Factory.h"
 #include "ZipDirFs/Zip/Lib.h"
 #include <boost/filesystem.hpp>
@@ -29,8 +30,18 @@ namespace ZipDirFs::Zip
 			return name.substr(prefix.length());
 		}
 	} // namespace
-	Archive::Archive(Base::Lib* d) : data(d) {}
-	Archive::~Archive() { Lib::close(data); }
+	Archive::Archive(Base::Lib* d) : data(d)
+	{
+		namesId = buildId("AN", (std::uint64_t)(void*)&names_mutex, 6);
+		entriesId = buildId("AE", (std::uint64_t)(void*)&entries_mutex, 6);
+	}
+	Archive::~Archive()
+	{
+		reportArchiveClosing(data);
+		StateReporter::Log("zip-archive").stream << "Closing archive " << std::hex << (void*)this
+												 << " with data " << std::hex << (void*)data;
+		Lib::close(data);
+	}
 	std::shared_ptr<Archive> Archive::create(Base::Lib* l)
 	{
 		auto p{std::shared_ptr<Archive>(new Archive(l))};
@@ -62,7 +73,10 @@ namespace ZipDirFs::Zip
 		auto itI = nameAttributes.find(n);
 		if (itI != nameAttributes.end())
 		{
+			StateReporter::Lock rl(entriesId);
+			rl.init();
 			std::lock_guard<std::mutex> lock(entries_mutex);
+			rl.set();
 			auto itE = entries.find(std::get<0>(itI->second));
 			if (itE != entries.end() && itE->second.expired())
 			{
@@ -86,7 +100,10 @@ namespace ZipDirFs::Zip
 	}
 	void Archive::populate()
 	{
+		StateReporter::Lock rl(namesId);
+		rl.init();
 		std::lock_guard<std::mutex> lock(names_mutex);
+		rl.set();
 		if (!names.empty())
 			return;
 		std::uint64_t index = 0, count = Lib::get_num_entries(data), temporary = UINT64_MAX;

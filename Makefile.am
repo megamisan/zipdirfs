@@ -16,13 +16,14 @@ dist_scalableicons_DATA = assets/zipdirfs.svg
 
 bin_PROGRAMS = zipdirfs
 zipdirfs_SOURCES = \
-	src/Main.cpp \
-	src/Options.cpp
+	src/Main.cpp
 zipdirfs_CXXFLAGS = $(CXXFLAGS_COVERAGE)
 zipdirfs_LDADD = $(LDADD_COVERAGE) libzipdirfs.la $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 
 noinst_LTLIBRARIES = libzipdirfs.la
 libzipdirfs_la_SOURCES = \
+	src/Options.cpp \
+	src/StateReporter.cpp \
 	src/ZipDirFs/Components/ChangedProxy.cpp \
 	src/ZipDirFs/Components/ChangedStart.cpp \
 	src/ZipDirFs/Components/EntryListProxyIncremental.cpp \
@@ -56,6 +57,7 @@ libzipdirfs_la_LIBADD = $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM
 noinst_HEADERS = \
 	include/Main.h \
 	include/Options.h \
+	include/StateReporter.h \
 	include/ZipDirFs/Components/ChangedProxy.h \
 	include/ZipDirFs/Components/ChangedStart.h \
 	include/ZipDirFs/Components/EntryListProxyIncremental.h \
@@ -171,6 +173,7 @@ check_PROGRAMS = gtest gtest_helper
 gtest_SOURCES = \
 	test/gtest.h \
 	test/gtest.cpp \
+	test/StateReporter.cpp \
 	test/ZipDirFs/Integration.h \
 	test/ZipDirFs/Integration.cpp \
 	test/ZipDirFs/Components/ChangedProxy.h \

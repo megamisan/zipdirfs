@@ -332,6 +332,9 @@ namespace Test::ZipDirFs::Fuse
 					}
 					return length;
 				}));
+		EXPECT_CALL(lib, ftell(&file))
+			.WillRepeatedly(
+				Invoke([&offset](::ZipDirFs::Zip::Base::Lib::File* file) { return offset; }));
 		EXPECT_CALL(lib, fclose(&file)).WillRepeatedly(Return());
 		ZipFile zf(facticeZip, facticeFile);
 		SimpleDirectory sd("read", &zf);

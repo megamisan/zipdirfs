@@ -4,6 +4,7 @@
 #ifndef ZIPDIRFS_FUSE_DIRECTORYNODE_H
 #define ZIPDIRFS_FUSE_DIRECTORYNODE_H
 
+#include "StateReporter.h"
 #include "ZipDirFs/Containers/EntryGenerator.h"
 #include <fuse.h>
 
@@ -23,7 +24,10 @@ namespace ZipDirFs::Fuse
 	{
 		fusekit::entry* find(const char* name)
 		{
+			StateReporter::Lock rl(*locker());
+			rl.init();
 			auto guard(locker()->lock());
+			rl.set();
 			return proxy()->find(name);
 		}
 		nlink_t links()

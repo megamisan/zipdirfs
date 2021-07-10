@@ -40,6 +40,7 @@ namespace ZipDirFs::Zip::Base
 
 	protected:
 		std::mutex global;
+		std::string globalId;
 		std::condition_variable_any released;
 		std::int32_t readersActive;
 		std::uint32_t writersWaiting;
