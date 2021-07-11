@@ -4,8 +4,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <string>
-#include <vector>
+#include "Options.h"
 
 /**
  * @brief Application entry point
@@ -20,16 +19,14 @@ public:
 		Result(int res) : result(res) {}
 		Result(const Result& res) : result(res.result) {}
 	};
-	Main();
+	Main(const int, const char*[]);
 	virtual ~Main();
-	void Init(const int argc, const char* argv[]);
-	void Run();
-	inline const std::string getSourcePath() { return this->sourcePath; }
+	void init();
+	void run();
 
 protected:
 private:
-	std::string sourcePath;
-	std::vector<std::string> fuseOptions;
+	Options options;
 };
 
 extern Main application;

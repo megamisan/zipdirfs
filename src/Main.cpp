@@ -16,32 +16,30 @@
 
 typedef fusekit::daemon<ZipDirFs::Fuse::EntryProxy> daemon_type;
 
-struct CommandArguments
+class CommandArguments
 {
-	const int argc;
-	const char* const* argv;
-	CommandArguments(const std::vector<std::string>&);
-	~CommandArguments();
+	const std::vector<std::string> arguments;
 
-private:
-	static char* toArgv_convert(const std::string&);
-	static char** toArgv(const std::vector<std::string>&);
+public:
+	const int argc() const;
+	const std::vector<const char*> argv() const;
+	CommandArguments(const Options&);
+	~CommandArguments();
 };
 
-Main application;
-
 std::string getProgramName(const std::string& self);
-void showUsage(Options&);
-void showVersion(Options&);
+void showUsage(const Options&);
+void showVersion(const Options&);
 char** toArgv(std::vector<std::string>& arguments);
 void freeArgv(char** argv);
 
 int main(const int argc, const char** argv)
 {
+	Main application(argc, argv);
 	try
 	{
-		application.Init(argc, argv);
-		application.Run();
+		application.init();
+		application.run();
 	}
 	catch (Main::Result res)
 	{
@@ -50,23 +48,19 @@ int main(const int argc, const char** argv)
 	return 0;
 }
 
-void Main::Run()
+void Main::run()
 {
-	this->fuseOptions.push_back("-o");
-	this->fuseOptions.push_back(
-		std::string("subtype=") + getProgramName(this->fuseOptions.front()));
-	this->fuseOptions.push_back("-o");
-	this->fuseOptions.push_back(std::string("fsname=") + this->sourcePath);
+	options.setOption("subtype", getProgramName(getProgramName(options.self())));
+	options.setOption("fsname", options.sourcePath());
 	daemon_type& daemon = daemon_type::instance();
 	daemon.root() =
-		std::unique_ptr<fusekit::entry>(new ZipDirFs::Fuse::NativeDirectory(this->sourcePath));
-	CommandArguments arguments(this->fuseOptions);
-	daemon.run(arguments.argc, (char**)arguments.argv, false);
+		std::unique_ptr<fusekit::entry>(new ZipDirFs::Fuse::NativeDirectory(options.sourcePath()));
+	CommandArguments arguments(options);
+	daemon.run(arguments.argc(), (char**)&(arguments.argv()[0]), false);
 }
 
-void Main::Init(const int argc, const char* argv[])
+void Main::init()
 {
-	Options options(argc, argv);
 	options.addHandler("h", showUsage);
 	options.addHandler("help", showUsage);
 	options.addHandler("V", showVersion);
@@ -83,47 +77,13 @@ void Main::Init(const int argc, const char* argv[])
 		std::cerr << getProgramName(options.self()) << message << std::endl;
 		throw Result(-1);
 	}
-
-	this->sourcePath = options.sourcePath();
-
-	this->fuseOptions.push_back(options.self());
-	this->fuseOptions.push_back(options.mountPoint());
-
-	Options::stringMap mountOptions(options.mountOptions());
-	mountOptions["ro"] = "";
-	mountOptions["nosuid"] = "";
-	mountOptions["noexec"] = "";
-	mountOptions["noatime"] = "";
-	std::string mountArgument("-");
-	mountArgument.reserve(2 + (mountOptions.size() << 3));
-	for (Options::stringMap::iterator mit = mountOptions.begin(); mit != mountOptions.end(); mit++)
-	{
-		mountArgument.append(",");
-		mountArgument.append(mit->first);
-		if (!mit->second.empty())
-		{
-			mountArgument.append("=");
-			mountArgument.append(mit->second);
-		}
-	}
-	mountArgument[1] = 'o';
-	this->fuseOptions.push_back(mountArgument);
-
-	for (Options::stringVector::const_iterator it = options.fuseArguments().begin();
-		 it != options.fuseArguments().end(); it++)
-	{
-		this->fuseOptions.push_back("-o");
-		this->fuseOptions.push_back(*it);
-	}
-
-	for (Options::stringVector::const_iterator it = options.unknownArguments().begin();
-		 it != options.unknownArguments().end(); it++)
-	{
-		this->fuseOptions.push_back(*it);
-	}
+	options.setOption("ro", "");
+	options.setOption("nosuid", "");
+	options.setOption("noexec", "");
+	options.setOption("noatime", "");
 }
 
-Main::Main() {}
+Main::Main(const int argc, const char** argv) : options(argc, argv) {}
 
 Main::~Main() {}
 
@@ -141,7 +101,7 @@ std::string getProgramName(const std::string& self)
 	return self.substr(pos);
 }
 
-void showUsage(Options& options)
+void showUsage(const Options& options)
 {
 	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]"
 			  << std::endl;
@@ -154,7 +114,7 @@ void showUsage(Options& options)
 	throw Main::Result(0);
 }
 
-void showVersion(Options& options)
+void showVersion(const Options& options)
 {
 #ifdef HAVE_CONFIG_H
 	std::cerr << PACKAGE_NAME << " version: " << PACKAGE_VERSION << std::endl;
@@ -167,39 +127,23 @@ void showVersion(Options& options)
 	throw Main::Result(0);
 }
 
-CommandArguments::CommandArguments(const std::vector<std::string>& value) :
-	argc(value.size()), argv(toArgv(value))
+CommandArguments::CommandArguments(const Options& options) :
+	arguments(std::move(options.makeArguments()))
 {
 }
 
-CommandArguments::~CommandArguments()
+const int CommandArguments::argc() const
 {
-	char* const* argvIt = (char* const*)argv;
-	while (*argvIt != NULL)
-	{
-		delete[] * argvIt;
-		argvIt++;
-	}
-	delete[] argv;
+	return arguments.size();
 }
 
-char* CommandArguments::toArgv_convert(const std::string& value)
+const std::vector<const char*> CommandArguments::argv() const
 {
-	char* newValue = new char[value.size() + 1];
-	newValue[value.size()] = 0;
-	strncpy(newValue, value.c_str(), value.size());
-	return newValue;
-}
-
-char** CommandArguments::toArgv(const std::vector<std::string>& arguments)
-{
-	char** argv = new char*[arguments.size() + 1];
-	char** argvIt = argv;
-	for (std::vector<std::string>::const_iterator argIt = arguments.begin();
-		 argIt != arguments.end(); argIt++, argvIt++)
-	{
-		*argvIt = toArgv_convert(*argIt);
-	}
-	*argvIt = NULL;
+	std::vector<const char*> argv;
+	std::transform(arguments.begin(), arguments.end(),
+		std::back_insert_iterator<decltype(argv)>(argv),
+		[](const std::string& s) { return s.c_str(); });
 	return argv;
 }
+
+CommandArguments::~CommandArguments() {}

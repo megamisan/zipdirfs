@@ -4,14 +4,16 @@
 #include "Options.h"
 #include "Main.h"
 #include <algorithm>
+#include <numeric>
 
-Options::Options(int argc, const char* argv[]) : arguments_(argc), self_(*argv)
+Options::Options(int argc, const char* argv[]) : _self(*argv)
 {
 	argc--;
 	argv++;
+	_arguments.reserve(argc);
 	while (argc)
 	{
-		this->arguments_.push_back(Options::string(*argv));
+		this->_arguments.push_back(Options::string(*argv));
 		argc--;
 		argv++;
 	}
@@ -28,146 +30,113 @@ void Options::parseArguments()
 {
 	bool hasMountPoint = false;
 	bool hasMountSource = false;
-	bool inValuedOption = false;
-	std::string lastOption;
-	for (Options::stringVector::iterator it = this->arguments_.begin();
-		 it != this->arguments_.end(); it++)
+	bool previousIsOptionArgument = false;
+	for (auto it = this->_arguments.begin(), endIt = this->_arguments.end(); it != endIt; ++it)
 	{
 		if (it->empty())
 		{
 			continue;
-		} // TODO: Investigate bug
-		if ((*it)[0] == '-')
-		{
-			if (inValuedOption && (lastOption != "-o"))
-			{
-				this->executeHandler(lastOption.substr(1));
-				this->unknownArguments_.push_back(lastOption);
-			}
-			inValuedOption = false;
-			if (it->size() == 2)
-			{
-				inValuedOption = true;
-				lastOption = *it;
-			}
-			else if (it->size() > 2)
-			{
-				switch ((*it)[1])
-				{
-				case '-':
-					this->executeHandler(it->substr(2));
-					this->unknownArguments_.push_back(*it);
-					break;
-				case 'o':
-					this->explodeMountOptions(it->substr(2));
-					break;
-				default:
-					this->unknownArguments_.push_back(*it);
-				}
-			}
-			continue;
 		}
-		if (inValuedOption)
+		if (*it == "-o")
 		{
-			if (lastOption == "-o")
-			{
-				if (std::find(this->fuseArguments_.begin(), this->fuseArguments_.end(), *it)
-					== this->fuseArguments_.end())
-				{
-					this->fuseArguments_.push_back(*it);
-				}
-			}
-			else
-			{
-				this->unknownArguments_.push_back(lastOption.substr(1));
-				this->unknownArguments_.push_back(*it);
-			}
-			inValuedOption = false;
-			continue;
+			previousIsOptionArgument = true;
 		}
-		if (!hasMountPoint)
+		else if (previousIsOptionArgument || (it->length() > 2 && it->substr(0, 2) == "-o"))
 		{
-			this->mountPoint_ = *it;
-			hasMountPoint = true;
+			explodeMountOptions(previousIsOptionArgument ? *it : it->substr(2));
+			previousIsOptionArgument = false;
 		}
-		else if (!hasMountSource)
+		else if ((*it)[0] == '-' && it->length() > 1)
 		{
-			this->sourcePath_.swap(this->mountPoint_);
-			this->mountPoint_ = *it;
-			hasMountSource = true;
+			executeHandler(it->substr((it->length() > 2 && (*it)[1] == '-') ? 2 : 1));
+			_unknownArguments.push_back(*it);
 		}
 		else
 		{
-			this->unknownArguments_.push_back(*it);
-		}
-	}
-	if (inValuedOption && (lastOption != "-o"))
-	{
-		this->executeHandler(lastOption.substr(1));
-		this->unknownArguments_.push_back(lastOption);
-	}
-}
-
-void Options::explodeMountOptions(Options::string option)
-{
-	Options::string::iterator nameStart = option.begin(), nameEnd = option.begin(),
-							  valueStart = option.end();
-	bool hasValue = false;
-	for (Options::string::iterator it = option.begin(); it != option.end(); it++)
-	{
-		switch (*it)
-		{
-		case '=':
-			nameEnd = it;
-			hasValue = true;
-			valueStart = it;
-			valueStart++;
-			break;
-		case ',':
-			if (hasValue)
+			if (!hasMountPoint)
 			{
-				if (nameStart != nameEnd)
-				{
-					this->mountOptions_[Options::string(nameStart, nameEnd)] =
-						Options::string(valueStart, it);
-				}
-				hasValue = false;
+				this->_mountPoint = *it;
+				hasMountPoint = true;
+			}
+			else if (!hasMountSource)
+			{
+				this->_sourcePath.swap(this->_mountPoint);
+				this->_mountPoint = *it;
+				hasMountSource = true;
 			}
 			else
 			{
-				if (nameStart != it)
-				{
-					this->mountOptions_[Options::string(nameStart, it)] = "";
-				}
+				this->_unknownArguments.push_back(*it);
 			}
-			nameStart = it;
-			nameStart++;
-			nameEnd = nameStart;
-			break;
-		}
-	}
-	if (hasValue)
-	{
-		if (nameStart != nameEnd)
-		{
-			this->mountOptions_[Options::string(nameStart, nameEnd)] =
-				Options::string(valueStart, option.end());
-		}
-	}
-	else
-	{
-		if (nameStart != option.end())
-		{
-			this->mountOptions_[Options::string(nameStart, option.end())] = "";
 		}
 	}
 }
 
-void Options::executeHandler(Options::string option)
+void Options::explodeMountOptions(const Options::string& options)
 {
-	Options::handlerMap::iterator handlerIt = this->directHandlers.find(option);
+	std::string::size_type start = 0, end, equal;
+	while (start != std::string::npos)
+	{
+		end = options.find(',', start);
+		std::string option =
+			options.substr(start, (end == std::string::npos ? options.length() : end) - start);
+		equal = option.find('=');
+		equal = equal == std::string::npos ? option.length() : equal;
+		setOption(option.substr(0, equal), equal < option.length() ? option.substr(equal + 1) : "");
+		start = end == std::string::npos ? end : (end + 1);
+	}
+}
+
+void Options::executeHandler(const Options::string& option) const
+{
+	auto handlerIt = this->directHandlers.find(option);
 	if (handlerIt != this->directHandlers.end())
 	{
 		handlerIt->second(*this);
 	}
+}
+
+bool Options::hasArgument(const string& name)
+{
+	return std::find(_unknownArguments.begin(), _unknownArguments.end(), name)
+		!= _unknownArguments.end();
+}
+
+bool Options::hasOption(const string& name)
+{
+	return _mountOptions.find(name) != _mountOptions.end();
+}
+
+const Options::string& Options::getOption(const string& name)
+{
+	return _mountOptions[name];
+}
+
+void Options::setOption(const string& name, const string& value)
+{
+	_mountOptions[name] = value;
+}
+
+void Options::unsetOption(const string& name)
+{
+	_mountOptions.erase(name);
+}
+
+const Options::stringVector Options::makeArguments() const
+{
+	stringVector arguments;
+	arguments.push_back(_self);
+	arguments.push_back(_mountPoint);
+	if (_mountOptions.size())
+	{
+		auto it = _mountOptions.begin();
+		arguments.push_back("-o"
+			+ std::accumulate(std::next(it), _mountOptions.end(),
+				it->first + (it->second.length() ? "=" + it->second : ""),
+				[](const std::string& a, const decltype(_mountOptions)::value_type& b)
+				{ return a + "," + b.first + (b.second.length() ? "=" + b.second : ""); }));
+	}
+	std::copy(_unknownArguments.begin(), _unknownArguments.end(),
+		std::back_insert_iterator<decltype(arguments)>(arguments));
+	return arguments;
 }
