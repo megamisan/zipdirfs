@@ -2,9 +2,11 @@
  * Copyright © 2020-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Entry.h"
+#include "Fixtures/SimpleSpan.h"
 #include "test/gtest.h"
 #include <boost/filesystem.hpp>
 #include <csignal>
+#include <functional>
 #include <gmock/gmock.h>
 
 namespace ZipDirFs::Zip::Base
@@ -27,7 +29,68 @@ namespace Test::ZipDirFs::Zip
 {
 	using ::testing::_;
 	using ::testing::Return;
+	using ::testing::ReturnArg;
 	using ::ZipDirFs::Zip::Entry;
+	using ::ZipDirFs::Zip::Base::Content;
+	template <Fixtures::SimpleSpanImpl::size_type size>
+	using SimpleSpan = Fixtures::SimpleSpan<char, size>;
+
+	namespace
+	{
+		constexpr std::uint64_t randomLenModulo() { return 1048576; }
+		constexpr std::uint64_t randomLenBase() { return 4096; }
+		constexpr std::uint64_t randomLenMax() { return randomLenModulo() + randomLenBase() - 1; }
+
+		void GenerateRandomSegment(char* buffer, std::streamsize len)
+		{
+			using rand_type = double;
+			const std::streamsize last = len - (len % sizeof(rand_type));
+			rand_type* dest = reinterpret_cast<decltype(dest)>(buffer);
+			rand_type* end = reinterpret_cast<decltype(end)>(buffer) + last / sizeof(rand_type);
+			while (dest < end)
+			{
+				*(dest++) = ::Test::rand();
+			}
+			if (last != len)
+			{
+				rand_type value = ::Test::rand();
+				std::memcpy(dest, &value, len - last);
+			}
+		}
+
+		std::unique_ptr<char, std::function<void(char*)>> GenerateStartContentState(
+			Content& content)
+		{
+			auto c = &content;
+			content.length = ::Test::rand(randomLenBase(), randomLenMax() - 1);
+			content.lastWrite = 0;
+			std::unique_ptr<char, std::function<void(char*)>> buffer(new char[content.length],
+				[c](char* buf)
+				{
+					delete[] buf;
+					c->buffer = nullptr;
+				});
+			content.buffer = buffer.get();
+			return buffer;
+		}
+
+		std::unique_ptr<char, std::function<void(char*)>> GenerateRandomBufferedContentState(
+			Content& content)
+		{
+			auto c = &content;
+			content.length = ::Test::rand(randomLenBase(), randomLenMax() - 1);
+			content.lastWrite = ::Test::rand(long(randomLenBase()), content.length);
+			std::unique_ptr<char, std::function<void(char*)>> buffer(new char[content.length],
+				[c](char* buf)
+				{
+					delete[] buf;
+					c->buffer = nullptr;
+				});
+			GenerateRandomSegment(content.buffer = buffer.get(), content.length);
+			return buffer;
+		}
+
+	} // namespace
 
 	const std::shared_ptr<LibBase>& EntryAccess::getData(Entry& e)
 	{
@@ -49,53 +112,7 @@ namespace Test::ZipDirFs::Zip
 	{
 		return reinterpret_cast<EntryAccess*>(&e)->content;
 	}
-	std::shared_ptr<Content> EntryAccess::invokeOpen(Entry& e)
-	{
-		return reinterpret_cast<EntryAccess*>(&e)->open();
-	}
-	void EntryAccess::registerArchiveAndEntry(
-		const std::shared_ptr<::ZipDirFs::Zip::Archive>& a, const std::shared_ptr<Entry>& e)
-	{
-		ArchiveAccess::getNames(*a).emplace_back(EntryAccess::getCachedStat(*e).getName());
-		ArchiveAccess::getNameAttributes(*a).emplace(EntryAccess::getCachedStat(*e).getName(),
-			std::tuple<std::uint64_t, bool>{EntryAccess::getCachedStat(*e).getIndex(), false});
-		ArchiveAccess::getEntries(*a).insert({EntryAccess::getCachedStat(*e).getIndex(), e});
-		FactoryAccess::getArchivesByData().insert({EntryAccess::getData(*e).get(), a});
-	}
-	void EntryAccess::cleanupArchiveAndEntry() { FactoryAccess::getArchivesByData().clear(); }
-
-	EntryAccess::GlobalHelper::GlobalHelper(
-		Fixtures::Lib& l, const std::shared_ptr<::ZipDirFs::Zip::Entry>& e) :
-		archiveInstance(EntryAccess::getData(*e).get()),
-		archive(std::shared_ptr<::ZipDirFs::Zip::Archive>(
-			&archiveInstance, [](::ZipDirFs::Zip::Archive*) {})),
-		entry(e)
-	{
-		registerArchiveAndEntry(archive, entry);
-		EXPECT_CALL(l, close(_));
-	}
-	EntryAccess::GlobalHelper::~GlobalHelper() { cleanupArchiveAndEntry(); }
-
-	std::vector<std::string>& EntryAccess::ArchiveAccess::getNames(::ZipDirFs::Zip::Archive& a)
-	{
-		return reinterpret_cast<ArchiveAccess*>(&a)->names;
-	}
-	std::map<std::string, std::tuple<std::uint64_t, bool>>&
-		EntryAccess::ArchiveAccess::getNameAttributes(::ZipDirFs::Zip::Archive& a)
-	{
-		return reinterpret_cast<ArchiveAccess*>(&a)->nameAttributes;
-	}
-	std::map<std::uint64_t, std::weak_ptr<::ZipDirFs::Zip::Entry>>&
-		EntryAccess::ArchiveAccess::getEntries(::ZipDirFs::Zip::Archive& a)
-	{
-		return reinterpret_cast<ArchiveAccess*>(&a)->entries;
-	}
-
-	std::map<const ::ZipDirFs::Zip::Base::Lib*, std::weak_ptr<::ZipDirFs::Zip::Archive>>&
-		EntryAccess::FactoryAccess::getArchivesByData()
-	{
-		return Factory::archivesByData;
-	}
+	void EntryAccess::invokeOpen(Entry& e) { reinterpret_cast<EntryAccess*>(&e)->open(); }
 
 	void EntryTest::SetUp()
 	{
@@ -196,11 +213,9 @@ namespace Test::ZipDirFs::Zip
 		EntryAccess::getCachedStat(entry) = stat;
 		EntryAccess::getFlags(entry)[1] = true;
 		EXPECT_CALL(lib, fopen_index(data.get(), stat.getIndex())).WillOnce(Return(file));
-		EntryAccess::GlobalHelper helper(lib,
-			std::shared_ptr<Entry>(
-				&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; }));
-		auto content(EntryAccess::invokeOpen(entry));
-		EXPECT_EQ(content.get(), &EntryAccess::getContent(entry));
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		EntryAccess::invokeOpen(entry);
 		EXPECT_EQ(EntryAccess::getContent(entry).data, file);
 		EXPECT_NE(EntryAccess::getContent(entry).buffer, nullptr);
 		EXPECT_EQ(EntryAccess::getContent(entry).length, stat.getSize());
@@ -215,8 +230,7 @@ namespace Test::ZipDirFs::Zip
 			reinterpret_cast<char*>(::Test::rand(UINT32_MAX)),
 			[&entry](char*) { EntryAccess::getContent(entry).buffer = nullptr; });
 		EntryAccess::getContent(entry).buffer = buffer.get();
-		EntryAccess::GlobalHelper helper(lib, std::shared_ptr<Entry>(&entry, [](Entry*) {}));
-		EXPECT_EQ(EntryAccess::invokeOpen(entry).get(), &EntryAccess::getContent(entry));
+		EXPECT_EQ(buffer.get(), EntryAccess::getContent(entry).buffer);
 	}
 
 	TEST_F(EntryTest, IsDirFile)
@@ -231,5 +245,105 @@ namespace Test::ZipDirFs::Zip
 		std::string name(std::string("folder") + std::to_string(::Test::rand(UINT32_MAX)));
 		Entry entry(data, name, true);
 		EXPECT_TRUE(entry.isDir());
+	}
+
+	TEST_F(EntryTest, ReadStart)
+	{
+		Fixtures::Lib lib;
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getContent(entry).data = file;
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		auto buffer = GenerateStartContentState(EntryAccess::getContent(entry));
+		EXPECT_CALL(lib, fread(file, buffer.get(), randomLenBase()))
+			.WillOnce(Return(randomLenBase()));
+		char tmp[randomLenBase()];
+		EXPECT_EQ(randomLenBase(), entry.read(tmp, randomLenBase(), 0));
+	}
+
+	TEST_F(EntryTest, ReadAvailable)
+	{
+		using Fixtures::dynamic_extend;
+		Fixtures::Lib lib;
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getContent(entry).data = file;
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		auto buffer = GenerateRandomBufferedContentState(EntryAccess::getContent(entry));
+		char tmp[randomLenBase()];
+		EXPECT_EQ(randomLenBase(), entry.read(tmp, randomLenBase(), 0));
+		EXPECT_EQ(SimpleSpan<dynamic_extend>(buffer.get(), randomLenBase()).content(),
+			SimpleSpan<dynamic_extend>(tmp, randomLenBase()).content());
+	}
+
+	TEST_F(EntryTest, ReadUnavailableOneChunk)
+	{
+		using Fixtures::dynamic_extend;
+		// TODO: One chunk / Two chunks
+		Fixtures::Lib lib;
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getContent(entry).data = file;
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		auto buffer = GenerateRandomBufferedContentState(EntryAccess::getContent(entry));
+		auto offset = EntryAccess::getContent(entry).lastWrite;
+		EXPECT_CALL(lib, fread(file, buffer.get() + offset, _)).WillOnce(ReturnArg<2>());
+		char tmp[randomLenBase()];
+		std::int64_t res;
+		EXPECT_GE(randomLenBase(), res = entry.read(tmp, randomLenBase(), offset));
+		EXPECT_EQ(SimpleSpan<dynamic_extend>(buffer.get() + offset, res).content(),
+			SimpleSpan<dynamic_extend>(tmp, res).content());
+	}
+
+	TEST_F(EntryTest, ReadEnd)
+	{
+		using Fixtures::dynamic_extend;
+		Fixtures::Lib lib;
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getContent(entry).data = file;
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		auto buffer = GenerateRandomBufferedContentState(EntryAccess::getContent(entry));
+		const auto len = randomLenBase() / 2;
+		auto offset = EntryAccess::getContent(entry).lastWrite =
+			EntryAccess::getContent(entry).length - len;
+		::testing::ExpectationSet set;
+		set += EXPECT_CALL(lib, fread(file, buffer.get() + offset, randomLenBase()))
+				   .WillOnce(Return(len));
+		EXPECT_CALL(lib, fclose(file)).After(set);
+		char tmp[len];
+		EXPECT_EQ(len, entry.read(tmp, len, offset));
+		EXPECT_EQ(nullptr, EntryAccess::getContent(entry).data);
+		EXPECT_EQ(SimpleSpan<dynamic_extend>(buffer.get() + offset, len).content(),
+			SimpleSpan<dynamic_extend>(tmp, len).content());
+	}
+
+	TEST_F(EntryTest, ReadOverEnd)
+	{
+		Fixtures::Lib lib;
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		std::unique_ptr<char, std::function<void(char*)>> buffer(
+			reinterpret_cast<char*>(::Test::rand(UINT32_MAX)),
+			[&entry](char*) { EntryAccess::getContent(entry).buffer = nullptr; });
+		EntryAccess::getContent(entry).buffer = buffer.get();
+		EntryAccess::getContent(entry).lastWrite = EntryAccess::getContent(entry).length =
+			::Test::rand(randomLenBase(), randomLenMax() - 1);
+		auto offset = EntryAccess::getContent(entry).length;
+		EXPECT_EQ(0, entry.read(nullptr, randomLenBase(), offset));
 	}
 } // namespace Test::ZipDirFs::Zip

@@ -205,7 +205,7 @@ namespace Test::ZipDirFs::Fuse
 			~FileInstance() {}
 		};
 
-		void GenerateRandomData(Stream::char_type* buffer, std::streamsize len)
+		void GenerateRandomData(char* buffer, std::streamsize len)
 		{
 			using rand_type = double;
 			const std::streamsize last = len - (len % sizeof(rand_type));
@@ -293,8 +293,7 @@ namespace Test::ZipDirFs::Fuse
 		::ZipDirFs::Zip::Base::Stat facticeStat(0, facticeFile, size, modified, false);
 		filesystem::create_directory(mountPoint);
 		std::string fsName = "ZipFileBufferTestRead";
-		Stream::char_type *expected = new Stream::char_type[size],
-						  *result = new Stream::char_type[size];
+		char *expected = new char[size], *result = new char[size];
 		Guard buffer(
 			[expected, result]()
 			{

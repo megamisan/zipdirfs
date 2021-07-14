@@ -51,8 +51,8 @@ innerclass}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>540</x>
-      <y>410</y>
+      <x>450</x>
+      <y>280</y>
       <w>240</w>
       <h>220</h>
     </coordinates>
@@ -77,7 +77,7 @@ innerclass}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>780</x>
+      <x>730</x>
       <y>720</y>
       <w>210</w>
       <h>310</h>
@@ -111,8 +111,8 @@ innerclass}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>830</x>
-      <y>450</y>
+      <x>740</x>
+      <y>320</y>
       <w>160</w>
       <h>100</h>
     </coordinates>
@@ -134,7 +134,7 @@ innerclass}</panel_attributes>
     <coordinates>
       <x>0</x>
       <y>0</y>
-      <w>1020</w>
+      <w>960</w>
       <h>1050</h>
     </coordinates>
     <panel_attributes>ZipDirFs::Zip
@@ -145,25 +145,25 @@ innerclass}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>950</x>
-      <y>520</y>
+      <x>790</x>
+      <y>400</y>
       <w>60</w>
-      <h>220</h>
+      <h>340</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=1
 m2=*
 r2=+data
 </panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;320.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>290</x>
-      <y>900</y>
+      <y>890</y>
       <w>240</w>
-      <h>130</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>Entry
 --
@@ -173,51 +173,52 @@ r2=+data
 +Entry(shared_ptr&lt;Lib&gt;&amp;, string&amp;, bool)
 +stat(): Stat&amp;
 +isDir(): bool
-#open(): shared_ptr&lt;Content&gt;
++read(void*, size, off): int64
+#open(): void
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>470</y>
-      <w>370</w>
-      <h>480</h>
+      <x>520</x>
+      <y>410</y>
+      <w>270</w>
+      <h>530</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=1
 m2=*
 r2=#data</panel_attributes>
-    <additional_attributes>350.0;10.0;320.0;10.0;320.0;180.0;50.0;180.0;50.0;190.0;10.0;190.0;10.0;410.0;70.0;410.0;70.0;450.0;50.0;450.0</additional_attributes>
+    <additional_attributes>240.0;10.0;240.0;290.0;190.0;290.0;190.0;450.0;120.0;450.0;120.0;500.0;10.0;500.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>520</x>
       <y>980</y>
-      <w>280</w>
+      <w>230</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;-&gt;&gt;&gt;&gt;&gt;
 m1=1
 m2=1
 r2=#content</panel_attributes>
-    <additional_attributes>260.0;20.0;10.0;20.0</additional_attributes>
+    <additional_attributes>210.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>460</x>
-      <y>600</y>
+      <x>440</x>
+      <y>490</y>
       <w>100</w>
-      <h>320</h>
+      <h>420</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-&gt;
 m1=1
 m2=1
 r1=#cachedStat</panel_attributes>
-    <additional_attributes>10.0;300.0;10.0;40.0;50.0;40.0;50.0;10.0;80.0;10.0</additional_attributes>
+    <additional_attributes>10.0;400.0;10.0;30.0;30.0;30.0;30.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -236,7 +237,7 @@ r1=#entries\n{weak_ptr inmap \nindexed by uint64}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>690</x>
+      <x>640</x>
       <y>40</y>
       <w>300</w>
       <h>200</h>
@@ -256,34 +257,6 @@ _+fclose: function&lt;void(File*)&gt;_
 _+reset(): void_
 _+assign&lt;Func&gt;(function&lt;Func&gt;&amp;, Func*): void_</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>440</x>
-      <y>270</y>
-      <w>400</w>
-      <h>100</h>
-    </coordinates>
-    <panel_attributes>Stream
---
---
-+Stream(path&amp;, string&amp;)
-+Stream(Archive&amp;, string&amp;)
-+Stream(Entry&amp;)
-_-createBuffer(shared_ptr&lt;Content&gt;): basic_streambuf&lt;char_type&gt;*_</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>610</x>
-      <y>70</y>
-      <w>30</w>
-      <h>220</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -347,18 +320,6 @@ time {::std}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>420</x>
-      <y>360</y>
-      <w>70</w>
-      <h>560</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-&lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;540.0;10.0;240.0;50.0;240.0;50.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
       <x>140</x>
       <y>160</y>
       <w>70</w>
@@ -371,74 +332,74 @@ time {::std}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>920</x>
+      <x>780</x>
       <y>230</y>
       <w>70</w>
-      <h>240</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;220.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>950</x>
+      <x>860</x>
       <y>230</y>
       <w>70</w>
-      <h>280</h>
+      <h>160</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;260.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>770</x>
+      <x>680</x>
       <y>230</y>
-      <w>130</w>
-      <h>220</h>
+      <w>70</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;200.0;110.0;200.0;110.0;10.0</additional_attributes>
+    <additional_attributes>10.0;70.0;50.0;70.0;50.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>340</x>
       <y>210</y>
-      <w>370</w>
+      <w>320</w>
       <h>130</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;110.0;10.0;10.0;350.0;10.0</additional_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0;300.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>360</x>
       <y>140</y>
-      <w>350</w>
+      <w>300</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;20.0;330.0;20.0</additional_attributes>
+    <additional_attributes>10.0;20.0;280.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>440</x>
+      <x>420</x>
       <y>230</y>
-      <w>440</w>
-      <h>690</h>
+      <w>260</w>
+      <h>680</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;670.0;10.0;390.0;50.0;390.0;50.0;160.0;420.0;160.0;420.0;10.0</additional_attributes>
+    <additional_attributes>10.0;660.0;10.0;30.0;240.0;30.0;240.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -480,8 +441,8 @@ shared_ptr {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>560</x>
-      <y>810</y>
+      <x>470</x>
+      <y>700</y>
       <w>110</w>
       <h>60</h>
     </coordinates>
@@ -493,8 +454,8 @@ weak_ptr {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>680</x>
-      <y>670</y>
+      <x>600</x>
+      <y>700</y>
       <w>90</w>
       <h>60</h>
     </coordinates>
@@ -506,20 +467,8 @@ vector {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>560</x>
-      <y>40</y>
-      <w>100</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;datatype&gt;&gt;
-istream {::std}</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>820</x>
-      <y>640</y>
+      <x>610</x>
+      <y>620</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -568,8 +517,8 @@ size {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>510</x>
-      <y>740</y>
+      <x>470</x>
+      <y>620</y>
       <w>120</w>
       <h>60</h>
     </coordinates>
@@ -593,8 +542,8 @@ condition_variable_any {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>510</x>
-      <y>670</y>
+      <x>470</x>
+      <y>540</y>
       <w>150</w>
       <h>60</h>
     </coordinates>
@@ -618,8 +567,8 @@ path {::boost::filesystem}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>820</x>
-      <y>570</y>
+      <x>640</x>
+      <y>540</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -631,8 +580,8 @@ bitset {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>600</x>
-      <y>890</y>
+      <x>570</x>
+      <y>780</y>
       <w>100</w>
       <h>60</h>
     </coordinates>
@@ -644,8 +593,8 @@ function {::std}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>650</x>
-      <y>740</y>
+      <x>470</x>
+      <y>780</y>
       <w>80</w>
       <h>60</h>
     </coordinates>
@@ -657,14 +606,26 @@ tuple {::std}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
+      <x>660</x>
       <y>870</y>
-      <w>90</w>
+      <w>100</w>
       <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m2=0..1
 r2=#content</panel_attributes>
-    <additional_attributes>60.0;10.0;20.0;10.0;20.0;60.0;65.0;60.0</additional_attributes>
+    <additional_attributes>70.0;10.0;30.0;10.0;30.0;60.0;75.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>560</x>
+      <y>930</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+off {::std}</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

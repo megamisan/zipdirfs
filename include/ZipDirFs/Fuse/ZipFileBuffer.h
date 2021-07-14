@@ -6,14 +6,13 @@
 
 #include "ZipDirFs/Zip/Entry.h"
 #include "ZipDirFs/Zip/Exception.h"
-#include "ZipDirFs/Zip/Stream.h"
 #include <fuse.h>
-#include <map>
+#include <set>
 
 namespace ZipDirFs::Fuse
 {
 	using ::ZipDirFs::Zip::Exception;
-	using ::ZipDirFs::Zip::Stream;
+	typedef std::unique_lock<std::mutex> lock_type;
 
 	/**
 	 * @brief A fusekit buffer for zip archive file
@@ -31,10 +30,15 @@ namespace ZipDirFs::Fuse
 			{
 				return -EACCES;
 			}
-			fi.fh = nextId++;
+			{
+				lock_type lock(idAccess);
+				fi.fh = nextId++;
+			}
 			try
 			{
-				states.emplace(fi.fh, entry());
+				lock_type lock(entryAccess);
+				handles.insert(fi.fh);
+				entryRef = entry();
 			}
 			catch (Exception e)
 			{
@@ -42,23 +46,37 @@ namespace ZipDirFs::Fuse
 			}
 			return 0;
 		}
-		int close(fuse_file_info& fi) { return states.erase(fi.fh) == 1 ? 0 : -EBADF; }
+		int close(fuse_file_info& fi)
+		{
+			lock_type lock(entryAccess);
+			if (handles.find(fi.fh) != handles.end())
+			{
+				handles.erase(fi.fh);
+				if (!handles.size())
+				{
+					entryRef = nullptr;
+				}
+				return 0;
+			}
+			return -EBADF;
+		}
 		int read(char* buf, size_t size, off_t offset, fuse_file_info& fi)
 		{
-			auto it = states.find(fi.fh);
-			if (it == states.end())
+			if (handles.find(fi.fh) == handles.end())
 			{
 				return -EBADF;
 			}
-			Stream stream(*(it->second));
-			auto current = buf, end = buf + size;
-			stream.seekg(offset);
-			while (current < end && !stream.eof())
+			std::shared_ptr<Entry> e;
 			{
-				stream.read(current, end - current);
-				current += stream.gcount();
+				lock_type lock(entryAccess);
+				e = entryRef;
 			}
-			return current - buf;
+			if (e == nullptr)
+			{
+				return -EBADF;
+			}
+			auto read = e->read(buf, size, offset);
+			return read >= 0 ? read : -EIO;
 		}
 		int write(const char* buf, size_t size, off_t offset, fuse_file_info& fi) { return -EBADF; }
 		int flush(fuse_file_info& fi) { return 0; }
@@ -69,12 +87,17 @@ namespace ZipDirFs::Fuse
 		virtual off_t entrySize() const = 0;
 
 	protected:
-		std::map<int, std::shared_ptr<Entry>> states;
+		std::set<int> handles;
+		std::shared_ptr<Entry> entryRef;
+		std::mutex entryAccess;
 		static uint64_t nextId;
+		static std::mutex idAccess;
 	};
 
 	template <class Derived, class Entry>
 	uint64_t ZipFileBuffer<Derived, Entry>::nextId = 1;
+	template <class Derived, class Entry>
+	std::mutex ZipFileBuffer<Derived, Entry>::idAccess;
 
 	/**
 	 * @brief A fusekit buffer for zip archive file

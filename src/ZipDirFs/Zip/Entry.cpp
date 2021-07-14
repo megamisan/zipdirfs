@@ -4,12 +4,37 @@
 #include "ZipDirFs/Zip/Entry.h"
 #include "ZipDirFs/Zip/Factory.h"
 #include "ZipDirFs/Zip/Lib.h"
+#include <cstring>
 
 #define ENTRY_IS_DIR 0
 #define ENTRY_STATS_FETCHED 1
 
 namespace ZipDirFs::Zip
 {
+	namespace
+	{
+		const std::streamsize chunksize = 4096;
+		void ensureAvailable(Base::Content& content, std::streamsize position)
+		{
+			auto lock(content.readLock());
+			if (content.lastWrite < position)
+			{
+				while (content.lastWrite < position)
+				{
+					lock.makeWriter();
+					auto len =
+						Lib::fread(content.data, content.buffer + content.lastWrite, chunksize);
+					content.lastWrite += len;
+					if (content.lastWrite == content.length)
+					{
+						Lib::fclose(content.data);
+						content.data = nullptr;
+					}
+					lock.makeReader();
+				}
+			}
+		}
+	} // namespace
 	Entry::Entry(const std::shared_ptr<Base::Lib>& d, const std::string& n, bool isDir) :
 		data(d), name(n), cachedStat()
 	{
@@ -34,7 +59,7 @@ namespace ZipDirFs::Zip
 		}
 		return cachedStat;
 	}
-	std::shared_ptr<Base::Content> Entry::open()
+	void Entry::open()
 	{
 		auto lock(content.writeLock());
 		if (content.buffer == nullptr)
@@ -43,8 +68,24 @@ namespace ZipDirFs::Zip
 			content.data = Lib::fopen_index(data.get(), cachedStat.getIndex());
 			content.buffer = new char[content.length = cachedStat.getSize()];
 		}
-		return std::shared_ptr<Base::Content>(
-			Factory::getInstance().get(data.get())->open(name), &content);
 	}
 	bool Entry::isDir() const { return flags[ENTRY_IS_DIR]; }
+	std::int64_t Entry::read(void* buff, size_t size, off_t offset)
+	{
+		open();
+		auto readNeed = std::min((decltype(content.length))(offset + size), content.length);
+		try
+		{
+			ensureAvailable(content, readNeed);
+		}
+		catch (std::ios::failure)
+		{
+			return -1;
+		}
+		if (offset < content.length)
+		{
+			std::memcpy(buff, content.buffer + offset, readNeed - offset);
+		}
+		return readNeed - offset;
+	}
 } // namespace ZipDirFs::Zip

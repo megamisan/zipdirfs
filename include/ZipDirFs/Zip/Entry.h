@@ -13,8 +13,6 @@
 
 namespace ZipDirFs::Zip
 {
-	struct Stream;
-
 	/**
 	 * @brief Represents a zip archive entry
 	 * @remarks Must be created using @link ZipDirFs::Zip::Archive::open Archive::open @endlink.
@@ -27,15 +25,15 @@ namespace ZipDirFs::Zip
 		~Entry();
 		const Base::Stat& stat();
 		bool isDir() const;
+		std::int64_t read(void*, size_t, off_t);
 
 	protected:
-		std::shared_ptr<Base::Content> open();
+		void open();
 		const std::shared_ptr<Base::Lib> data;
 		const std::string name;
 		std::bitset<2> flags;
 		Base::Stat cachedStat;
 		Base::Content content;
-		friend class Stream;
 	};
 
 } // namespace ZipDirFs::Zip

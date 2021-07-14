@@ -47,7 +47,6 @@ libzipdirfs_la_SOURCES = \
 	src/ZipDirFs/Zip/Exception.cpp \
 	src/ZipDirFs/Zip/Factory.cpp \
 	src/ZipDirFs/Zip/Lib.cpp \
-	src/ZipDirFs/Zip/Stream.cpp \
 	src/ZipDirFs/Zip/Base/Content.cpp \
 	src/ZipDirFs/Zip/Base/Lib.cpp \
 	src/ZipDirFs/Zip/Base/Stat.cpp
@@ -94,7 +93,6 @@ noinst_HEADERS = \
 	include/ZipDirFs/Zip/Exception.h \
 	include/ZipDirFs/Zip/Factory.h \
 	include/ZipDirFs/Zip/Lib.h \
-	include/ZipDirFs/Zip/Stream.h \
 	include/ZipDirFs/Zip/Base/Content.h \
 	include/ZipDirFs/Zip/Base/Lib.h \
 	include/ZipDirFs/Zip/Base/Stat.h
@@ -164,9 +162,7 @@ libgtest_local_la_SOURCES = \
 	test/ZipDirFs/Zip/Fixtures/Lib.h \
 	test/ZipDirFs/Zip/Fixtures/Lib.cpp \
 	test/ZipDirFs/Zip/Fixtures/SimpleSpan.h \
-	test/ZipDirFs/Zip/Fixtures/SimpleSpan.cpp \
-	test/ZipDirFs/Zip/Fixtures/StreamBufferInitializer.h \
-	test/ZipDirFs/Zip/Fixtures/StreamBufferInitializer.cpp
+	test/ZipDirFs/Zip/Fixtures/SimpleSpan.cpp
 libgtest_local_la_CXXFLAGS = $(CXXFLAGS_COVERAGE) -D BUILD_TEST
 libgtest_local_la_LIBADD = $(LDADD_COVERAGE) $(BOOST_FILESYSTEM_LIB) $(BOOST_SYSTEM_LIB)
 libgtest_local_la_LDFLAGS = -pthread
@@ -227,8 +223,6 @@ gtest_SOURCES = \
 	test/ZipDirFs/Zip/Factory.cpp \
 	test/ZipDirFs/Zip/Lib.h \
 	test/ZipDirFs/Zip/Lib.cpp \
-	test/ZipDirFs/Zip/Stream.h \
-	test/ZipDirFs/Zip/Stream.cpp \
 	test/ZipDirFs/Zip/Base/Content.h \
 	test/ZipDirFs/Zip/Base/Content.cpp
 gtest_CXXFLAGS = $(CXXFLAGS_COVERAGE)
