@@ -43,6 +43,8 @@ namespace ZipDirFs::Zip
 		static std::function<Base::Lib::File*(Base::Lib* const, std::uint64_t)> fopen_index;
 		/** Reads data from file */
 		static std::function<std::uint64_t(Base::Lib::File* const, void*, std::uint64_t)> fread;
+		/** Tells position in file */
+		static std::function<std::int64_t(Base::Lib::File* const)> ftell;
 		/** Closes file */
 		static std::function<void(Base::Lib::File* const)> fclose;
 

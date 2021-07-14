@@ -22,6 +22,7 @@ namespace ZipDirFs::Zip
 			static std::string get_name(Base::Lib* const, std::uint64_t);
 			static Base::Lib::File* fopen_index(Base::Lib* const, std::uint64_t);
 			static std::uint64_t fread(Base::Lib::File* const, void*, std::uint64_t);
+			static std::int64_t ftell(Base::Lib::File* const);
 			static void fclose(Base::Lib::File* const);
 		};
 
@@ -100,6 +101,7 @@ namespace ZipDirFs::Zip
 		assign(Lib::get_name, LibWrapper::get_name);
 		assign(Lib::fopen_index, LibWrapper::fopen_index);
 		assign(Lib::fread, LibWrapper::fread);
+		assign(Lib::ftell, LibWrapper::ftell);
 		assign(Lib::fclose, LibWrapper::fclose);
 	}
 
@@ -111,6 +113,7 @@ namespace ZipDirFs::Zip
 	std::function<std::string(Base::Lib* const, std::uint64_t)> Lib::get_name;
 	std::function<Base::Lib::File*(Base::Lib* const, std::uint64_t)> Lib::fopen_index;
 	std::function<std::uint64_t(Base::Lib::File* const, void*, std::uint64_t)> Lib::fread;
+	std::function<std::int64_t(Base::Lib::File* const)> Lib::ftell;
 	std::function<void(Base::Lib::File* const)> Lib::fclose;
 
 	bool init = []
@@ -227,12 +230,17 @@ namespace ZipDirFs::Zip
 	std::uint64_t LibWrapper::fread(Base::Lib::File* const f, void* buf, std::uint64_t len)
 	{
 		FileData* lf = reinterpret_cast<decltype(lf)>(f);
-		len = ::zip_fread(lf->file, buf, len);
-		if (len == -1UL)
+		auto read = ::zip_fread(lf->file, buf, len);
+		if (read == -1UL)
 		{
 			std::__throw_ios_failure("Failure reading file.");
 		}
-		return len;
+		return read;
+	}
+	std::int64_t LibWrapper::ftell(Base::Lib::File* const f)
+	{
+		FileData* lf = reinterpret_cast<decltype(lf)>(f);
+		return ::zip_ftell(lf->file);
 	}
 	void LibWrapper::fclose(Base::Lib::File* const f)
 	{
