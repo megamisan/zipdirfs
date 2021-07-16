@@ -26,7 +26,6 @@ namespace ZipDirFs::Zip
 	{
 	public:
 		std::shared_ptr<Archive> get(const boost::filesystem::path&);
-		std::shared_ptr<Archive> get(const Base::Lib* const&) throw();
 		static Factory& getInstance();
 
 	protected:
@@ -34,7 +33,6 @@ namespace ZipDirFs::Zip
 		~Factory();
 		static Factory* instance;
 		static std::map<boost::filesystem::path, std::weak_ptr<Archive>> archivesByPath;
-		static std::map<const Base::Lib*, std::weak_ptr<Archive>> archivesByData;
 
 	private:
 		friend class FactoryInstantiate;

@@ -25,7 +25,6 @@ namespace Test::ZipDirFs::Components
 	void ZipFileChangedTest::TearDown()
 	{
 		ZipFactoryAccess::getArchivesByPath().clear();
-		ZipFactoryAccess::getArchivesByData().clear();
 	}
 
 	void ZipFileChangedExpectArchive(FileSystem& fs, Lib& lib, LibInstance& data,

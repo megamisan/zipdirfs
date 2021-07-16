@@ -28,7 +28,6 @@ namespace Test::ZipDirFs::Components
 	void ZipDirectoryEnumeratorTest::TearDown()
 	{
 		ZipFactoryAccess::getArchivesByPath().clear();
-		ZipFactoryAccess::getArchivesByData().clear();
 	}
 
 	void ZipDirectoryEnumeratorExpectArchive(FileSystem& fs, Lib& lib, LibInstance& data,

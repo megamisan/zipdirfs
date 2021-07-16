@@ -17,7 +17,6 @@ namespace ZipDirFs::Zip
 	Factory::~Factory() {}
 	Factory* Factory::instance = nullptr;
 	std::map<boost::filesystem::path, std::weak_ptr<Archive>> Factory::archivesByPath;
-	std::map<const Base::Lib*, std::weak_ptr<Archive>> Factory::archivesByData;
 
 	Factory& Factory::getInstance() { return *instance; }
 
@@ -26,43 +25,23 @@ namespace ZipDirFs::Zip
 		std::shared_ptr<Archive> result;
 		std::lock_guard<std::mutex> guard(zip_factory_get);
 		auto it = archivesByPath.find(p);
-		if (it != archivesByPath.end() && it->second.expired())
+		if (it != archivesByPath.end())
 		{
-			archivesByPath.erase(it);
-			it = archivesByPath.end();
+			if (!it->second.expired())
+			{
+				result = it->second.lock();
+			}
+			if (result == nullptr)
+			{
+				archivesByPath.erase(it);
+				it = archivesByPath.end();
+			}
 		}
 		if (it == archivesByPath.end())
 		{
 			auto data = Lib::open(p);
-			result = std::shared_ptr<Archive>(new Archive(data),
-				[this, data](Archive* a)
-				{
-					std::lock_guard<std::mutex> guard(zip_factory_get);
-					auto it = this->archivesByData.find(data);
-					if (it != this->archivesByData.end())
-					{
-						this->archivesByData.erase(it);
-					}
-					delete a;
-				});
+			result = Archive::create(data);
 			archivesByPath.insert({p, result});
-			archivesByData.insert({data, result});
-		}
-		else
-		{
-			result = it->second.lock();
-		}
-		return result;
-	}
-
-	std::shared_ptr<Archive> Factory::get(const Base::Lib* const& d) throw()
-	{
-		std::shared_ptr<Archive> result;
-		std::lock_guard<std::mutex> guard(zip_factory_get);
-		auto it = archivesByData.find(d);
-		if (it != archivesByData.end() && !it->second.expired())
-		{
-			result = it->second.lock();
 		}
 		return result;
 	}

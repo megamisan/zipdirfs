@@ -14,9 +14,6 @@ namespace Test::ZipDirFs::Components
 		{
 			static std::map<boost::filesystem::path, std::weak_ptr<::ZipDirFs::Zip::Archive>>&
 				getArchivesByPath();
-			static std::map<const ::ZipDirFs::Zip::Base::Lib*,
-				std::weak_ptr<::ZipDirFs::Zip::Archive>>&
-				getArchivesByData();
 		};
 	} // namespace Fixtures
 } // namespace Test::ZipDirFs::Components

@@ -15,8 +15,6 @@ namespace Test::ZipDirFs::Zip
 		static ::ZipDirFs::Zip::Factory*& getInstance();
 		static std::map<boost::filesystem::path, std::weak_ptr<::ZipDirFs::Zip::Archive>>&
 			getArchivesByPath();
-		static std::map<const ::ZipDirFs::Zip::Base::Lib*, std::weak_ptr<::ZipDirFs::Zip::Archive>>&
-			getArchivesByData();
 	};
 
 	struct FactoryOverride

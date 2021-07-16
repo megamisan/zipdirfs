@@ -31,22 +31,28 @@ namespace ZipDirFs::Zip
 	} // namespace
 	Archive::Archive(Base::Lib* d) : data(d) {}
 	Archive::~Archive() { Lib::close(data); }
+	std::shared_ptr<Archive> Archive::create(Base::Lib* l)
+	{
+		auto p{std::shared_ptr<Archive>(new Archive(l))};
+		p->weak_ptr = p;
+		return p;
+	}
 	Archive::iterator Archive::begin()
 	{
 		const Base::Lib* const d = data;
 		populate();
-		return iterator(Factory::getInstance().get(d));
+		return iterator(weak_ptr.lock());
 	}
 	Archive::iterator Archive::begin(const std::string& p)
 	{
 		const Base::Lib* const d = data;
 		populate();
-		return iterator(Factory::getInstance().get(d), p);
+		return iterator(weak_ptr.lock(), p);
 	}
 	Archive::iterator Archive::end()
 	{
 		const Base::Lib* const d = data;
-		return iterator(Factory::getInstance().get(d), names.end());
+		return iterator(weak_ptr.lock(), names.end());
 	}
 	std::shared_ptr<Entry> Archive::open(const std::string& n)
 	{
@@ -67,7 +73,7 @@ namespace ZipDirFs::Zip
 			{
 				const Base::Lib* const d = data;
 				result = std::shared_ptr<Entry>(
-					new Entry(std::shared_ptr<Base::Lib>(Factory::getInstance().get(d), data), n,
+					new Entry(std::shared_ptr<Base::Lib>(weak_ptr.lock(), data), n,
 						std::get<1>(itI->second)));
 				entries.emplace(std::get<0>(itI->second), result);
 			}

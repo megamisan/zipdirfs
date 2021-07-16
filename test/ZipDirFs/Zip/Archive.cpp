@@ -49,17 +49,6 @@ namespace Test::ZipDirFs::Zip
 	{
 		reinterpret_cast<ArchiveAccess*>(&a)->populate();
 	}
-	void ArchiveAccess::registerArchive(const std::shared_ptr<Archive>& a)
-	{
-		FactoryAccess::getArchivesByData().insert({getData(*a), a});
-	}
-	void ArchiveAccess::cleanupArchive() { FactoryAccess::getArchivesByData().clear(); }
-	std::map<const BaseLib*, std::weak_ptr<Archive>>&
-		ArchiveAccess::FactoryAccess::getArchivesByData()
-	{
-		return Factory::archivesByData;
-	}
-
 	Archive::ArchiveIterator ArchiveIteratorAccess::create(const std::shared_ptr<Archive>& a,
 		const std::shared_ptr<std::string>& p, std::vector<std::string>::iterator&& it)
 	{
@@ -123,12 +112,10 @@ namespace Test::ZipDirFs::Zip
 	{
 	}
 
-	void ArchiveTest::TearDown() { ArchiveAccess::cleanupArchive(); }
 	std::shared_ptr<Archive> ArchiveTest::CreateArchive(Fixtures::Lib& lib)
 	{
 		std::shared_ptr<Archive> archive(
-			new Archive(reinterpret_cast<BaseLib*>(::Test::rand(UINT32_MAX))));
-		ArchiveAccess::registerArchive(archive);
+			Archive::create(reinterpret_cast<BaseLib*>(::Test::rand(UINT32_MAX))));
 		EXPECT_CALL(lib, close(_));
 		return archive;
 	}
@@ -164,7 +151,7 @@ namespace Test::ZipDirFs::Zip
 	std::shared_ptr<Archive> ArchiveIteratorTest::CreateArchive(Fixtures::Lib& lib, int times)
 	{
 		std::shared_ptr<Archive> archive(
-			new Archive(reinterpret_cast<BaseLib*>(::Test::rand(UINT32_MAX))));
+			Archive::create(reinterpret_cast<BaseLib*>(::Test::rand(UINT32_MAX))));
 		if (times)
 			EXPECT_CALL(lib, close(_)).Times(times);
 		return archive;
@@ -209,11 +196,11 @@ namespace Test::ZipDirFs::Zip
 		Fixtures::Lib lib;
 		EXPECT_CALL(lib, close(_));
 		BaseLib* const opened = reinterpret_cast<decltype(opened)>(::Test::rand(UINT32_MAX));
-		Archive archive(opened);
-		EXPECT_EQ(ArchiveAccess::getData(archive), opened);
-		EXPECT_TRUE(ArchiveAccess::getNames(archive).empty());
-		EXPECT_TRUE(ArchiveAccess::getNameAttributes(archive).empty());
-		EXPECT_TRUE(ArchiveAccess::getEntries(archive).empty());
+		auto archive = Archive::create(opened);
+		EXPECT_EQ(ArchiveAccess::getData(*archive), opened);
+		EXPECT_TRUE(ArchiveAccess::getNames(*archive).empty());
+		EXPECT_TRUE(ArchiveAccess::getNameAttributes(*archive).empty());
+		EXPECT_TRUE(ArchiveAccess::getEntries(*archive).empty());
 	}
 
 	TEST_F(ArchiveTest, Destroy)
@@ -221,7 +208,7 @@ namespace Test::ZipDirFs::Zip
 		Fixtures::Lib lib;
 		BaseLib* const opened = reinterpret_cast<decltype(opened)>(::Test::rand(UINT32_MAX));
 		EXPECT_CALL(lib, close(opened));
-		Archive archive(opened);
+		Archive::create(opened);
 	}
 
 	TEST_F(ArchiveTest, BeginNoPath)

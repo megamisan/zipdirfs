@@ -8,9 +8,9 @@ fontfamily=SansSerif
     <id>UMLClass</id>
     <coordinates>
       <x>20</x>
-      <y>320</y>
+      <y>300</y>
       <w>390</w>
-      <h>540</h>
+      <h>560</h>
     </coordinates>
     <panel_attributes>Archive
 --
@@ -18,12 +18,14 @@ fontfamily=SansSerif
 #entries_mutex: mutex
 #names: vector&lt;string&gt;
 #nameAttributes: map&lt;string, tuple&lt;uint64, bool&gt;&gt;
+#weak_ptr: weak_ptr&lt;Archive&gt;
 --
-+Archive(Base::Lib*)
+_+create(Base::Lib*): shared_ptr&lt;Archive&gt;_
 +begin(): iterator
 +begin(string&amp;): iterator
 +end(): iterator
 +open(string&amp;): shared_ptr&lt;Entry&gt;
+#Archive(Base::Lib*)
 #populate(): void
 --
 +alias iterator: ArchiveIterator
@@ -264,15 +266,13 @@ _+assign&lt;Func&gt;(function&lt;Func&gt;&amp;, Func*): void_</panel_attributes>
       <x>20</x>
       <y>40</y>
       <w>350</w>
-      <h>130</h>
+      <h>100</h>
     </coordinates>
     <panel_attributes>Factory
 --
 _#archivesByPath: map&lt;path, weak_ptr&lt;Archive&gt;&gt;_
-_#archivesByData: map&lt;Base::Lib*, std::weak_ptr&lt;Archive&gt;&gt;_
 --
 +get(path&amp;): shared_ptr&lt;Archive&gt;
-+get(Base::Lib*): shared_ptr&lt;Archive&gt;
 _+getInstance(): Factory&amp;_
 #Factory()
 group=1</panel_attributes>
@@ -309,7 +309,7 @@ string {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>210</x>
-      <y>250</y>
+      <y>230</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -321,13 +321,13 @@ time {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>140</x>
-      <y>160</y>
+      <y>130</y>
       <w>70</w>
-      <h>180</h>
+      <h>190</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;160.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -371,23 +371,23 @@ time {::std}</panel_attributes>
       <x>340</x>
       <y>210</y>
       <w>320</w>
-      <h>130</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;110.0;10.0;10.0;300.0;10.0</additional_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0;300.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>360</x>
-      <y>140</y>
-      <w>300</w>
-      <h>40</h>
+      <x>340</x>
+      <y>130</y>
+      <w>320</w>
+      <h>50</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;20.0;280.0;20.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0;300.0;30.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -405,7 +405,7 @@ time {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>20</x>
-      <y>200</y>
+      <y>170</y>
       <w>110</w>
       <h>40</h>
     </coordinates>
@@ -417,7 +417,7 @@ streamsize {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>20</x>
-      <y>250</y>
+      <y>230</y>
       <w>110</w>
       <h>40</h>
     </coordinates>
@@ -493,20 +493,20 @@ iterator {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>50</x>
-      <y>740</y>
+      <y>750</y>
       <w>360</w>
-      <h>100</h>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 &lt;&lt;bind&gt;&gt;
 &lt; Category -&gt; forward, _Tp -&gt; string, _Distance -&gt; size &gt;</panel_attributes>
-    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
       <x>210</x>
-      <y>200</y>
+      <y>170</y>
       <w>100</w>
       <h>40</h>
     </coordinates>

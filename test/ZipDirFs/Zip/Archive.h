@@ -23,16 +23,6 @@ namespace Test::ZipDirFs::Zip
 		static std::map<std::uint64_t, std::weak_ptr<::ZipDirFs::Zip::Entry>>& getEntries(
 			::ZipDirFs::Zip::Archive&);
 		static void invokePopulate(::ZipDirFs::Zip::Archive&);
-		static void registerArchive(const std::shared_ptr<Archive>&);
-		static void cleanupArchive();
-
-	protected:
-		struct FactoryAccess : public ::ZipDirFs::Zip::Factory
-		{
-			static std::map<const ::ZipDirFs::Zip::Base::Lib*,
-				std::weak_ptr<::ZipDirFs::Zip::Archive>>&
-				getArchivesByData();
-		};
 	};
 
 	struct ArchiveIteratorAccess : public ::ZipDirFs::Zip::Archive::ArchiveIterator
@@ -64,8 +54,6 @@ namespace Test::ZipDirFs::Zip
 
 	struct ArchiveTest : public ::testing::Test
 	{
-		void TearDown();
-
 	protected:
 		std::shared_ptr<::ZipDirFs::Zip::Archive> CreateArchive(Fixtures::Lib&);
 		std::tuple<std::string, std::uint64_t> MakeEntry(

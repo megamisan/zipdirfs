@@ -13,11 +13,5 @@ namespace Test::ZipDirFs::Components
 		{
 			return Factory::archivesByPath;
 		}
-		std::map<const ::ZipDirFs::Zip::Base::Lib*, std::weak_ptr<::ZipDirFs::Zip::Archive>>&
-			ZipFactoryAccess::getArchivesByData()
-		{
-			return Factory::archivesByData;
-		}
-
 	} // namespace Fixtures
 } // namespace Test::ZipDirFs::Components

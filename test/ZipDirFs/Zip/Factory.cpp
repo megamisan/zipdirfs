@@ -20,11 +20,6 @@ namespace Test::ZipDirFs::Zip
 	{
 		return Factory::archivesByPath;
 	}
-	std::map<const ::ZipDirFs::Zip::Base::Lib*, std::weak_ptr<Archive>>&
-		FactoryAccess::getArchivesByData()
-	{
-		return Factory::archivesByData;
-	}
 	FactoryOverride::FactoryOverride(Factory* temporary) : original(FactoryAccess::getInstance())
 	{
 		FactoryAccess::getInstance() = temporary;
@@ -34,7 +29,6 @@ namespace Test::ZipDirFs::Zip
 	void FactoryTest::TearDown()
 	{
 		FactoryAccess::getArchivesByPath().clear();
-		FactoryAccess::getArchivesByData().clear();
 	}
 
 	boost::filesystem::path FactoryTest::generatePath()
@@ -63,10 +57,7 @@ namespace Test::ZipDirFs::Zip
 		auto archive(Factory::getInstance().get(path));
 		ASSERT_NE(FactoryAccess::getArchivesByPath().find(path),
 			FactoryAccess::getArchivesByPath().end());
-		ASSERT_NE(FactoryAccess::getArchivesByData().find(opened),
-			FactoryAccess::getArchivesByData().end());
 		EXPECT_EQ(FactoryAccess::getArchivesByPath().find(path)->second.lock(), archive);
-		EXPECT_EQ(FactoryAccess::getArchivesByData().find(opened)->second.lock(), archive);
 	}
 
 	TEST_F(FactoryTest, GetByPathUse)
@@ -97,30 +88,5 @@ namespace Test::ZipDirFs::Zip
 			FactoryAccess::getArchivesByPath().end());
 		EXPECT_NE(FactoryAccess::getArchivesByPath().find(path)->second.lock().get(), archivePtr);
 		EXPECT_EQ(FactoryAccess::getArchivesByPath().find(path)->second.lock(), archive);
-	}
-
-	TEST_F(FactoryTest, GetByDataAbsent)
-	{
-		BaseLib* const searched = reinterpret_cast<decltype(searched)>(::Test::rand(UINT32_MAX));
-		EXPECT_EQ(Factory::getInstance().get(searched), nullptr);
-	}
-
-	TEST_F(FactoryTest, GetByDataUse)
-	{
-		BaseLib* const searched = reinterpret_cast<decltype(searched)>(::Test::rand(UINT32_MAX));
-		std::shared_ptr<Archive> archive(
-			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
-		FactoryAccess::getArchivesByData().insert({searched, archive});
-		EXPECT_EQ(Factory::getInstance().get(searched), archive);
-	}
-
-	TEST_F(FactoryTest, GetByDataExpired)
-	{
-		BaseLib* const searched = reinterpret_cast<decltype(searched)>(::Test::rand(UINT32_MAX));
-		std::shared_ptr<Archive> archive(
-			reinterpret_cast<Archive*>(::Test::rand(UINT32_MAX)), [](Archive*) {});
-		FactoryAccess::getArchivesByData().insert({searched, archive});
-		archive = nullptr;
-		EXPECT_EQ(Factory::getInstance().get(searched), nullptr);
 	}
 } // namespace Test::ZipDirFs::Zip

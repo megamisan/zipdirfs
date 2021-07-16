@@ -30,7 +30,7 @@ namespace ZipDirFs::Zip
 	public:
 		class ArchiveIterator;
 		typedef ArchiveIterator iterator;
-		Archive(Base::Lib*);
+		static std::shared_ptr<Archive> create(Base::Lib*);
 		~Archive();
 		iterator begin();
 		iterator begin(const std::string&);
@@ -62,7 +62,9 @@ namespace ZipDirFs::Zip
 		};
 
 	protected:
+		Archive(Base::Lib*);
 		void populate();
+		std::weak_ptr<Archive> weak_ptr;
 		std::mutex names_mutex;
 		std::mutex entries_mutex;
 		Base::Lib* const data;
