@@ -5,6 +5,7 @@
 #include "ZipDirFs/Zip/Exception.h"
 #include <boost/filesystem.hpp>
 #include <fcntl.h>
+#include <mutex>
 #include <zip.h>
 
 #define ZIP_STAT_EXPECTED_FIELDS (ZIP_STAT_NAME | ZIP_STAT_INDEX | ZIP_STAT_SIZE | ZIP_STAT_MTIME)
@@ -26,7 +27,7 @@ namespace ZipDirFs::Zip
 			static void fclose(Base::Lib::File* const);
 		};
 
-		struct LibData : public Base::Lib
+		struct LibData : public Base::Lib, std::mutex
 		{
 			LibData(::zip_t*);
 			::zip_t* const zip;
@@ -34,18 +35,22 @@ namespace ZipDirFs::Zip
 
 		struct FileData : public Base::Lib::File
 		{
-			FileData(::zip_file_t*);
+			FileData(::zip_file_t*, std::mutex&);
 			::zip_file_t* const file;
+			std::mutex& mutex;
 		};
 
-		struct ZipError : public zip_error_t
+		struct ZipError
 		{
-			ZipError(::zip_uint64_t);
+			ZipError(std::int32_t);
 			ZipError(::zip*);
-			~ZipError();
+			ZipError(::zip_file*);
+			operator std::string() const { return message; }
 
 		protected:
-			const ::zip_t* source;
+			int zipError;
+			int systemError;
+			std::string message;
 		};
 
 		struct Version
@@ -58,26 +63,42 @@ namespace ZipDirFs::Zip
 		};
 
 		bool haveFdBug = Version(::zip_libzip_version()) < Version("1.5.2");
+
+		std::ostream& operator<<(std::ostream& os, const ZipError& err)
+		{
+			os << (std::string)err;
+			return os;
+		}
 	} // namespace
+	typedef std::unique_lock<std::mutex> lock_type;
 
 	LibData::LibData(::zip* const z) : zip(z) {}
-	FileData::FileData(::zip_file_t* f) : file(f) {}
+	FileData::FileData(::zip_file_t* f, std::mutex& m) : file(f), mutex(m) {}
 
-	ZipError::ZipError(::zip_uint64_t error) : source(nullptr)
+	ZipError::ZipError(std::int32_t error)
 	{
-		::zip_error_init_with_code(this, error);
+		zip_error_t err;
+		::zip_error_init_with_code(&err, error);
+		zipError = ::zip_error_code_zip(&err);
+		systemError = ::zip_error_code_system(&err);
+		message = ::zip_error_strerror(&err);
+		::zip_error_fini(&err);
 	}
-	ZipError::ZipError(::zip_t* s) : zip_error_t(*::zip_get_error(s)), source(s) {}
-	ZipError::~ZipError()
+	ZipError::ZipError(::zip_t* s)
 	{
-		if (source != nullptr)
-		{
-			::zip_error_fini(this);
-		}
-		else
-		{
-			::zip_error_clear(const_cast<::zip_t*>(source));
-		}
+		auto err = ::zip_get_error(s);
+		zipError = ::zip_error_code_zip(err);
+		systemError = ::zip_error_code_system(err);
+		message = ::zip_error_strerror(err);
+		::zip_error_clear(s);
+	}
+	ZipError::ZipError(::zip_file_t* s)
+	{
+		auto err = ::zip_file_get_error(s);
+		zipError = ::zip_error_code_zip(err);
+		systemError = ::zip_error_code_system(err);
+		message = ::zip_error_strerror(err);
+		::zip_file_error_clear(s);
 	}
 
 	Version::Version(const char* version) : maj(0), min(0), rev(0)
@@ -137,14 +158,12 @@ namespace ZipDirFs::Zip
 			handle = 0;
 			if (::boost::filesystem::file_size(p) == 0)
 			{
-				ZipError err(ZIP_ER_NOZIP);
-				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
+				throw Exception("ZipFile::Zip::Lib::open", ZipError(ZIP_ER_NOZIP));
 			}
 			zipFile = ::zip_open(p.c_str(), ZIP_RDONLY, &error);
 			if (zipFile == nullptr)
 			{
-				ZipError err(error);
-				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
+				throw Exception("ZipFile::Zip::Lib::open", ZipError(error));
 			}
 		}
 		else
@@ -154,7 +173,7 @@ namespace ZipDirFs::Zip
 			{
 				ZipError err(error);
 				::close(handle);
-				throw Exception("ZipFile::Zip::Lib::open", ::zip_error_strerror(&err));
+				throw Exception("ZipFile::Zip::Lib::open", err);
 			}
 		}
 		return new LibData{zipFile};
@@ -169,17 +188,18 @@ namespace ZipDirFs::Zip
 	std::uint64_t LibWrapper::get_num_entries(Base::Lib* const l) noexcept
 	{
 		LibData* lw = reinterpret_cast<decltype(lw)>(l);
+		lock_type lock(*lw);
 		return zip_get_num_entries(lw->zip, 0);
 	}
 	Base::Stat LibWrapper::stat(Base::Lib* const l, const std::string& n)
 	{
 		LibData* lw = reinterpret_cast<decltype(lw)>(l);
+		lock_type lock(*lw);
 		::zip_stat_t stats;
 		::zip_stat_init(&stats);
 		if (::zip_stat(lw->zip, n.c_str(), 0, &stats) != 0)
 		{
-			ZipError err(lw->zip);
-			throw Exception("ZipFile::Zip::Lib::stat", ::zip_error_strerror(&err));
+			throw Exception("ZipFile::Zip::Lib::stat", ZipError(lw->zip));
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
@@ -191,12 +211,12 @@ namespace ZipDirFs::Zip
 	Base::Stat LibWrapper::stat_index(Base::Lib* const l, const uint64_t i)
 	{
 		LibData* lw = reinterpret_cast<decltype(lw)>(l);
+		lock_type lock(*lw);
 		::zip_stat_t stats;
 		::zip_stat_init(&stats);
 		if (::zip_stat_index(lw->zip, i, 0, &stats) != 0)
 		{
-			ZipError err(lw->zip);
-			throw Exception("ZipFile::Zip::Lib::stat_index", ::zip_error_strerror(&err));
+			throw Exception("ZipFile::Zip::Lib::stat_index", ZipError(lw->zip));
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
@@ -208,31 +228,33 @@ namespace ZipDirFs::Zip
 	std::string LibWrapper::get_name(Base::Lib* const l, std::uint64_t i)
 	{
 		LibData* lw = reinterpret_cast<decltype(lw)>(l);
+		lock_type lock(*lw);
 		const char* name = ::zip_get_name(lw->zip, i, 0);
 		if (name == nullptr)
 		{
-			ZipError err(lw->zip);
-			throw Exception("ZipFile::Zip::Lib::get_name", ::zip_error_strerror(&err));
+			throw Exception("ZipFile::Zip::Lib::get_name", ZipError(lw->zip));
 		}
 		return name;
 	}
 	Base::Lib::File* LibWrapper::fopen_index(Base::Lib* const l, std::uint64_t i)
 	{
 		LibData* lw = reinterpret_cast<decltype(lw)>(l);
+		lock_type lock(*lw);
 		::zip_file_t* file = ::zip_fopen_index(lw->zip, i, 0);
 		if (file == nullptr)
 		{
-			ZipError err(lw->zip);
-			throw Exception("ZipFile::Zip::Lib::fopen_index", ::zip_error_strerror(&err));
+			throw Exception("ZipFile::Zip::Lib::fopen_index", ZipError(lw->zip));
 		}
-		return new FileData{file};
+		return new FileData{file, *lw};
 	}
 	std::uint64_t LibWrapper::fread(Base::Lib::File* const f, void* buf, std::uint64_t len)
 	{
 		FileData* lf = reinterpret_cast<decltype(lf)>(f);
+		lock_type lock(lf->mutex);
 		auto read = ::zip_fread(lf->file, buf, len);
 		if (read == -1UL)
 		{
+			ZipError(lf->file);
 			std::__throw_ios_failure("Failure reading file.");
 		}
 		return read;
@@ -240,11 +262,18 @@ namespace ZipDirFs::Zip
 	std::int64_t LibWrapper::ftell(Base::Lib::File* const f)
 	{
 		FileData* lf = reinterpret_cast<decltype(lf)>(f);
-		return ::zip_ftell(lf->file);
+		lock_type lock(lf->mutex);
+		auto pos = ::zip_ftell(lf->file);
+		if (pos == -1UL)
+		{
+			ZipError(lf->file);
+		}
+		return pos;
 	}
 	void LibWrapper::fclose(Base::Lib::File* const f)
 	{
 		FileData* lf = reinterpret_cast<decltype(lf)>(f);
+		lock_type lock(lf->mutex);
 		::zip_fclose(lf->file);
 		delete lf;
 	}
