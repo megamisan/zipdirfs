@@ -1,51 +1,46 @@
 /*
- * Copyright © 2012 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
- *
- * This file is part of zipdirfs.
- *
- * zipdirfs is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * zipdirfs is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with zipdirfs.  If not, see <http://www.gnu.org/licenses/>.
- *
- * $Id$
+ * Copyright © 2012-2021 Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
  */
 #include "Main.h"
 #include "Options.h"
-#include "ZipDirFs/entry_definitions.h"
+#include "StateReporter.h"
+#include "ZipDirFs/Fuse/EntryProxy.h"
+#include "ZipDirFs/Fuse/NativeDirectory.h"
 #if HAVE_CONFIG_H
-#include "config.h"
+#	include "config.h"
 #endif
-#include <fusekit/daemon.h>
-#include <vector>
-#include <iostream>
 #include <algorithm>
-#include <string.h>
+#include <cstring>
+#include <fusekit/daemon.h>
+#include <iostream>
+#include <vector>
 
-typedef fusekit::daemon<ZipDirFs::system_directory> daemon_type;
+typedef fusekit::daemon<ZipDirFs::Fuse::EntryProxy> daemon_type;
 
-Main application;
+class CommandArguments
+{
+	const std::vector<std::string> arguments;
+
+public:
+	const int argc() const;
+	const std::vector<const char*> argv() const;
+	CommandArguments(const Options&);
+	~CommandArguments();
+};
 
 std::string getProgramName(const std::string& self);
-void showUsage(Options&);
-void showVersion(Options&);
+void showUsage(const Options&);
+void showVersion(const Options&);
 char** toArgv(std::vector<std::string>& arguments);
 void freeArgv(char** argv);
 
 int main(const int argc, const char** argv)
 {
+	Main application(argc, argv);
 	try
 	{
-		application.Init(argc, argv);
-		application.Run();
+		application.init();
+		application.run();
 	}
 	catch (Main::Result res)
 	{
@@ -54,22 +49,21 @@ int main(const int argc, const char** argv)
 	return 0;
 }
 
-void Main::Run()
+void Main::run()
 {
-	this->fuseOptions.push_back("-o");
-	this->fuseOptions.push_back(std::string("subtype=") + getProgramName(this->fuseOptions.front()));
-	this->fuseOptions.push_back("-o");
-	this->fuseOptions.push_back(std::string("fsname=") + this->sourcePath);
-	daemon_type &daemon = daemon_type::instance();
-	daemon.root().setRealPath(this->sourcePath.c_str());
-	char** argv = toArgv(this->fuseOptions);
-	daemon.run(this->fuseOptions.size(), argv);
-	freeArgv(argv);
+	options.setOption("subtype", getProgramName(getProgramName(options.self())));
+	options.setOption("fsname", options.sourcePath());
+	daemon_type& daemon = daemon_type::instance();
+	daemon.root() =
+		std::unique_ptr<fusekit::entry>(new ZipDirFs::Fuse::NativeDirectory(options.sourcePath()));
+	reporter.start(daemon.root(), options);
+	CommandArguments arguments(options);
+	daemon.run(arguments.argc(), (char**)&(arguments.argv()[0]), false);
+	reporter.stop();
 }
 
-void Main::Init(const int argc, const char* argv[])
+void Main::init()
 {
-	Options options(argc, argv);
 	options.addHandler("h", showUsage);
 	options.addHandler("help", showUsage);
 	options.addHandler("V", showVersion);
@@ -78,77 +72,66 @@ void Main::Init(const int argc, const char* argv[])
 
 	if (options.sourcePath().empty() || options.mountPoint().empty())
 	{
-		const char *message = (options.mountPoint().empty()) ? ": missing originalpath argument" : ": missing mountpoint argument"; // Argument order is originalpath then mountpoint. Parse order is reversed. See Options::parseArguments();
+		const char* message = (options.mountPoint().empty()) ?
+			  ": missing originalpath argument" :
+			  ": missing mountpoint argument"; // Argument order is originalpath then mountpoint.
+											 // Parse order is reversed. See
+											 // Options::parseArguments();
 		std::cerr << getProgramName(options.self()) << message << std::endl;
 		throw Result(-1);
 	}
-
-	this->sourcePath = options.sourcePath();
-
-	this->fuseOptions.push_back(options.self());
-	this->fuseOptions.push_back(options.mountPoint());
-
-	Options::stringMap mountOptions(options.mountOptions());
-	mountOptions["ro"] = "";
-	mountOptions["nosuid"] = "";
-	mountOptions["noexec"] = "";
-	mountOptions["noatime"] = "";
-	std::string mountArgument("-");
-	mountArgument.reserve(2 + (mountOptions.size() << 3));
-	for (Options::stringMap::iterator mit = mountOptions.begin(); mit != mountOptions.end(); mit++)
-	{
-		mountArgument.append(",");
-		mountArgument.append(mit->first);
-		if (!mit->second.empty())
-		{
-			mountArgument.append("=");
-			mountArgument.append(mit->second);
-		}
-	}
-	mountArgument[1] = 'o';
-	this->fuseOptions.push_back(mountArgument);
-
-	for (Options::stringVector::const_iterator it = options.fuseArguments().begin(); it != options.fuseArguments().end(); it++)
-	{
-		this->fuseOptions.push_back("-o");
-		this->fuseOptions.push_back(*it);
-	}
-
-	for (Options::stringVector::const_iterator it = options.unknownArguments().begin(); it != options.unknownArguments().end(); it++)
-	{
-		this->fuseOptions.push_back(*it);
-	}
+	options.setOption("ro", "");
+	options.setOption("nosuid", "");
+	options.setOption("noexec", "");
+	options.setOption("noatime", "");
 }
 
-Main::Main()
-{
-}
+Main::Main(const int argc, const char** argv) : options(argc, argv) {}
 
-Main::~Main()
-{
-}
+Main::~Main() {}
 
 std::string getProgramName(const std::string& self)
 {
 	size_t pos = self.rfind('/');
-	if (pos == std::string::npos) pos = 0;
-	else pos++;
+	if (pos == std::string::npos)
+	{
+		pos = 0;
+	}
+	else
+	{
+		pos++;
+	}
 	return self.substr(pos);
 }
 
-void showUsage(Options& options)
+void showUsage(const Options& options)
 {
-	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]" << std::endl;
-	const char * argv[2] = { options.self().c_str(), "-h" };
-	daemon_type::instance().run(2, const_cast<char **>(argv));
+	std::cerr << "real usage: " << options.self() << " originalpath mountpoint [options]"
+			  << std::endl;
+	const char* argv[2] = {options.self().c_str(), "-h"};
+	daemon_type::instance().run(2, const_cast<char**>(argv));
 	std::cerr << std::endl
-		<< getProgramName(options.self())
-		<< " options:" << std::endl
-		<< "    originalpath           the path to mount from and filter for zip files" << std::endl;
+			  << getProgramName(options.self()) << " options:" << std::endl
+			  << "    originalpath           the path to mount from and filter for zip files"
+			  << std::endl
+			  << "    -o report[=list]       activate regular report if foreground" << std::endl
+			  << "                           list can be \"all\" or any number of the following "
+				 "separated by semi-colon"
+			  << std::endl
+			  << "                           * actions: Display requests actions and paths"
+			  << std::endl
+			  << "                           * locks: Display requests locks state" << std::endl
+			  << "                           * ended: Display ended requests" << std::endl
+			  << "                           * files: Display opened files and archives" << std::endl
+			  << "    -o log=filepath        activate logging into file designed as filepath"
+			  << std::endl
+			  << "    -o logcat=categories   logging categories for filtering messages "
+				 "separated by semi-colon"
+			  << std::endl;
 	throw Main::Result(0);
 }
 
-void showVersion(Options& options)
+void showVersion(const Options& options)
 {
 #ifdef HAVE_CONFIG_H
 	std::cerr << PACKAGE_NAME << " version: " << PACKAGE_VERSION << std::endl;
@@ -156,38 +139,28 @@ void showVersion(Options& options)
 #else
 	std::cerr << options.self() << " debug version." << std::endl;
 #endif
-	const char * argv[2] = { options.self().c_str(), "-V" };
-	daemon_type::instance().run(2, const_cast<char **>(argv));
+	const char* argv[2] = {options.self().c_str(), "-V"};
+	daemon_type::instance().run(2, const_cast<char**>(argv));
 	throw Main::Result(0);
 }
 
-char* toArgv_convert(std::string value)
+CommandArguments::CommandArguments(const Options& options) :
+	arguments(std::move(options.makeArguments()))
 {
-	char* newValue = new char[value.size() + 1];
-	newValue[value.size()] = 0;
-	strncpy(newValue, value.c_str(), value.size());
-	return newValue;
 }
 
-char** toArgv(std::vector<std::string>& arguments)
+const int CommandArguments::argc() const
 {
-	char** argv = new char*[arguments.size() + 1];
-	char** argvIt = argv;
-	for (std::vector<std::string>::iterator argIt = arguments.begin(); argIt != arguments.end(); argIt++, argvIt++)
-	{
-		*argvIt = toArgv_convert(*argIt);
-	}
-	*argvIt = NULL;
+	return arguments.size();
+}
+
+const std::vector<const char*> CommandArguments::argv() const
+{
+	std::vector<const char*> argv;
+	std::transform(arguments.begin(), arguments.end(),
+		std::back_insert_iterator<decltype(argv)>(argv),
+		[](const std::string& s) { return s.c_str(); });
 	return argv;
 }
 
-void freeArgv(char** argv)
-{
-	char** argvIt = argv;
-	while (*argvIt != NULL)
-	{
-		delete[] *argvIt;
-		argvIt++;
-	}
-	delete[] argv;
-}
+CommandArguments::~CommandArguments() {}

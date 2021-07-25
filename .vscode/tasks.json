@@ -1,0 +1,155 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build",
+            "command": "/usr/bin/make",
+            "args": [
+                "CFLAGS=-g -O0",
+                "CXXFLAGS=-g -O0",
+                "CXXFLAGS_COVERAGE=--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors",
+                "LDADD_COVERAGE=-lgcov"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Unit tests",
+            "command": "/usr/bin/make",
+            "args": [
+                "CFLAGS=-g -O0",
+                "CXXFLAGS=-g -O0",
+                "CXXFLAGS_COVERAGE=--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors",
+                "LDADD_COVERAGE=-lgcov",
+                "gtest",
+                "gtest_helper"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceRoot}"
+                ],
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Unit tests coverage",
+            "command": "/usr/bin/make",
+            "args": [
+                "CFLAGS=-g -O0",
+                "CXXFLAGS=-g -O0",
+                "CXXFLAGS_COVERAGE=--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors",
+                "LDADD_COVERAGE=-lgcov",
+                "gtest-coverage"
+            ],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Clean coverage",
+            "command": "/usr/bin/make",
+            "args": [
+                "clean-coverage"
+            ],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Configure",
+            "command": "./configure",
+            "args": [
+                "--prefix=/usr"
+            ],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        }
+    ]
+}

@@ -2,17 +2,57 @@
 
 Linux FUSE exposing zip file content under a specified source path.
 
+When mounting a file system with this program, you will find in your mount point:
+
+* Same permissions and owners as in the source (TODO);
+* Access too all existing extended attributes (TODO);
+* System folders shown as-is;
+* Zip file as directory, keeping the file extension;
+* Zip content in the zip file directory;
+* Other files and nodes as symbolink link to their original location;
+
+The mounted file system is always read-only.
+
 ## Requirements
 
 Following development packages are required:
+
 * libfuse-dev
-* libfusekit-dev (https://github.com/multicast/fusekit/)
+* libfusekit-dev (<https://github.com/multicast/fusekit/>)
 * libzip-dev
 * pkg-config
 
 ## Installation
 
+The package use autotools for building.
+
+Standard procedure from distributed package:
+
+```shell script
+./configure
+make
+sudo make install
+```
+
+When compiling from source, run `autoreconf --install` first.
+
 ## Debian packages
+
+Package building has been tested under debian stretch.
+
+To build the package, run `dpkg-buildpackage -B`.
+
+## Testing
+
+Test are written using [Google Test Framework](https://github.com/google/googletest).
+
+Test are to be run with version 1.8.0 or later of the framework.
+Tentative Debian or Ubuntu packages:
+
+* googletest
+* google-mock
+
+To active tests in build, copy `/usr/src/googletest` to project dir and add `--with-tests` to `./configure`.
 
 ## Development environment
 
@@ -35,3 +75,44 @@ To build the image and convert it to a distro:
 1. Launch first install script and follow instructions: `/root/firstrun.sh`
 1. Stop the distro to take new configuration: `wsl --terminate zipdirfs`
 1. Open the distro from Visual Studio Code
+
+## Coverage
+
+For coverage visualisation, these make variables are needed:
+
+* `CXXFLAGS_COVERAGE="--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors"`
+* `LDADD_COVERAGE="-lgcov"`
+* `CFLAGS="-g -O0"`
+* `CXXFLAGS="-g -O0"`
+
+To build unit tests with required flags:
+
+```shell
+make CXXFLAGS_COVERAGE="--coverage -fno-inline -fno-inline-small-functions -fno-default-inline -fno-elide-constructors" LDADD_COVERAGE="-lgcov" CFLAGS="-g -O0" CXXFLAGS="-g -O0" gtest
+```
+
+Also, this package is needed to get HTML visualisations:
+
+* lcov
+
+The commands, after running test binary `gtest` are:
+
+```shell
+lcov --no-external --capture --initial --directory . \
+  --output-file coverage/zipdirfs_base.info --config-file=lcovrc ; \
+lcov --no-external --capture --directory . \
+  --output-file coverage/zipdirfs_gtest.info --config-file=lcovrc ; \
+lcov --add-tracefile coverage/zipdirfs_base.info \
+  --add-tracefile coverage/zipdirfs_gtest.info \
+  --output-file coverage/zipdirfs_gtest_total.info --config-file=lcovrc ; \
+lcov --remove coverage/zipdirfs_gtest_total.info \
+  '/usr/include/*' '/usr/lib/*' "$(pwd)"'/test/*' "$(pwd)"'/googletest/*' \
+  -o coverage/zipdirfs_gtest_filtered.info --config-file=lcovrc ; \
+rm -rf coverage/output/ ; \
+mkdir coverage/output/ ; \
+genhtml --config-file=lcovrc --prefix $(pwd) --ignore-errors source \
+  coverage/zipdirfs_gtest_filtered.info \
+--legend --title "gtest coverage" --output-directory=coverage/output/
+```
+
+A make target has been created to facilitate generating the result: `gtest-coverage`.

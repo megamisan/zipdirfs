@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <help_text>fontsize=13
+fontfamily=SansSerif
+</help_text>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>300</y>
+      <w>390</w>
+      <h>560</h>
+    </coordinates>
+    <panel_attributes>Archive
+--
+#names_mutex: mutex
+#entries_mutex: mutex
+#names: vector&lt;string&gt;
+#nameAttributes: map&lt;string, tuple&lt;uint64, bool&gt;&gt;
+#weak_ptr: weak_ptr&lt;Archive&gt;
+--
+_+create(Base::Lib*): shared_ptr&lt;Archive&gt;_
++begin(): iterator
++begin(string&amp;): iterator
++end(): iterator
++open(string&amp;): shared_ptr&lt;Entry&gt;
+#Archive(Base::Lib*)
+#populate(): void
+--
++alias iterator: ArchiveIterator
+--
+{innerclass
++ArchiveIterator
+--
+#prefix: shared_ptr&lt;string&gt;
+#current: vector&lt;string&gt;::iterator
+#filename: string
+#archive: shared_ptr&lt;Archive&gt;
+--
++ArchiveIterator(ArchiveIterator&amp;)
++operator=(ArchiveIterator&amp;): ArchiveIterator&amp;
++operator*(): reference
++operator++(): ArchiveIterator&amp;
++operator==(ArchiveIterator&amp;): bool
++swap(ArchiveIterator&amp;)
+#ArchiveIterator(shared_ptr&lt;Archive&gt;&amp;)
+#ArchiveIterator(shared_ptr&lt;Archive&gt;&amp;, vector&lt;string&gt;::iterator)
+#ArchiveIterator(shared_ptr&lt;Archive&gt;&amp;, string&amp;)
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>450</x>
+      <y>290</y>
+      <w>240</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>Stat {Base}
+--
+#index: uint64
+#name: string
+#size: uint64
+#changed: time
+#compressed: bool
+--
++Stat()
++Stat(uint64, string&amp;, uint64, time, bool)
++getIndex(): uint64
++getName(): string&amp;
++getSize(): uint64
++getChanged(): time
++getCompressed(): bool
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>730</x>
+      <y>720</y>
+      <w>210</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>Content {Base}
+--
++buffer: char*
++lastWrite: streamsize
++length: streamsize
+#global: mutex
+#released: condition_variable_any
+#readersActive: uint64
+#writersWainting: uint64
+--
++Content()
++readLock(): lock
++writeLock(): lock
+--
+{innerclass
+lock
+--
+#writer: bool
+--
++lock(Content*, bool)
++~lock()
++makeWriter(): void
++makeReader(): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>740</x>
+      <y>330</y>
+      <w>160</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Lib {Base}
+--
+--
+#Lib()
+--
+{innerclass
++File
+--
+--
+#File()
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>960</w>
+      <h>1050</h>
+    </coordinates>
+    <panel_attributes>ZipDirFs::Zip
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>790</x>
+      <y>410</y>
+      <w>60</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+m2=*
+r2=+data
+</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;310.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>290</x>
+      <y>890</y>
+      <w>240</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Entry
+--
+#name: string
+#flags: bitset&lt;2&gt;
+--
++Entry(shared_ptr&lt;Lib&gt;&amp;, string&amp;, bool)
++stat(): Stat&amp;
++isDir(): bool
++read(void*, size, off): int64
+#open(): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>520</x>
+      <y>420</y>
+      <w>270</w>
+      <h>520</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+m2=*
+r2=#data</panel_attributes>
+    <additional_attributes>240.0;10.0;240.0;280.0;190.0;280.0;190.0;440.0;120.0;440.0;120.0;490.0;10.0;490.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>520</x>
+      <y>980</y>
+      <w>230</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-&gt;&gt;&gt;&gt;&gt;
+m1=1
+m2=1
+r2=#content</panel_attributes>
+    <additional_attributes>210.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>440</x>
+      <y>500</y>
+      <w>100</w>
+      <h>410</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-&gt;
+m1=1
+m2=1
+r1=#cachedStat</panel_attributes>
+    <additional_attributes>10.0;390.0;10.0;30.0;30.0;30.0;30.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>850</y>
+      <w>150</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+m1=1
+m2=*
+r1=#entries\n{weak_ptr inmap \nindexed by uint64}</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0;130.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>640</x>
+      <y>40</y>
+      <w>300</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>_Lib_
+--
+_+open: function&lt;Lib*(path&amp;)&gt;_
+_+close: function&lt;void(Lib*)&gt;_
+_+get_num_entries: function&lt;uint64(Lib*)&gt;_
+_+stat: function&lt;Base::Stat(Lib*, string&amp;)&gt;_
+_+stat_index: function&lt;Base::Stat(Lib*, uint64)&gt;_
+_+get_name: function&lt;string(Lib*, uint64)&gt;_
+_+fopen_index: function&lt;File*(Base::Lib*, uint64)&gt;_
+_+fread: function&lt;uint64(File*, void*, uint64)&gt;_
+_+ftell: function&lt;int64(File*)&gt;_
+_+fclose: function&lt;void(File*)&gt;_
+--
+_+reset(): void_
+_+assign&lt;Func&gt;(function&lt;Func&gt;&amp;, Func*): void_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>40</y>
+      <w>350</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Factory
+--
+_#archivesByPath: map&lt;path, weak_ptr&lt;Archive&gt;&gt;_
+--
++get(path&amp;): shared_ptr&lt;Archive&gt;
+_+getInstance(): Factory&amp;_
+#Factory()
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>360</x>
+      <y>40</y>
+      <w>100</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+r2=_#instance_
+m1=1
+m2=1
+group=1</panel_attributes>
+    <additional_attributes>10.0;70.0;60.0;70.0;60.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>450</x>
+      <y>40</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+string {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>210</x>
+      <y>230</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+time {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>140</x>
+      <y>130</y>
+      <w>70</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>780</x>
+      <y>250</y>
+      <w>70</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>860</x>
+      <y>250</y>
+      <w>70</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>680</x>
+      <y>250</y>
+      <w>70</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;60.0;50.0;60.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>200</y>
+      <w>320</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0;300.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>340</x>
+      <y>130</y>
+      <w>320</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0;300.0;30.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>220</y>
+      <w>240</w>
+      <h>690</h>
+    </coordinates>
+    <panel_attributes>lt=.&gt;
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;670.0;10.0;40.0;170.0;40.0;170.0;10.0;220.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>170</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+streamsize {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>230</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+mutex {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>910</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+shared_ptr {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>700</y>
+      <w>110</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+weak_ptr {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>600</x>
+      <y>700</y>
+      <w>90</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+vector {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>610</x>
+      <y>620</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=K, V
+map {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>810</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>template=Category, _Tp, _Distance
+iterator {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>50</x>
+      <y>750</y>
+      <w>360</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+&lt;&lt;bind&gt;&gt;
+&lt; Category -&gt; forward, _Tp -&gt; string, _Distance -&gt; size &gt;</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>210</x>
+      <y>170</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+size {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>620</y>
+      <w>120</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+unique_lock {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>990</y>
+      <w>180</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+condition_variable_any {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>540</y>
+      <w>150</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+basic_streambuf {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>450</x>
+      <y>90</y>
+      <w>150</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+path {::boost::filesystem}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>640</x>
+      <y>540</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=i: int
+bitset {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>570</x>
+      <y>780</y>
+      <w>100</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+function {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>780</y>
+      <w>80</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+template=T
+tuple {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>870</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=0..1
+r2=#content</panel_attributes>
+    <additional_attributes>70.0;10.0;30.0;10.0;30.0;60.0;75.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>560</x>
+      <y>930</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;datatype&gt;&gt;
+off {::std}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>960</w>
+      <h>1050</h>
+    </coordinates>
+    <panel_attributes>ZipDirFs::Zip
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

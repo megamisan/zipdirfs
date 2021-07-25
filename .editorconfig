@@ -1,0 +1,16 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+tab_width = 4
+
+[*.{h,c,cpp}]
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+curly_bracket_next_line = true
+spaces_around_operators = true
+spaces_around_brackets = outside
+indent_brace_style = Allman
+c_include_path = include/
