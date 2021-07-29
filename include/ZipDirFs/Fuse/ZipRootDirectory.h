@@ -24,7 +24,8 @@ namespace ZipDirFs::Fuse
 	struct ZipRootDirectory : public basic_directory<DefaultDirectoryNode, NativeTimePolicy,
 								  Utilities::DefaultDirectoryPermission, no_xattr>
 	{
-		ZipRootDirectory(const boost::filesystem::path& path);
+		ZipRootDirectory(const boost::filesystem::path&);
+		ZipRootDirectory(const boost::filesystem::path&, const std::string&);
 		~ZipRootDirectory();
 		std::time_t getChangeTime() const;
 		std::time_t getModificationTime() const;
@@ -35,6 +36,7 @@ namespace ZipDirFs::Fuse
 
 	private:
 		const boost::filesystem::path path;
+		const std::string folder;
 		std::shared_ptr<::ZipDirFs::Components::ChangedProxy> _changed;
 		EntryGenerator::factory_ptr _factory;
 		EntryGenerator::proxy_ptr _proxyBase;

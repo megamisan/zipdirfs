@@ -10,7 +10,7 @@ fontfamily=SansSerif
       <x>20</x>
       <y>300</y>
       <w>390</w>
-      <h>560</h>
+      <h>500</h>
     </coordinates>
     <panel_attributes>Archive
 --
@@ -19,12 +19,14 @@ fontfamily=SansSerif
 #names: vector&lt;string&gt;
 #nameAttributes: map&lt;string, tuple&lt;uint64, bool&gt;&gt;
 #weak_ptr: weak_ptr&lt;Archive&gt;
+#common: string
 --
 _+create(Base::Lib*): shared_ptr&lt;Archive&gt;_
 +begin(): iterator
 +begin(string&amp;): iterator
 +end(): iterator
 +open(string&amp;): shared_ptr&lt;Entry&gt;
++commonBase(): string
 #Archive(Base::Lib*)
 #populate(): void
 --
@@ -132,19 +134,6 @@ innerclass}</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLPackage</id>
-    <coordinates>
-      <x>0</x>
-      <y>0</y>
-      <w>960</w>
-      <h>1050</h>
-    </coordinates>
-    <panel_attributes>ZipDirFs::Zip
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>Relation</id>
     <coordinates>
       <x>790</x>
@@ -225,16 +214,16 @@ r1=#cachedStat</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>160</x>
-      <y>850</y>
-      <w>150</w>
-      <h>140</h>
+      <x>240</x>
+      <y>790</y>
+      <w>130</w>
+      <h>200</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
 m1=1
 m2=*
 r1=#entries\n{weak_ptr inmap \nindexed by uint64}</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;110.0;130.0;110.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;170.0;50.0;170.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -482,7 +471,7 @@ map {::std}</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>30</x>
-      <y>810</y>
+      <y>850</y>
       <w>210</w>
       <h>40</h>
     </coordinates>
@@ -494,14 +483,15 @@ iterator {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>50</x>
-      <y>750</y>
-      <w>360</w>
-      <h>90</h>
+      <y>780</y>
+      <w>200</w>
+      <h>100</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-
 &lt;&lt;bind&gt;&gt;
-&lt; Category -&gt; forward, _Tp -&gt; string, _Distance -&gt; size &gt;</panel_attributes>
-    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+&lt; Category -&gt; forward, _Tp -&gt;
+string, _Distance -&gt; size &gt;</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -632,8 +622,8 @@ off {::std}</panel_attributes>
   <element>
     <id>UMLPackage</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
+      <x>0</x>
+      <y>0</y>
       <w>960</w>
       <h>1050</h>
     </coordinates>

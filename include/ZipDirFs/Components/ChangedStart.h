@@ -9,6 +9,7 @@
 #include <ctime>
 #include <functional>
 #include <memory>
+#include <mutex>
 
 namespace ZipDirFs::Components
 {
@@ -27,7 +28,8 @@ namespace ZipDirFs::Components
 		operator std::time_t() const;
 
 	protected:
-		const std::time_t lastChanged;
+		std::mutex access;
+		std::time_t lastChanged;
 		bool called;
 
 	private:

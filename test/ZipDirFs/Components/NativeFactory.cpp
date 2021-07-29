@@ -40,7 +40,9 @@ namespace Test::ZipDirFs::Components
 	struct NativeZipEntryMock : EntryMock
 	{
 		NativeZipEntryMock(const path& p) : path(p){};
+		NativeZipEntryMock(const path& p, const std::string& item) : path(p), item(item){};
 		const struct path path;
+		const std::string item;
 	};
 
 	typedef NativeFactory<NativeDirectoryEntryMock, NativeSymlinkEntryMock, NativeZipEntryMock>
@@ -79,16 +81,19 @@ namespace Test::ZipDirFs::Components
 		ASSERT_EQ(result->path, parent / item);
 	}
 
-	TEST(NativeFactory, Zip)
+	TEST(NativeFactory, ZipRoot)
 	{
 		FileSystem fs;
 		Lib lib;
 		Fixtures::LibInstance libInstance;
-		const std::string item(std::to_string(::Test::rand(UINT32_MAX)));
+		const std::string item(std::to_string(::Test::rand(UINT32_MAX))),
+			inner{std::to_string(::Test::rand(UINT32_MAX))};
 		const path parent(path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		EXPECT_CALL(fs, status(parent / item))
 			.WillOnce(Return(file_status(file_type::regular_file)));
 		EXPECT_CALL(lib, open(parent / item)).WillOnce(Return(&libInstance));
+		EXPECT_CALL(lib, get_num_entries(&libInstance)).WillOnce(Return(1));
+		EXPECT_CALL(lib, get_name(&libInstance, 0)).WillOnce(Return(inner));
 		EXPECT_CALL(lib, close(&libInstance));
 		TestedFactory factory(parent);
 		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
@@ -96,6 +101,31 @@ namespace Test::ZipDirFs::Components
 		auto result = dynamic_cast<NativeZipEntryMock*>(created.get());
 		ASSERT_NE(result, nullptr);
 		ASSERT_EQ(result->path, parent / item);
+		ASSERT_EQ("", result->item);
+	}
+
+	TEST(NativeFactory, ZipDir)
+	{
+		FileSystem fs;
+		Lib lib;
+		Fixtures::LibInstance libInstance;
+		const std::string item(std::to_string(::Test::rand(UINT32_MAX))),
+			innerParent{std::to_string(::Test::rand(UINT32_MAX)) + '/'},
+			inner{innerParent + std::to_string(::Test::rand(UINT32_MAX))};
+		const path parent(path("path") / std::to_string(::Test::rand(UINT32_MAX)));
+		EXPECT_CALL(fs, status(parent / item))
+			.WillOnce(Return(file_status(file_type::regular_file)));
+		EXPECT_CALL(lib, open(parent / item)).WillOnce(Return(&libInstance));
+		EXPECT_CALL(lib, get_num_entries(&libInstance)).WillOnce(Return(1));
+		EXPECT_CALL(lib, get_name(&libInstance, 0)).WillOnce(Return(inner));
+		EXPECT_CALL(lib, close(&libInstance));
+		TestedFactory factory(parent);
+		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
+			factory.create(item), [&factory](::fusekit::entry* p) { factory.destroy(p); });
+		auto result = dynamic_cast<NativeZipEntryMock*>(created.get());
+		ASSERT_NE(result, nullptr);
+		ASSERT_EQ(parent / item, result->path);
+		ASSERT_EQ(innerParent, result->item);
 	}
 
 	TEST(NativeFactory, Symlink)
