@@ -5,17 +5,12 @@
 
 namespace ZipDirFs::Components
 {
-	EntryListProxyProxy::EntryListProxyProxy(
-		std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>&& entryListProxy) :
+	EntryListProxyProxy::EntryListProxyProxy(parent_ptr&& entryListProxy) :
 		entryListProxy(std::move(entryListProxy))
 	{
 	}
 
-	void EntryListProxyProxy::swap(
-		std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>& other)
-	{
-		entryListProxy.swap(other);
-	}
+	void EntryListProxyProxy::swap(parent_ptr& other) { entryListProxy.swap(other); }
 
 	EntryListProxyProxy::iterator EntryListProxyProxy::begin() { return entryListProxy->begin(); }
 	EntryListProxyProxy::iterator EntryListProxyProxy::end() { return entryListProxy->end(); }

@@ -18,14 +18,15 @@ namespace ZipDirFs::Components
 	class ChangedProxy : public ZipDirFs::Containers::Helpers::Changed
 	{
 	public:
-		ChangedProxy(std::unique_ptr<ZipDirFs::Containers::Helpers::Changed>&&);
+		typedef std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> parent_ptr;
+		ChangedProxy(parent_ptr&&);
 		bool operator()();
 		operator std::time_t() const;
-		void swap(std::unique_ptr<ZipDirFs::Containers::Helpers::Changed>&);
+		void swap(parent_ptr&);
 
 	protected:
 	private:
-		std::unique_ptr<ZipDirFs::Containers::Helpers::Changed> changed;
+		parent_ptr changed;
 	};
 
 } // namespace ZipDirFs::Components

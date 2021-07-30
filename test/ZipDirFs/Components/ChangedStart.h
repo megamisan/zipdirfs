@@ -19,15 +19,13 @@ namespace Test::ZipDirFs::Components
 			return reinterpret_cast<const ChangedStartAccess*>(&cs)->called;
 		}
 		static void set_lastChanged(
-			const ::ZipDirFs::Components::ChangedStart& cs, const std::time_t newValue)
+			::ZipDirFs::Components::ChangedStart& cs, const std::time_t newValue)
 		{
-			*const_cast<std::time_t*>(
-				&reinterpret_cast<const ChangedStartAccess*>(&cs)->lastChanged) = newValue;
+			reinterpret_cast<ChangedStartAccess*>(&cs)->lastChanged = newValue;
 		}
-		static void set_called(const ::ZipDirFs::Components::ChangedStart& cs, const bool newValue)
+		static void set_called(::ZipDirFs::Components::ChangedStart& cs, const bool newValue)
 		{
-			*const_cast<bool*>(&reinterpret_cast<const ChangedStartAccess*>(&cs)->called) =
-				newValue;
+			reinterpret_cast<ChangedStartAccess*>(&cs)->called = newValue;
 		}
 	};
 } // namespace Test::ZipDirFs::Components

@@ -36,6 +36,7 @@ namespace ZipDirFs::Zip
 		iterator begin(const std::string&);
 		iterator end();
 		std::shared_ptr<Entry> open(const std::string&);
+		std::string commonBase();
 
 		struct ArchiveIterator
 			: public std::iterator<std::forward_iterator_tag, const std::string, size_t>
@@ -73,6 +74,7 @@ namespace ZipDirFs::Zip
 		std::vector<std::string> names;
 		std::map<std::string, std::tuple<std::uint64_t, bool>> nameAttributes;
 		std::map<std::uint64_t, std::weak_ptr<Entry>> entries;
+		std::string common;
 		friend class ArchiveIterator;
 	};
 

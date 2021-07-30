@@ -11,15 +11,17 @@
 namespace ZipDirFs::Components
 {
 	/**
-	 * @brief A proxy to an @link ZipDirFs::Containers::Helpers::EntryListProxy Entry List Proxy @endlink
+	 * @brief A proxy to an @link ZipDirFs::Containers::Helpers::EntryListProxy Entry List Proxy
+	 * @endlink
 	 * @remarks Used to change the underlying helper for all references.
 	 * @authors Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>
 	 */
 	class EntryListProxyProxy : public ZipDirFs::Containers::Helpers::EntryListProxy
 	{
 	public:
-		EntryListProxyProxy(std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>&&);
-		void swap(std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy>&);
+		typedef std::unique_ptr<::ZipDirFs::Containers::Helpers::EntryListProxy> parent_ptr;
+		EntryListProxyProxy(parent_ptr&&);
+		void swap(parent_ptr&);
 		iterator begin();
 		iterator end();
 		iterator insert(iterator, const key_type&, const mapped_type&);
@@ -28,7 +30,7 @@ namespace ZipDirFs::Components
 
 	protected:
 	private:
-		std::unique_ptr<ZipDirFs::Containers::Helpers::EntryListProxy> entryListProxy;
+		parent_ptr entryListProxy;
 	};
 
 } // namespace ZipDirFs::Components

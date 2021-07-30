@@ -287,6 +287,38 @@ namespace Test::ZipDirFs::Zip
 			ArchiveAccess::getEntries(*archive).find(std::get<1>(info))->second.lock(), entry);
 	}
 
+	TEST_F(ArchiveTest, CommonBaseEmpty)
+	{
+		Fixtures::Lib lib;
+		auto archive(CreateArchive(lib));
+		std::vector<std::string> values = {
+			ArchiveGeneratePath(0, false), ArchiveGeneratePath(0, false)};
+		MockNameSequence(lib, *archive, values);
+		EXPECT_EQ("", archive->commonBase());
+	}
+
+	TEST_F(ArchiveTest, CommonBaseOne)
+	{
+		Fixtures::Lib lib;
+		auto archive(CreateArchive(lib));
+		auto base = ArchiveGeneratePath(0, 1) + '/';
+		std::vector<std::string> values = {
+			base + ArchiveGeneratePath(0, false), base + ArchiveGeneratePath(0, false)};
+		MockNameSequence(lib, *archive, values);
+		EXPECT_EQ(base, archive->commonBase());
+	}
+
+	TEST_F(ArchiveTest, CommonBaseMore)
+	{
+		Fixtures::Lib lib;
+		auto archive(CreateArchive(lib));
+		auto base = ArchiveGeneratePath(::Test::rand(2, 5), 1) + '/';
+		std::vector<std::string> values = {
+			base + ArchiveGeneratePath(0, false), base + ArchiveGeneratePath(0, false)};
+		MockNameSequence(lib, *archive, values);
+		EXPECT_EQ(base, archive->commonBase());
+	}
+
 	TEST_F(ArchiveTest, PopulateBase)
 	{
 		Fixtures::Lib lib;

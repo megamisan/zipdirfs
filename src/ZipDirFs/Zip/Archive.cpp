@@ -29,6 +29,20 @@ namespace ZipDirFs::Zip
 		{
 			return name.substr(prefix.length());
 		}
+
+		void keepOnlyCommon(std::string& common, const std::string item)
+		{
+			auto len = std::min(common.length(), item.length());
+			decltype(len) p = 0;
+			while (p < len && common[p] == item[p])
+			{
+				++p;
+			}
+			if (p != common.length())
+			{
+				common = common.substr(0, p);
+			}
+		}
 	} // namespace
 	Archive::Archive(Base::Lib* d) : data(d)
 	{
@@ -98,6 +112,11 @@ namespace ZipDirFs::Zip
 		}
 		return result;
 	}
+	std::string Archive::commonBase()
+	{
+		populate();
+		return common;
+	}
 	void Archive::populate()
 	{
 		StateReporter::Lock rl(namesId);
@@ -109,9 +128,18 @@ namespace ZipDirFs::Zip
 		std::uint64_t index = 0, count = Lib::get_num_entries(data), temporary = UINT64_MAX;
 		std::vector<std::tuple<std::string, bool>> temp;
 		names.reserve(count);
+		std::string base;
 		for (; index < count; index++)
 		{
 			std::string name = Lib::get_name(data, index);
+			if (index == 0)
+			{
+				base = name;
+			}
+			else
+			{
+				keepOnlyCommon(base, name);
+			}
 			temp.emplace_back(name, false);
 			boost::filesystem::path p(name);
 			while (p.has_parent_path())
@@ -140,6 +168,14 @@ namespace ZipDirFs::Zip
 			}
 		}
 		names.shrink_to_fit();
+		if (base.length())
+		{
+			auto slash = base.find_last_of('/');
+			if (slash != std::string::npos)
+			{
+				common = base.substr(0, slash + 1);
+			}
+		}
 	}
 	Archive::ArchiveIterator::~ArchiveIterator() {}
 	Archive::ArchiveIterator::reference Archive::ArchiveIterator::operator*() const

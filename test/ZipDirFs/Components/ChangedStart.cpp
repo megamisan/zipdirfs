@@ -26,15 +26,15 @@ namespace Test::ZipDirFs::Components
 
 	TEST(ChangedStartTest, Init)
 	{
+		auto timeF{[]() -> std::time_t { return 0; }};
+		auto buildRealF{[]() -> std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> {
+			return std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
+				std::unique_ptr<ChangedMock>());
+		}};
 		ChangedStart* changedStart;
 		std::shared_ptr<ChangedProxy> proxy(new ChangedProxy(
 			std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(std::unique_ptr<ChangedStart>(
-				changedStart = new ChangedStart([]() -> std::time_t { return 0; },
-					[]() -> std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed> {
-						return std::unique_ptr<::ZipDirFs::Containers::Helpers::Changed>(
-							std::unique_ptr<ChangedMock>());
-					},
-					proxy)))));
+				changedStart = new ChangedStart(std::move(timeF), std::move(buildRealF), proxy)))));
 		EXPECT_EQ(ChangedStartAccess::get_lastChanged(*changedStart), 0);
 		EXPECT_EQ(ChangedStartAccess::get_called(*changedStart), false);
 	}

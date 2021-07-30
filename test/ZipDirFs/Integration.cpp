@@ -389,8 +389,8 @@ namespace Test::ZipDirFs
 					return length;
 				}));
 		EXPECT_CALL(lib, ftell(&subItemInstance1))
-			.WillRepeatedly(Invoke(
-				[&subItem1Offset](::ZipDirFs::Zip::Base::Lib::File* file) { return subItem1Offset; }));
+			.WillRepeatedly(Invoke([&subItem1Offset](::ZipDirFs::Zip::Base::Lib::File* file)
+				{ return subItem1Offset; }));
 		EXPECT_CALL(lib, fclose(&itemInstance1))
 			.WillRepeatedly(WithoutArgs([&item1Offset]() { item1Offset = 0; }));
 		EXPECT_CALL(lib, fclose(&subItemInstance1))
@@ -435,6 +435,107 @@ namespace Test::ZipDirFs
 		// Check result
 		std::string rResult(integrationReadable(result)), rExpected(integrationReadable(expected));
 		ASSERT_EQ(rResult, rExpected);
+	}
+
+	TEST(IntegrationTest, ZipRootWithCommon)
+	{
+		// Initialize values
+		FileSystem fs;
+		Lib lib;
+		LibInstance zipInstance1;
+		std::time_t now(time(NULL)), modifiedRoot((std::time_t)::Test::rand(now)),
+			modifiedZip1((std::time_t)::Test::rand(now)),
+			modifiedSubItem1((std::time_t)::Test::rand(now)),
+			modifiedSubItem2((std::time_t)::Test::rand(now));
+		const std::string zip1("zip" + std::to_string(::Test::rand(UINT32_MAX))),
+			subItem1Parent("folder" + std::to_string(::Test::rand(UINT8_MAX))),
+			subItem2Parent(subItem1Parent),
+			subItem1("subitem" + std::to_string(::Test::rand(UINT32_MAX))),
+			subItem1Path(subItem1Parent + "/" + subItem1),
+			subItem2("subitem" + std::to_string(::Test::rand(UINT32_MAX))),
+			subItem2Path(subItem2Parent + "/" + subItem2);
+		filesystem::path mountPoint(tempFolderPath()),
+			fakeRoot("/fake" + std::to_string(::Test::rand(UINT32_MAX))), fakeZip1(fakeRoot / zip1);
+		const Stat subItem1Stat(0, subItem1Path, 0, modifiedSubItem1, false),
+			subItem2Stat(1, subItem2Path, 0, modifiedSubItem2, false);
+		filesystem::create_directory(mountPoint);
+		std::string fsName = "IntegrationTestZipRootWithCommon";
+		Guard rmdir(
+			[mountPoint]()
+			{
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
+		const strings rootDirectoryItems({zip1});
+		// Initialize expectations
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(modifiedRoot));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(modifiedZip1));
+		EXPECT_CALL(fs, directory_iterator_from_path(Eq(ByRef(fakeRoot))))
+			.WillRepeatedly(ReturnNew<VectorIteratorWrapper>(
+				rootDirectoryItems.begin(), rootDirectoryItems.end()));
+		EXPECT_CALL(fs, directory_iterator_end()).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
+		EXPECT_CALL(fs, status(Eq(ByRef(fakeZip1))))
+			.WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
+		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(&zipInstance1));
+		EXPECT_CALL(lib, close(&zipInstance1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, stat(&zipInstance1, Eq(subItem1Path)))
+			.WillRepeatedly(Return(subItem1Stat));
+		EXPECT_CALL(lib, stat(&zipInstance1, Eq(subItem2Path)))
+			.WillRepeatedly(Return(subItem2Stat));
+		EXPECT_CALL(lib, get_num_entries(&zipInstance1)).WillRepeatedly(Return(2));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 0)).WillRepeatedly(Return(subItem1Path));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 1)).WillRepeatedly(Return(subItem2Path));
+		// Initialize expected result
+		const std::vector<std::string> expected{{subItem1, subItem2}};
+		std::vector<std::string> result;
+		// Run test
+		result.reserve(expected.size());
+		FuseDaemonFork daemon(
+			mountPoint.native(), fsName,
+			std::unique_ptr<::fusekit::entry>(new NativeDirectory(fakeRoot)),
+			[&mountPoint, &result, &daemon](std::vector<int> fds)
+			{
+				Guard readFd([&fds]() { close(fds[0]); });
+				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
+				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
+				ppoll(descriptors, 1, nullptr, nullptr);
+				char buf[256];
+				ssize_t res;
+				std::string temp;
+				while ((res = read(fds[0], buf, sizeof(buf))) > 0)
+				{
+					ssize_t start = 0;
+					ssize_t offset = 0;
+					while (offset < res)
+					{
+						if (buf[offset] == 0)
+						{
+							temp += std::string(buf + start, offset - start);
+							result.push_back(temp);
+							temp.clear();
+							start = offset + 1;
+						}
+						++offset;
+					}
+					if (start < offset)
+					{
+						temp += std::string(buf + start, offset - start);
+					}
+				}
+				if (res < 0)
+				{
+					perror("Worker");
+				}
+			},
+			"DirectoryNodeList", {0, 1},
+			std::vector<std::string>({mountPoint.native() + '/' + zip1}));
+		EXPECT_GT(result.size(), 0);
+		ASSERT_EQ(expected, result);
 	}
 
 	TEST(IntegrationTest, NativeDirectoryDirectAccess)

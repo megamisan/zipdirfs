@@ -8,7 +8,7 @@
 #include "ZipDirFs/Containers/Helpers/Factory.h"
 #include "ZipDirFs/Utilities/FileSystem.h"
 #include "ZipDirFs/Zip/Exception.h"
-#include "ZipDirFs/Zip/Lib.h"
+#include "ZipDirFs/Zip/Factory.h"
 #include <boost/filesystem.hpp>
 
 namespace ZipDirFs::Components
@@ -16,7 +16,7 @@ namespace ZipDirFs::Components
 	using namespace ::boost::filesystem;
 	using ::ZipDirFs::Utilities::FileSystem;
 	using ::ZipDirFs::Zip::Exception;
-	using ::ZipDirFs::Zip::Lib;
+	using ZipFactory = ::ZipDirFs::Zip::Factory;
 
 	/**
 	 * @brief A @link ZipDirFs::Containers::Helpers::Factory Factory @endlink for creating entries
@@ -41,18 +41,18 @@ namespace ZipDirFs::Components
 			}
 			if (is_regular_file(status))
 			{
-				bool zip = true;
+				mapped_type zip = nullptr;
 				try
 				{
-					auto data = Lib::open(fullPath);
-					Lib::close(data);
+					auto archive{ZipFactory::getInstance().get(fullPath)};
+					auto item{archive->commonBase()};
+					zip = item.length() ? (mapped_type) new Zip(fullPath, item) :
+											(mapped_type) new Zip(fullPath);
 				}
 				catch (Exception e)
 				{
-					zip = false;
 				}
-				return reportWrap(
-					zip ? (mapped_type) new Zip(fullPath) : (mapped_type) new Symlink(fullPath));
+				return reportWrap(zip != nullptr ? zip : (mapped_type) new Symlink(fullPath));
 			}
 			if (is_symlink(status))
 			{
