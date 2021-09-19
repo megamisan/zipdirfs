@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([Zip directory virtual filesystem],[2.1.0],[pierrick.caillon+zipdirfs@megami.fr],[zipdirfs],[https://github.com/megamisan/zipdirfs])
+AC_INIT([Zip directory virtual filesystem],[2.1.1],[pierrick.caillon+zipdirfs@megami.fr],[zipdirfs],[https://github.com/megamisan/zipdirfs])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([foreign subdir-objects -Wall -Werror])
 AC_CONFIG_MACRO_DIRS([m4])

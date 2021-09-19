@@ -1,3 +1,9 @@
+zipdirfs (2.1.1) unstable; urgency=low
+
+  * Fix minimal environment build
+
+ -- Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>  Sun, 19 Sep 2021 16:08:35 +0200
+
 zipdirfs (2.1.0) unstable; urgency=low
 
   * Regression: Non optimized zip root

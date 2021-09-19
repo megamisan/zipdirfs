@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Pierrick Caillon <pierrick.caillon+zipdirfs@megami.Fr>
 Build-Depends: debhelper (>= 10), autotools-dev, libfuse-dev, 
   libzip-dev, libfusekit-dev (>= 0.7.1), libboost-filesystem-dev (>= 1.62),
-  autoconf-archive
+  autoconf-archive, pkg-config
 Standards-Version: 4.1.2
 Homepage: https://github.com/megamisan/zipdirfs
 Vcs-Git: https://github.com/megamisan/zipdirfs.git
