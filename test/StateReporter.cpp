@@ -22,7 +22,7 @@ void displayTest::SetUpTestCase()
 {
 	previousLocale = std::setlocale(LC_CTYPE, nullptr);
 	const char* newLocale = std::setlocale(LC_CTYPE, "en_US.UTF-8");
-	if (strcmp(newLocale, "en_US.UTF-8") != 0)
+	if (!newLocale || strcmp(newLocale, "en_US.UTF-8") != 0)
 	{
 		std::setlocale(LC_CTYPE, previousLocale);
 		previousLocale = nullptr;
