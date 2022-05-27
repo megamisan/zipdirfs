@@ -1,0 +1,65 @@
+stages:
+  - test
+  - build
+
+run_tests:
+  stage: test
+  except:
+    refs:
+      - tags
+  image:
+    name: registry.megami.fr:443/management/runner-images/native-cpp:latest
+  cache:
+    key: intermediate-$CI_COMMIT_REF_SLUG
+    paths:
+      - "**/m4"
+      - "**/*.lo"
+      - "**/*.o"
+      - "**/.deps"
+      - "**/.dirstamp"
+      - "**/.libs"
+      - "**/stamp-h1"
+    when: always
+  script:
+    - |
+      echo Running tests
+      bash "bin/build/test-task.sh"
+
+generate_builds:
+  stage: build
+  only:
+    refs:
+      - tags
+  image:
+    name: registry.megami.fr:443/management/runner-images/native-cpp:latest
+  cache:
+    key: generate-$CI_COMMIT_REF_SLUG
+    paths:
+      - "**/m4"
+      - "**/*.lo"
+      - "**/*.o"
+      - "**/.deps"
+      - "**/.dirstamp"
+      - "**/.libs"
+      - "**/stamp-h1"
+    when: always
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - generated-commands.yml
+    public: false
+  script:
+    - |
+      echo Generating sub tasks
+      bash "bin/build/generate-tasks.sh"
+
+run_build:
+  stage: .post
+  only:
+    refs:
+      - tags
+  trigger:
+    include:
+      - artifact: generated-commands.yml
+        job: generate_builds
+    strategy: depend
