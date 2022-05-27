@@ -63,7 +63,8 @@
         "random": "cpp",
         "ios": "cpp",
         "unordered_set": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "*.ipp": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

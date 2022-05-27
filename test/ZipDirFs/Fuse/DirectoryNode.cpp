@@ -184,8 +184,15 @@ namespace Test::ZipDirFs::Fuse
 		};
 	} // namespace
 
+#define SKIP_IF_NO_FUSE \
+	if (!::boost::filesystem::exists("/dev/fuse")) { \
+		GTEST_SKIP_("Fuse not found."); \
+		return; \
+	}
+
 	TEST(DirectoryNodeTest, Stat)
 	{
+		SKIP_IF_NO_FUSE;
 		std::time_t now(time(NULL)), modified((std::time_t)::Test::rand(now));
 		filesystem::path mountPoint(tempFolderPath());
 		filesystem::create_directory(mountPoint);
@@ -233,6 +240,7 @@ namespace Test::ZipDirFs::Fuse
 
 	TEST(DirectoryNodeTest, List)
 	{
+		SKIP_IF_NO_FUSE;
 		std::time_t now(time(NULL)), modified((std::time_t)::Test::rand(now));
 		filesystem::path mountPoint(tempFolderPath());
 		filesystem::create_directory(mountPoint);

@@ -284,8 +284,15 @@ namespace Test::ZipDirFs
 		}
 	} // namespace
 
+#define SKIP_IF_NO_FUSE \
+	if (!::boost::filesystem::exists("/dev/fuse")) { \
+		GTEST_SKIP_("Fuse not found."); \
+		return; \
+	}
+
 	TEST(IntegrationTest, Full)
 	{
+		SKIP_IF_NO_FUSE;
 		// Initialize values
 		FileSystem fs;
 		Lib lib;
@@ -439,6 +446,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipRootWithCommon)
 	{
+		SKIP_IF_NO_FUSE;
 		// Initialize values
 		FileSystem fs;
 		Lib lib;
@@ -540,6 +548,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, NativeDirectoryDirectAccess)
 	{
+		SKIP_IF_NO_FUSE;
 		FileSystem fs;
 		const std::time_t now(time(NULL)), modifiedFile((std::time_t)::Test::rand(now));
 		const std::string file("file" + std::to_string(::Test::rand(UINT32_MAX)));
@@ -593,6 +602,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipRootDirectoryDirectAccess)
 	{
+		SKIP_IF_NO_FUSE;
 		FileSystem fs;
 		Lib lib;
 		LibInstance zipInstance;
@@ -653,6 +663,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipDirectoryDirectAccess)
 	{
+		SKIP_IF_NO_FUSE;
 		FileSystem fs;
 		Lib lib;
 		LibInstance zipInstance;
@@ -718,6 +729,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipStatException)
 	{
+		SKIP_IF_NO_FUSE;
 		const std::time_t now(time(NULL));
 		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX))),
 			itemParent("folder" + std::to_string(::Test::rand(UINT32_MAX)));
@@ -770,6 +782,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipRootExploreException)
 	{
+		SKIP_IF_NO_FUSE;
 		const std::time_t now(time(NULL));
 		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX)));
 		const filesystem::path mountPoint(tempFolderPath()),
@@ -818,6 +831,7 @@ namespace Test::ZipDirFs
 
 	TEST(IntegrationTest, ZipExploreException)
 	{
+		SKIP_IF_NO_FUSE;
 		const std::time_t now(time(NULL));
 		const std::string zip("zip" + std::to_string(::Test::rand(UINT32_MAX))),
 			itemParent("folder" + std::to_string(::Test::rand(UINT32_MAX)));
