@@ -38,7 +38,7 @@ When compiling from source, run `autoreconf --install` first.
 
 ## Debian packages
 
-Package building has been tested under debian stretch.
+Package building has been tested under debian buster.
 
 To build the package, run `dpkg-buildpackage -B`.
 
@@ -46,13 +46,15 @@ To build the package, run `dpkg-buildpackage -B`.
 
 Test are written using [Google Test Framework](https://github.com/google/googletest).
 
-Test are to be run with version 1.8.0 or later of the framework.
+Test are to be run with version 1.10.0 or later of the framework.
 Tentative Debian or Ubuntu packages:
 
 * googletest
 * google-mock
 
 To active tests in build, copy `/usr/src/googletest` to project dir and add `--with-tests` to `./configure`.
+
+On Debian Buster, use backports.
 
 ## Development environment
 
@@ -62,12 +64,12 @@ docker image as base. It is possible to use the image as is with VSCode or conve
 To build the image and convert it to a distro:
 
 1. Move to the `dev-env` folder;
-1. Build the image: `docker build -t zipdirfs-devenv:latest`;
-1. Create a container: `docker create --name zipdirfs-devenv zipdirfs-devenv:latest`;
+1. Build the image: `docker build -t zipdirfs-devenv:`*version*` Dockerfile.`*version*;
+1. Create a container: `docker create --name zipdirfs-devenv zipdirfs-devenv:`*version*;
 1. Move to a folder where to export the container;
 1. Export the container as archive: `docker export -o zipdirfs.tar.gz zipdirfs-devenv`
 1. Delete the container: `docker rm zipdirfs-devenv`;
-1. Delete the image: `docker rmi zipdirfs-devenv:latest`;
+1. Delete the image: `docker rmi zipdirfs-devenv:`*version*;
 1. Move to a folder where you want to create the distros into;
 1. Import the archive in WSL: `wsl --import zipdirfs ./zipdirfs …/zipdirfs.tar.gz --version 2`;
    > Changing the path to `zipdirfs.tar.gz` as needed.
@@ -75,6 +77,8 @@ To build the image and convert it to a distro:
 1. Launch first install script and follow instructions: `/root/firstrun.sh`
 1. Stop the distro to take new configuration: `wsl --terminate zipdirfs`
 1. Open the distro from Visual Studio Code
+
+Où *version* est la version de la distribution souhaitée. Voir [le contenu de dev-env](tools/dev-env).
 
 ## Coverage
 

@@ -9,8 +9,8 @@
 
 namespace std
 {
-	bool operator==(const string& it, const ::testing::internal::ReferenceWrapper<string>& wrap);
+	bool operator==(const string& it, const ::testing::internal::ReferenceOrValueWrapper<string>& wrap);
 	bool operator==(
-		const string& it, const ::testing::internal::ReferenceWrapper<const string>& wrap);
+		const string& it, const ::testing::internal::ReferenceOrValueWrapper<const string>& wrap);
 } // namespace std
 #endif // TEST_ZIPDIRFS_CONTAINERS_FIXTURES_HELPERS_H_INCLUDED

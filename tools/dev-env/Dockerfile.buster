@@ -1,13 +1,14 @@
 FROM debian:buster-slim
 
 RUN set -eux; \
+    echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/source.list.d/backports; \
     apt-get -qq update; \
     apt-get -qq upgrade -y; \
     apt-get -qq install -y --no-install-recommends \
     build-essential libfuse-dev libzip-dev pkg-config \
     libboost-filesystem-dev libzip4 gdb \
     debhelper autotools-dev autoconf-archive fuse openssh-client \
-    git sudo ca-certificates lcov google-mock \
+    git sudo ca-certificates lcov google-mock/buster-backports \
     bash-completion nano vim locales-all \
     procps iotop lsof; \
     rm -rf /var/lib/apt/lists/*;

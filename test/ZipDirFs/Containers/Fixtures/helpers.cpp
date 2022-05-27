@@ -5,12 +5,12 @@
 
 namespace std
 {
-	bool operator==(const string& it, const ::testing::internal::ReferenceWrapper<string>& wrap)
+	bool operator==(const string& it, const ::testing::internal::ReferenceOrValueWrapper<string>& wrap)
 	{
 		return it == (string&)wrap;
 	}
 	bool operator==(
-		const string& it, const ::testing::internal::ReferenceWrapper<const string>& wrap)
+		const string& it, const ::testing::internal::ReferenceOrValueWrapper<const string>& wrap)
 	{
 		return it == (const string&)wrap;
 	}
