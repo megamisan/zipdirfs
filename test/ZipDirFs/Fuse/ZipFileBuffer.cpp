@@ -30,6 +30,7 @@ namespace Test::ZipDirFs::Fuse
 	using ::testing::PrintToString;
 	using ::testing::Return;
 	using ::testing::StrEq;
+	using ::testing::AtLeast;
 	using namespace ::boost;
 	using ::Test::fusekit::Fixtures::EntryMock;
 	using ::Test::ZipDirFs::Components::Fixtures::LibInstance;
@@ -144,7 +145,7 @@ namespace Test::ZipDirFs::Fuse
 			std::unique_ptr<entry> getMock()
 			{
 				::testing::NiceMock<EntryMock>* em(new ::testing::NiceMock<EntryMock>);
-				EXPECT_CALL(*em, child(StrEq(itemName))).WillRepeatedly(Return(item));
+				EXPECT_CALL(*em, child(StrEq(itemName))).Times(AtLeast(1)).WillRepeatedly(Return(item));
 				ON_CALL(*em, stat(_)).WillByDefault(Invoke(this, &SimpleDirectory::stat));
 				ON_CALL(*em, access(_)).WillByDefault(Return(0));
 				ON_CALL(*em, chmod(_)).WillByDefault(Return(-EACCES));
@@ -231,7 +232,8 @@ namespace Test::ZipDirFs::Fuse
 	} // namespace
 
 #define SKIP_IF_NO_FUSE \
-	if (!::boost::filesystem::exists("/dev/fuse")) { \
+	if (!::boost::filesystem::exists("/dev/fuse")) \
+	{ \
 		GTEST_SKIP_("Fuse not found."); \
 		return; \
 	}
@@ -286,7 +288,100 @@ namespace Test::ZipDirFs::Fuse
 		ASSERT_EQ(stbuf.st_mtim.tv_sec, modified);
 	}
 
-	TEST(ZipFileBufferTest, Read)
+	TEST(ZipFileBufferTest, ReadCompressed)
+	{
+		SKIP_IF_NO_FUSE;
+		FileSystem fs;
+		Lib lib;
+		LibInstance data;
+		FileInstance file;
+		std::time_t parent(time(NULL)), modified((std::time_t)::Test::rand(parent));
+		std::streamsize size(::Test::rand<std::streamsize>(10, 50)), offset = 0, resultSize = 0;
+		filesystem::path mountPoint(tempFolderPath()),
+			facticeZip("zip" + std::to_string(::Test::rand(UINT32_MAX)));
+		std::string facticeFile("item" + std::to_string(::Test::rand(UINT32_MAX)));
+		::ZipDirFs::Zip::Base::Stat facticeStat(0, facticeFile, size, modified, true);
+		filesystem::create_directory(mountPoint);
+		std::string fsName = "ZipFileBufferTestRead";
+		char *expected = new char[size], *result = new char[size];
+		Guard buffer(
+			[expected, result]()
+			{
+				delete[] expected;
+				delete[] result;
+			});
+		Guard rmdir(
+			[mountPoint]()
+			{
+				try
+				{
+					filesystem::remove(mountPoint);
+				}
+				catch (boost::filesystem::filesystem_error e)
+				{
+				}
+			});
+		GenerateRandomData(expected, size);
+		EXPECT_CALL(fs, last_write_time(facticeZip)).Times(AtLeast(1)).WillRepeatedly(Return(parent));
+		EXPECT_CALL(lib, open(Eq(facticeZip))).Times(AtLeast(1)).WillRepeatedly(Return(&data));
+		EXPECT_CALL(lib, get_num_entries(&data)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, get_name(&data, 0)).Times(AtLeast(1)).WillRepeatedly(Return(facticeFile.c_str()));
+		EXPECT_CALL(lib, close(&data)).Times(AtLeast(1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, stat(&data, Eq(facticeFile))).Times(AtLeast(1)).WillRepeatedly(Return(facticeStat));
+		EXPECT_CALL(lib, fopen_index(&data, 0)).Times(AtLeast(1)).WillRepeatedly(Return(&file));
+		EXPECT_CALL(lib, fread(&file, _, _))
+			.Times(AtLeast(1)).WillRepeatedly(Invoke(
+				[expected, &offset, size](
+					::ZipDirFs::Zip::Base::Lib::File* file, void* buf, uint64_t len) -> uint64_t
+				{
+					std::streamsize length = std::min<std::streamsize>(len, size - offset);
+					if (length > 0)
+					{
+						memcpy(buf, expected, length);
+						offset += length;
+					}
+					return length;
+				}));
+		EXPECT_CALL(lib, ftell(&file))
+			.Times(AtLeast(1)).WillRepeatedly(
+				Invoke([&offset](::ZipDirFs::Zip::Base::Lib::File* file) { return offset; }));
+		EXPECT_CALL(lib, fclose(&file)).Times(AtLeast(1)).WillRepeatedly(Return());
+		ZipFile zf(facticeZip, facticeFile);
+		SimpleDirectory sd("read", &zf);
+		FuseDaemonFork daemon(
+			mountPoint.native(), fsName, std::unique_ptr<::fusekit::entry>(std::move(sd.getMock())),
+			[&daemon, &mountPoint, result, &resultSize](std::vector<int> fds) -> void
+			{
+				Guard readFd([&fds]() { close(fds[0]); });
+				Guard unmount(std::bind(std::mem_fn(&FuseDaemonFork::stop), &daemon));
+				struct pollfd descriptors[1] = {{fds[0], POLLIN, 0}};
+				ppoll(descriptors, 1, nullptr, nullptr);
+				std::streamsize len = -1, offset = 0;
+				if (read(fds[0], &len, sizeof(decltype(len))) < 0)
+				{
+					perror("Worker");
+				}
+				while (len > 0)
+				{
+					if (read(fds[0], result + offset, len) < 0)
+					{
+						perror("Worker");
+						break;
+					}
+					offset += len;
+					if (read(fds[0], &len, sizeof(decltype(len))) < 0)
+					{
+						perror("Worker");
+					}
+				}
+				resultSize = offset;
+			},
+			"FileRead", {0, 1}, std::vector<std::string>({(mountPoint / "read").native()}));
+		EXPECT_EQ(resultSize, size);
+		ASSERT_THAT(result, BufferEq(expected, size));
+	}
+
+	TEST(ZipFileBufferTest, ReadStored)
 	{
 		SKIP_IF_NO_FUSE;
 		FileSystem fs;
@@ -320,15 +415,18 @@ namespace Test::ZipDirFs::Fuse
 				}
 			});
 		GenerateRandomData(expected, size);
-		EXPECT_CALL(fs, last_write_time(facticeZip)).WillRepeatedly(Return(parent));
-		EXPECT_CALL(lib, open(Eq(facticeZip))).WillRepeatedly(Return(&data));
-		EXPECT_CALL(lib, get_num_entries(&data)).WillRepeatedly(Return(1));
-		EXPECT_CALL(lib, get_name(&data, 0)).WillRepeatedly(Return(facticeFile.c_str()));
-		EXPECT_CALL(lib, close(&data)).WillRepeatedly(Return());
-		EXPECT_CALL(lib, stat(&data, Eq(facticeFile))).WillRepeatedly(Return(facticeStat));
-		EXPECT_CALL(lib, fopen_index(&data, 0)).WillRepeatedly(Return(&file));
+		EXPECT_CALL(fs, last_write_time(facticeZip)).Times(AtLeast(1)).WillRepeatedly(Return(parent));
+		EXPECT_CALL(lib, open(Eq(facticeZip))).Times(AtLeast(1)).WillRepeatedly(Return(&data));
+		EXPECT_CALL(lib, get_num_entries(&data)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, get_name(&data, 0)).Times(AtLeast(1)).WillRepeatedly(Return(facticeFile.c_str()));
+		EXPECT_CALL(lib, close(&data)).Times(AtLeast(1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, stat(&data, Eq(facticeFile))).Times(AtLeast(1)).WillRepeatedly(Return(facticeStat));
+		EXPECT_CALL(lib, fopen_index(&data, 0)).Times(AtLeast(1)).WillRepeatedly(Return(&file));
+		EXPECT_CALL(lib, fseek(&file, _, SEEK_SET))
+			.Times(AtLeast(1)).WillRepeatedly(Invoke([&offset](::ZipDirFs::Zip::Base::Lib::File* file, int64_t o,
+									   int w) -> bool { return o == offset; }));
 		EXPECT_CALL(lib, fread(&file, _, _))
-			.WillRepeatedly(Invoke(
+			.Times(AtLeast(1)).WillRepeatedly(Invoke(
 				[expected, &offset, size](
 					::ZipDirFs::Zip::Base::Lib::File* file, void* buf, uint64_t len) -> uint64_t
 				{
@@ -340,10 +438,7 @@ namespace Test::ZipDirFs::Fuse
 					}
 					return length;
 				}));
-		EXPECT_CALL(lib, ftell(&file))
-			.WillRepeatedly(
-				Invoke([&offset](::ZipDirFs::Zip::Base::Lib::File* file) { return offset; }));
-		EXPECT_CALL(lib, fclose(&file)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, fclose(&file)).Times(AtLeast(1)).WillRepeatedly(Return());
 		ZipFile zf(facticeZip, facticeFile);
 		SimpleDirectory sd("read", &zf);
 		FuseDaemonFork daemon(

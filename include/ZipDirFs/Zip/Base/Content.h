@@ -34,6 +34,7 @@ namespace ZipDirFs::Zip::Base
 		char* buffer;
 		std::streamsize lastWrite;
 		std::streamsize length;
+		bool directIO;
 		Lib::File* data;
 		lock readLock();
 		lock writeLock();

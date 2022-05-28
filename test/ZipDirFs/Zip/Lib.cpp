@@ -459,7 +459,7 @@ namespace Test::ZipDirFs::Zip
 		std::get<2>(fh) = std::get<0>(mtime);
 		std::get<6>(fh) = GenerateData();
 		std::get<3>(fh) = compressed ?
-			  ::Test::rand(UINT32_MAX) :
+			::Test::rand(UINT32_MAX) :
 			  ComputeCrc32(std::get<6>(fh).c_str(), std::get<6>(fh).length());
 		std::get<4>(fh) = std::get<6>(fh).length();
 		std::get<5>(fh) = compressed ? ::Test::rand(UINT32_MAX) : std::get<4>(fh);
@@ -686,6 +686,42 @@ namespace Test::ZipDirFs::Zip
 		ASSERT_NO_THROW(fileData = Lib::fopen_index(libData, file.getGarbageIndex()));
 		char buffer[4096];
 		EXPECT_THROW(Lib::fread(fileData, buffer, 4096), std::ios::failure);
+	}
+
+	TEST_F(LibTest, FseekOk)
+	{
+		GeneratedZipFile file;
+		::ZipDirFs::Zip::Base::Stat stat;
+		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
+		ASSERT_NO_THROW(fileData = Lib::fopen_index(libData, file.getValidIndex()));
+		ASSERT_NO_THROW(stat = Lib::stat_index(libData, file.getValidIndex()));
+		EXPECT_TRUE(Lib::fseek(fileData, ::Test::rand(10, stat.getSize() - 10), SEEK_SET));
+	}
+
+	TEST_F(LibTest, FseekNok)
+	{
+		GeneratedZipFile file;
+		::ZipDirFs::Zip::Base::Stat stat;
+		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
+		ASSERT_NO_THROW(fileData = Lib::fopen_index(libData, file.getGarbageIndex()));
+		ASSERT_NO_THROW(stat = Lib::stat_index(libData, file.getGarbageIndex()));
+		EXPECT_FALSE(Lib::fseek(fileData, ::Test::rand(10, stat.getSize() - 10), SEEK_SET));
+	}
+
+	TEST_F(LibTest, FtellOk)
+	{
+		GeneratedZipFile file;
+		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
+		ASSERT_NO_THROW(fileData = Lib::fopen_index(libData, file.getValidIndex()));
+		EXPECT_EQ(Lib::ftell(fileData), 0);
+	}
+
+	TEST_F(LibTest, FtellNok)
+	{
+		GeneratedZipFile file;
+		ASSERT_NO_THROW(libData = Lib::open(file.getZipFilePath()));
+		ASSERT_NO_THROW(fileData = Lib::fopen_index(libData, file.getGarbageIndex()));
+		EXPECT_EQ(Lib::ftell(fileData), -1);
 	}
 
 	TEST_F(LibTest, Fclose)

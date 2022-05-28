@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.3.0">
+<diagram program="umlet" version="15.0.0">
   <help_text>fontsize=13
 fontfamily=SansSerif
 </help_text>
@@ -91,6 +91,7 @@ innerclass}</panel_attributes>
 +buffer: char*
 +lastWrite: streamsize
 +length: streamsize
++directIO: bool
 #global: mutex
 #released: condition_variable_any
 #readersActive: uint64
@@ -231,7 +232,7 @@ r1=#entries\n{weak_ptr inmap \nindexed by uint64}</panel_attributes>
       <x>640</x>
       <y>40</y>
       <w>300</w>
-      <h>220</h>
+      <h>230</h>
     </coordinates>
     <panel_attributes>_Lib_
 --
@@ -243,6 +244,7 @@ _+stat_index: function&lt;Base::Stat(Lib*, uint64)&gt;_
 _+get_name: function&lt;string(Lib*, uint64)&gt;_
 _+fopen_index: function&lt;File*(Base::Lib*, uint64)&gt;_
 _+fread: function&lt;uint64(File*, void*, uint64)&gt;_
+_+fseek: function&lt;bool(File*, int64, int)&gt;_
 _+ftell: function&lt;int64(File*)&gt;_
 _+fclose: function&lt;void(File*)&gt;_
 --
@@ -323,49 +325,49 @@ time {::std}</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>780</x>
-      <y>250</y>
+      <y>260</y>
       <w>70</w>
-      <h>100</h>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>860</x>
-      <y>250</y>
+      <y>260</y>
       <w>70</w>
-      <h>150</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>680</x>
-      <y>250</y>
-      <w>70</w>
-      <h>80</h>
+      <y>260</y>
+      <w>90</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;60.0;50.0;60.0;50.0;10.0</additional_attributes>
+    <additional_attributes>10.0;50.0;50.0;50.0;50.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>340</x>
-      <y>200</y>
+      <y>190</y>
       <w>320</w>
-      <h>120</h>
+      <h>130</h>
     </coordinates>
     <panel_attributes>lt=.&gt;
 &lt;&lt;uses&gt;&gt;</panel_attributes>
-    <additional_attributes>10.0;100.0;10.0;10.0;300.0;10.0</additional_attributes>
+    <additional_attributes>10.0;110.0;10.0;20.0;300.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>

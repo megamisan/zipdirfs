@@ -34,6 +34,7 @@ namespace Test::ZipDirFs::Zip
 			MOCK_METHOD2(get_name, std::string(LibP* const, std::uint64_t));
 			MOCK_METHOD2(fopen_index, LibP::File*(LibP* const, std::uint64_t));
 			MOCK_METHOD3(fread, std::uint64_t(LibP::File* const, void*, std::uint64_t));
+			MOCK_METHOD3(fseek, bool(LibP::File* const, std::int64_t const, int const));
 			MOCK_METHOD1(ftell, std::int64_t(LibP::File* const));
 			MOCK_METHOD1(fclose, void(LibP::File* const));
 		};

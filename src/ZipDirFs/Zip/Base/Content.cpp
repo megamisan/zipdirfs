@@ -7,7 +7,7 @@
 namespace ZipDirFs::Zip::Base
 {
 	Content::Content() noexcept :
-		buffer(nullptr), lastWrite(0), length(0), data(nullptr), readersActive(0), writersWaiting(0)
+		buffer(nullptr), lastWrite(0), length(0), directIO(false), data(nullptr), readersActive(0), writersWaiting(0)
 	{
 		globalId = buildId("CT", (std::uint64_t)(void*)&global, 6);
 	}

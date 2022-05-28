@@ -201,12 +201,12 @@ namespace Test::ZipDirFs::Zip
 		EXPECT_EQ(result, expected);
 	}
 
-	TEST_F(EntryTest, OpenNoBuffer)
+	TEST_F(EntryTest, OpenNoBufferCompressed)
 	{
 		Fixtures::Lib lib;
 		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
 		Stat stat(::Test::rand(UINT32_MAX), name, ::Test::rand(UINT32_MAX) % 20,
-			::Test::rand(UINT32_MAX), ::Test::rand(1));
+			::Test::rand(UINT32_MAX), true);
 		::ZipDirFs::Zip::Base::Lib::File* file(
 			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
 		Entry entry(data, name, false);
@@ -218,10 +218,32 @@ namespace Test::ZipDirFs::Zip
 		EntryAccess::invokeOpen(entry);
 		EXPECT_EQ(EntryAccess::getContent(entry).data, file);
 		EXPECT_NE(EntryAccess::getContent(entry).buffer, nullptr);
+		EXPECT_FALSE(EntryAccess::getContent(entry).directIO);
 		EXPECT_EQ(EntryAccess::getContent(entry).length, stat.getSize());
 	}
 
-	TEST_F(EntryTest, OpenBuffer)
+	TEST_F(EntryTest, OpenNoBufferStored)
+	{
+		Fixtures::Lib lib;
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Stat stat(::Test::rand(UINT32_MAX), name, ::Test::rand(UINT32_MAX) % 20,
+			::Test::rand(UINT32_MAX), false);
+		::ZipDirFs::Zip::Base::Lib::File* file(
+			reinterpret_cast<decltype(file)>(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getCachedStat(entry) = stat;
+		EntryAccess::getFlags(entry)[1] = true;
+		EXPECT_CALL(lib, fopen_index(data.get(), stat.getIndex())).WillOnce(Return(file));
+		std::shared_ptr<Entry> pentry(
+			&entry, [](Entry* e) { EntryAccess::getContent(*e).data = nullptr; });
+		EntryAccess::invokeOpen(entry);
+		EXPECT_EQ(EntryAccess::getContent(entry).data, file);
+		EXPECT_EQ(EntryAccess::getContent(entry).buffer, nullptr);
+		EXPECT_TRUE(EntryAccess::getContent(entry).directIO);
+		EXPECT_EQ(EntryAccess::getContent(entry).length, 0);
+	}
+
+	TEST_F(EntryTest, OpenBufferCompressed)
 	{
 		Fixtures::Lib lib;
 		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
@@ -230,7 +252,20 @@ namespace Test::ZipDirFs::Zip
 			reinterpret_cast<char*>(::Test::rand(UINT32_MAX)),
 			[&entry](char*) { EntryAccess::getContent(entry).buffer = nullptr; });
 		EntryAccess::getContent(entry).buffer = buffer.get();
+		EntryAccess::invokeOpen(entry);
 		EXPECT_EQ(buffer.get(), EntryAccess::getContent(entry).buffer);
+		EXPECT_FALSE(EntryAccess::getContent(entry).directIO);
+	}
+
+	TEST_F(EntryTest, OpenBufferStored)
+	{
+		Fixtures::Lib lib;
+		std::string name(std::string("file") + std::to_string(::Test::rand(UINT32_MAX)));
+		Entry entry(data, name, false);
+		EntryAccess::getContent(entry).directIO = true;
+		EntryAccess::invokeOpen(entry);
+		EXPECT_EQ(nullptr, EntryAccess::getContent(entry).buffer);
+		EXPECT_TRUE(EntryAccess::getContent(entry).directIO);
 	}
 
 	TEST_F(EntryTest, IsDirFile)

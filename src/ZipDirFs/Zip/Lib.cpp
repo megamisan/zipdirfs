@@ -24,6 +24,7 @@ namespace ZipDirFs::Zip
 			static std::string get_name(Base::Lib* const, std::uint64_t);
 			static Base::Lib::File* fopen_index(Base::Lib* const, std::uint64_t);
 			static std::uint64_t fread(Base::Lib::File* const, void*, std::uint64_t);
+			static bool fseek(Base::Lib::File* const, std::int64_t const, int const);
 			static std::int64_t ftell(Base::Lib::File* const);
 			static void fclose(Base::Lib::File* const);
 		};
@@ -131,6 +132,7 @@ namespace ZipDirFs::Zip
 		assign(Lib::get_name, LibWrapper::get_name);
 		assign(Lib::fopen_index, LibWrapper::fopen_index);
 		assign(Lib::fread, LibWrapper::fread);
+		assign(Lib::fseek, LibWrapper::fseek);
 		assign(Lib::ftell, LibWrapper::ftell);
 		assign(Lib::fclose, LibWrapper::fclose);
 	}
@@ -143,6 +145,7 @@ namespace ZipDirFs::Zip
 	std::function<std::string(Base::Lib* const, std::uint64_t)> Lib::get_name;
 	std::function<Base::Lib::File*(Base::Lib* const, std::uint64_t)> Lib::fopen_index;
 	std::function<std::uint64_t(Base::Lib::File* const, void*, std::uint64_t)> Lib::fread;
+	std::function<bool(Base::Lib::File* const, std::int64_t const, int const)> Lib::fseek;
 	std::function<std::int64_t(Base::Lib::File* const)> Lib::ftell;
 	std::function<void(Base::Lib::File* const)> Lib::fclose;
 
@@ -302,6 +305,19 @@ namespace ZipDirFs::Zip
 			std::__throw_ios_failure("Failure reading file.");
 		}
 		return read;
+	}
+	bool LibWrapper::fseek(Base::Lib::File* const f, std::int64_t const offset, int const whence)
+	{
+		FileData* lf = reinterpret_cast<decltype(lf)>(f);
+		lock_type lock(lf->mutex);
+		auto res = ::zip_fseek(lf->file, offset, whence);
+		if (res == -1)
+		{
+			ZipError err(lf->file);
+			StateReporter::Log("zip-lib").stream << "Seek position in zip file at " << std::hex
+												 << (void*)f << ": " << err;
+		}
+		return res == 0;
 	}
 	std::int64_t LibWrapper::ftell(Base::Lib::File* const f)
 	{

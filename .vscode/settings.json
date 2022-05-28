@@ -107,5 +107,6 @@
     },
     "C_Cpp.default.cppStandard": "c++11",
     "C_Cpp.default.cStandard": "c11",
-    "gtest-adapter.debugConfig": "Unit tests"
+    "gtest-adapter.debugConfig": "Unit tests",
+    "svg.preview.background": "white"
 }
