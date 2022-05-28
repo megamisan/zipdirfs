@@ -60,7 +60,8 @@ namespace Test::ZipDirFs::Components
 		Lib lib;
 		Fixtures::LibInstance libInstance;
 		const std::string inner(std::to_string(::Test::rand(UINT32_MAX))),
-			item(std::to_string(::Test::rand(UINT32_MAX))), expected(inner + "/" + item + "/");
+			innerSlash(inner + "/"),
+			item(std::to_string(::Test::rand(UINT32_MAX))), expected(innerSlash + item + "/");
 		std::shared_ptr<Changed> changed(new NullChanged());
 		const path parent(path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		EXPECT_CALL(lib, open(parent)).WillOnce(Return(&libInstance));
@@ -68,7 +69,7 @@ namespace Test::ZipDirFs::Components
 		EXPECT_CALL(lib, get_name(&libInstance, 0))
 			.WillOnce(Return(expected + std::to_string(::Test::rand(UINT32_MAX))));
 		EXPECT_CALL(lib, close(&libInstance));
-		TestedFactory factory(parent, inner + "/", std::shared_ptr<Changed>(changed));
+		TestedFactory factory(parent, innerSlash, std::shared_ptr<Changed>(changed));
 		std::unique_ptr<::fusekit::entry, std::function<void(::fusekit::entry*)>> created(
 			factory.create(item), [&factory](::fusekit::entry* p) { factory.destroy(p); });
 		auto result = dynamic_cast<ZipDirectoryEntryMock*>(created.get());
