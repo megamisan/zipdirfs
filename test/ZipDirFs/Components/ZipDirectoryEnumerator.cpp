@@ -7,7 +7,6 @@
 #include "Fixtures/LibInstance.h"
 #include "Fixtures/ZipFactoryAccess.h"
 #include "test/gtest.h"
-#include <ZipDirFs/Components/ZipDirectoryEnumerator.h>
 #include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 #include <thread>
@@ -23,6 +22,7 @@ namespace Test::ZipDirFs::Components
 	using ::testing::Eq;
 	using ::testing::Expectation;
 	using ::testing::Return;
+	using ::testing::AtLeast;
 	using ::ZipDirFs::Components::ZipDirectoryEnumerator;
 
 	void ZipDirectoryEnumeratorTest::TearDown()
@@ -54,10 +54,11 @@ namespace Test::ZipDirFs::Components
 		const boost::filesystem::path p(
 			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		LibInstance data;
-		ZipDirectoryEnumeratorExpectArchive(fs, lib, data, p, std::time_t(0));
-		EXPECT_CALL(lib, get_num_entries(&data)).WillRepeatedly(Return(0));
-		EXPECT_CALL(lib, close(&data)).WillRepeatedly(Return());
 		ZipDirectoryEnumerator zde(p, "");
+		EXPECT_EQ(p, reinterpret_cast<ZipDirectoryEnumeratorAccess*>(&zde)->get_path());
+		EXPECT_EQ("", reinterpret_cast<ZipDirectoryEnumeratorAccess*>(&zde)->get_item());
+		EXPECT_EQ(nullptr, reinterpret_cast<ZipDirectoryEnumeratorAccess*>(&zde)->get_holder());
+		EXPECT_FALSE(reinterpret_cast<ZipDirectoryEnumeratorAccess*>(&zde)->get_atEnd());
 	}
 
 	TEST_F(ZipDirectoryEnumeratorTest, Valid)
@@ -123,8 +124,8 @@ namespace Test::ZipDirFs::Components
 			boost::filesystem::path("path") / std::to_string(::Test::rand(UINT32_MAX)));
 		LibInstance data;
 		ZipDirectoryEnumeratorExpectArchive(fs, lib, data, p, std::time_t(0));
-		EXPECT_CALL(lib, get_num_entries(&data)).WillRepeatedly(Return(0));
-		EXPECT_CALL(lib, close(&data)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, get_num_entries(&data)).Times(AtLeast(1)).WillRepeatedly(Return(0));
+		EXPECT_CALL(lib, close(&data)).Times(AtLeast(1)).WillRepeatedly(Return());
 		ZipDirectoryEnumerator zde(p, "");
 		EXPECT_FALSE(zde.valid());
 	}
@@ -158,13 +159,13 @@ namespace Test::ZipDirFs::Components
 		DummyMock dummy1, dummy2;
 		ZipDirectoryEnumeratorExpectArchive(fs, lib, data1, p1, std::time_t(0));
 		ZipDirectoryEnumeratorExpectArchive(fs, lib, data2, p2, std::time_t(0));
-		EXPECT_CALL(lib, get_num_entries(&data1)).WillRepeatedly(Return(1));
-		EXPECT_CALL(lib, get_num_entries(&data2)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, get_num_entries(&data1)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, get_num_entries(&data2)).Times(AtLeast(1)).WillRepeatedly(Return(1));
 		EXPECT_CALL(lib, get_name(&data1, 0))
-			.WillRepeatedly(
+			.Times(AtLeast(1)).WillRepeatedly(
 				Return(std::string("entry") + std::to_string(::Test::rand(UINT32_MAX))));
 		EXPECT_CALL(lib, get_name(&data2, 0))
-			.WillRepeatedly(
+			.Times(AtLeast(1)).WillRepeatedly(
 				Return(std::string("entry") + std::to_string(::Test::rand(UINT32_MAX))));
 		Expectation d1 = EXPECT_CALL(dummy1, dummy()).WillOnce(Return());
 		Expectation close1 = EXPECT_CALL(lib, close(&data1)).After(d1).WillOnce(Return());

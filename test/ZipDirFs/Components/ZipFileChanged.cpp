@@ -20,6 +20,7 @@ namespace Test::ZipDirFs::Components
 	using ::testing::ByRef;
 	using ::testing::Eq;
 	using ::testing::Return;
+	using ::testing::AtLeast;
 	using ::ZipDirFs::Components::ZipFileChanged;
 
 	void ZipFileChangedTest::TearDown()
@@ -30,24 +31,24 @@ namespace Test::ZipDirFs::Components
 	void ZipFileChangedExpectArchive(FileSystem& fs, Lib& lib, LibInstance& data,
 		const boost::filesystem::path& path, time_t changed)
 	{
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(path)))).WillRepeatedly(Return(changed));
-		EXPECT_CALL(lib, open(Eq(ByRef(path)))).WillRepeatedly(Return(&data));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(path)))).Times(AtLeast(1)).WillRepeatedly(Return(changed));
+		EXPECT_CALL(lib, open(Eq(ByRef(path)))).Times(AtLeast(1)).WillRepeatedly(Return(&data));
 	}
 
 	const std::string ZipFileChangedExpectPopulateArchive(Lib& lib, LibInstance& data)
 	{
 		const std::string entryName =
 			std::string("entry") + std::to_string(::Test::rand(UINT32_MAX));
-		EXPECT_CALL(lib, get_num_entries(&data)).WillRepeatedly(Return(1));
-		EXPECT_CALL(lib, get_name(&data, 0)).WillRepeatedly(Return(entryName));
-		EXPECT_CALL(lib, close(&data)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, get_num_entries(&data)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, get_name(&data, 0)).Times(AtLeast(1)).WillRepeatedly(Return(entryName));
+		EXPECT_CALL(lib, close(&data)).Times(AtLeast(1)).WillRepeatedly(Return());
 		return entryName;
 	}
 
 	void ZipFileChangedExpectEntry(Lib& lib, LibInstance& data, std::string name, time_t changed)
 	{
 		auto stat = ::ZipDirFs::Zip::Base::Stat(0, name, ::Test::rand(UINT32_MAX), changed, false);
-		EXPECT_CALL(lib, stat(&data, name)).WillRepeatedly(Return(stat));
+		EXPECT_CALL(lib, stat(&data, name)).Times(AtLeast(1)).WillRepeatedly(Return(stat));
 	}
 
 	TEST_F(ZipFileChangedTest, Init)

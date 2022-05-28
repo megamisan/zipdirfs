@@ -4,6 +4,7 @@
 #ifndef TEST_ZIPDIRFS_COMPONENTS_ZIPDIRECTORYENUMERATOR_H
 #define TEST_ZIPDIRFS_COMPONENTS_ZIPDIRECTORYENUMERATOR_H
 
+#include "ZipDirFs/Components/ZipDirectoryEnumerator.h"
 #include <gtest/gtest.h>
 
 namespace ZipDirFs::Components
@@ -13,6 +14,15 @@ namespace ZipDirFs::Components
 
 namespace Test::ZipDirFs::Components
 {
+	using ZipDirectoryEnumeratorBase = ::ZipDirFs::Components::ZipDirectoryEnumerator;
+
+	struct ZipDirectoryEnumeratorAccess : public ZipDirectoryEnumeratorBase {
+		const ::boost::filesystem::path& get_path() { return this->path; }
+		const std::string& get_item() { return this->item; }
+		const std::unique_ptr<HolderBase>& get_holder() { return this->holder; }
+		const bool& get_atEnd() { return this->atEnd; }
+	};
+
 	struct ZipDirectoryEnumeratorTest : public ::testing::Test
 	{
 		void TearDown();
