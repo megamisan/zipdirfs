@@ -330,6 +330,7 @@ namespace Test::ZipDirFs::Zip::Base
 		ASSERT_EQ(content.data, nullptr);
 		ASSERT_EQ(content.lastWrite, 0);
 		ASSERT_EQ(content.length, 0);
+		ASSERT_EQ(content.directIO, false);
 		ASSERT_EQ(ContentAccess::getReadersActive(content), 0);
 		ASSERT_EQ(ContentAccess::getWritersWaiting(content), 0);
 	}

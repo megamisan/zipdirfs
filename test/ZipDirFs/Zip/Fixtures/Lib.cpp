@@ -25,6 +25,8 @@ namespace Test::ZipDirFs::Zip
 			{ return this->fopen_index(l, i); };
 			LibBase::fread = [this](LibP::File* const f, void* buf, std::uint64_t len)
 			{ return this->fread(f, buf, len); };
+			LibBase::fseek = [this](LibP::File* const f, int64_t const o, int const w)
+			{ return this->fseek(f, o, w); };
 			LibBase::ftell = [this](LibP::File* const f) { return this->ftell(f); };
 			LibBase::fclose = [this](LibP::File* const f) { return this->fclose(f); };
 		}

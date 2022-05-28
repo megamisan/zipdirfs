@@ -38,6 +38,7 @@ namespace Test::ZipDirFs
 	using ::testing::StrEq;
 	using ::testing::Throw;
 	using ::testing::WithoutArgs;
+	using ::testing::AtLeast;
 
 	namespace
 	{
@@ -341,32 +342,32 @@ namespace Test::ZipDirFs
 		GenerateRandomData(item1Content, item1Size);
 		GenerateRandomData(subItem1Content, subItem1Size);
 		// Initialize expectations
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(modifiedRoot));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).Times(AtLeast(1)).WillRepeatedly(Return(modifiedRoot));
 		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeNormal1))))
-			.WillRepeatedly(Return(modifiedNormal1));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(modifiedZip1));
+			.Times(AtLeast(1)).WillRepeatedly(Return(modifiedNormal1));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).Times(AtLeast(1)).WillRepeatedly(Return(modifiedZip1));
 		EXPECT_CALL(fs, directory_iterator_from_path(Eq(ByRef(fakeRoot))))
-			.WillRepeatedly(ReturnNew<VectorIteratorWrapper>(
+			.Times(AtLeast(1)).WillRepeatedly(ReturnNew<VectorIteratorWrapper>(
 				rootDirectoryItems.begin(), rootDirectoryItems.end()));
-		EXPECT_CALL(fs, directory_iterator_end()).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
+		EXPECT_CALL(fs, directory_iterator_end()).Times(AtLeast(1)).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
 		EXPECT_CALL(fs, status(Eq(ByRef(fakeNormal1))))
-			.WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
+			.Times(AtLeast(1)).WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
 		EXPECT_CALL(fs, status(Eq(ByRef(fakeZip1))))
-			.WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
+			.Times(AtLeast(1)).WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
 		EXPECT_CALL(lib, open(Eq(ByRef(fakeNormal1))))
-			.WillRepeatedly(Throw(::ZipDirFs::Zip::Exception("Mock", "Normal file")));
-		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(&zipInstance1));
-		EXPECT_CALL(lib, close(&zipInstance1)).WillRepeatedly(Return());
-		EXPECT_CALL(lib, get_num_entries(&zipInstance1)).WillRepeatedly(Return(2));
-		EXPECT_CALL(lib, stat(&zipInstance1, Eq(item1Path))).WillRepeatedly(Return(item1Stat));
+			.Times(AtLeast(1)).WillRepeatedly(Throw(::ZipDirFs::Zip::Exception("Mock", "Normal file")));
+		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip1)))).Times(AtLeast(1)).WillRepeatedly(Return(&zipInstance1));
+		EXPECT_CALL(lib, close(&zipInstance1)).Times(AtLeast(1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, get_num_entries(&zipInstance1)).Times(AtLeast(1)).WillRepeatedly(Return(2));
+		EXPECT_CALL(lib, stat(&zipInstance1, Eq(item1Path))).Times(AtLeast(1)).WillRepeatedly(Return(item1Stat));
 		EXPECT_CALL(lib, stat(&zipInstance1, Eq(subItem1Path)))
-			.WillRepeatedly(Return(subItem1Stat));
-		EXPECT_CALL(lib, get_name(&zipInstance1, 0)).WillRepeatedly(Return(item1Path));
-		EXPECT_CALL(lib, get_name(&zipInstance1, 1)).WillRepeatedly(Return(subItem1Path));
-		EXPECT_CALL(lib, fopen_index(&zipInstance1, 0)).WillRepeatedly(Return(&itemInstance1));
-		EXPECT_CALL(lib, fopen_index(&zipInstance1, 1)).WillRepeatedly(Return(&subItemInstance1));
+			.Times(AtLeast(1)).WillRepeatedly(Return(subItem1Stat));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 0)).Times(AtLeast(1)).WillRepeatedly(Return(item1Path));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 1)).Times(AtLeast(1)).WillRepeatedly(Return(subItem1Path));
+		EXPECT_CALL(lib, fopen_index(&zipInstance1, 0)).Times(AtLeast(1)).WillRepeatedly(Return(&itemInstance1));
+		EXPECT_CALL(lib, fopen_index(&zipInstance1, 1)).Times(AtLeast(1)).WillRepeatedly(Return(&subItemInstance1));
 		EXPECT_CALL(lib, fread(&itemInstance1, _, _))
-			.WillRepeatedly(Invoke(
+			.Times(AtLeast(1)).WillRepeatedly(Invoke(
 				[item1Content, item1Size, &item1Offset](::ZipDirFs::Zip::Base::Lib::File* file,
 					void* buf, std::uint64_t len) -> std::uint64_t
 				{
@@ -378,11 +379,11 @@ namespace Test::ZipDirFs
 					}
 					return length;
 				}));
-		EXPECT_CALL(lib, ftell(&itemInstance1))
-			.WillRepeatedly(Invoke(
-				[&item1Offset](::ZipDirFs::Zip::Base::Lib::File* file) { return item1Offset; }));
+		EXPECT_CALL(lib, fseek(&itemInstance1, _, SEEK_SET))
+			.Times(AtLeast(1)).WillRepeatedly(Invoke(
+				[&item1Offset](::ZipDirFs::Zip::Base::Lib::File* file, int64_t o, int w) { return item1Offset == o; }));
 		EXPECT_CALL(lib, fread(&subItemInstance1, _, _))
-			.WillRepeatedly(Invoke(
+			.Times(AtLeast(1)).WillRepeatedly(Invoke(
 				[subItem1Content, subItem1Size, &subItem1Offset](
 					::ZipDirFs::Zip::Base::Lib::File* file, void* buf,
 					std::uint64_t len) -> std::uint64_t
@@ -395,13 +396,13 @@ namespace Test::ZipDirFs
 					}
 					return length;
 				}));
-		EXPECT_CALL(lib, ftell(&subItemInstance1))
-			.WillRepeatedly(Invoke([&subItem1Offset](::ZipDirFs::Zip::Base::Lib::File* file)
-				{ return subItem1Offset; }));
+		EXPECT_CALL(lib, fseek(&subItemInstance1, _, SEEK_SET))
+			.Times(AtLeast(1)).WillRepeatedly(Invoke([&subItem1Offset](::ZipDirFs::Zip::Base::Lib::File* file, int64_t o, int w)
+				{ return subItem1Offset == o; }));
 		EXPECT_CALL(lib, fclose(&itemInstance1))
-			.WillRepeatedly(WithoutArgs([&item1Offset]() { item1Offset = 0; }));
+			.Times(AtLeast(1)).WillRepeatedly(WithoutArgs([&item1Offset]() { item1Offset = 0; }));
 		EXPECT_CALL(lib, fclose(&subItemInstance1))
-			.WillRepeatedly(WithoutArgs([&subItem1Offset]() { subItem1Offset = 0; }));
+			.Times(AtLeast(1)).WillRepeatedly(WithoutArgs([&subItem1Offset]() { subItem1Offset = 0; }));
 		// Initialize expected result
 		std::vector<char> expected, result;
 		expected.reserve(ComputeDirectory("") + ComputeLink("/" + normal1, fakeNormal1.native())
@@ -479,25 +480,21 @@ namespace Test::ZipDirFs
 				{
 				}
 			});
-		const strings rootDirectoryItems({zip1});
 		// Initialize expectations
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(modifiedRoot));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(modifiedZip1));
-		EXPECT_CALL(fs, directory_iterator_from_path(Eq(ByRef(fakeRoot))))
-			.WillRepeatedly(ReturnNew<VectorIteratorWrapper>(
-				rootDirectoryItems.begin(), rootDirectoryItems.end()));
-		EXPECT_CALL(fs, directory_iterator_end()).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).Times(AtLeast(1)).WillRepeatedly(Return(modifiedRoot));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip1)))).Times(AtLeast(1)).WillRepeatedly(Return(modifiedZip1));
+		EXPECT_CALL(fs, directory_iterator_end()).Times(AtLeast(1)).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
 		EXPECT_CALL(fs, status(Eq(ByRef(fakeZip1))))
-			.WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
-		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip1)))).WillRepeatedly(Return(&zipInstance1));
-		EXPECT_CALL(lib, close(&zipInstance1)).WillRepeatedly(Return());
+			.Times(AtLeast(1)).WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
+		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip1)))).Times(AtLeast(1)).WillRepeatedly(Return(&zipInstance1));
+		EXPECT_CALL(lib, close(&zipInstance1)).Times(AtLeast(1)).WillRepeatedly(Return());
 		EXPECT_CALL(lib, stat(&zipInstance1, Eq(subItem1Path)))
-			.WillRepeatedly(Return(subItem1Stat));
+			.Times(AtLeast(1)).WillRepeatedly(Return(subItem1Stat));
 		EXPECT_CALL(lib, stat(&zipInstance1, Eq(subItem2Path)))
-			.WillRepeatedly(Return(subItem2Stat));
-		EXPECT_CALL(lib, get_num_entries(&zipInstance1)).WillRepeatedly(Return(2));
-		EXPECT_CALL(lib, get_name(&zipInstance1, 0)).WillRepeatedly(Return(subItem1Path));
-		EXPECT_CALL(lib, get_name(&zipInstance1, 1)).WillRepeatedly(Return(subItem2Path));
+			.Times(AtLeast(1)).WillRepeatedly(Return(subItem2Stat));
+		EXPECT_CALL(lib, get_num_entries(&zipInstance1)).Times(AtLeast(1)).WillRepeatedly(Return(2));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 0)).Times(AtLeast(1)).WillRepeatedly(Return(subItem1Path));
+		EXPECT_CALL(lib, get_name(&zipInstance1, 1)).Times(AtLeast(1)).WillRepeatedly(Return(subItem2Path));
 		// Initialize expected result
 		const std::vector<std::string> expected{{subItem1, subItem2}};
 		std::vector<std::string> result;
@@ -567,11 +564,11 @@ namespace Test::ZipDirFs
 				{
 				}
 			});
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).WillRepeatedly(Return(now));
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeFile)))).WillRepeatedly(Return(modifiedFile));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeRoot)))).Times(AtLeast(1)).WillRepeatedly(Return(now));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeFile)))).Times(AtLeast(1)).WillRepeatedly(Return(modifiedFile));
 		EXPECT_CALL(fs, status(Eq(ByRef(fakeFile))))
-			.WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
-		EXPECT_CALL(fs, directory_iterator_end()).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
+			.Times(AtLeast(1)).WillRepeatedly(Return(filesystem::file_status{filesystem::file_type::regular_file}));
+		EXPECT_CALL(fs, directory_iterator_end()).Times(AtLeast(1)).WillRepeatedly(ReturnNew<EndIteratorWrapper>());
 		int statResult(-1);
 		struct stat stbuf
 		{
@@ -627,12 +624,12 @@ namespace Test::ZipDirFs
 				{
 				}
 			});
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(now));
-		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(&zipInstance));
-		EXPECT_CALL(lib, close(&zipInstance)).WillRepeatedly(Return());
-		EXPECT_CALL(lib, get_num_entries(&zipInstance)).WillRepeatedly(Return(1));
-		EXPECT_CALL(lib, stat(&zipInstance, Eq(itemPath))).WillRepeatedly(Return(itemStat));
-		EXPECT_CALL(lib, get_name(&zipInstance, 0)).WillRepeatedly(Return(itemPath));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).Times(AtLeast(1)).WillRepeatedly(Return(now));
+		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).Times(AtLeast(1)).WillRepeatedly(Return(&zipInstance));
+		EXPECT_CALL(lib, close(&zipInstance)).Times(AtLeast(1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, get_num_entries(&zipInstance)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, stat(&zipInstance, Eq(itemPath))).Times(AtLeast(1)).WillRepeatedly(Return(itemStat));
+		EXPECT_CALL(lib, get_name(&zipInstance, 0)).Times(AtLeast(1)).WillRepeatedly(Return(itemPath));
 		int statResult(-1);
 		struct stat stbuf
 		{
@@ -692,12 +689,12 @@ namespace Test::ZipDirFs
 				{
 				}
 			});
-		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(now));
-		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).WillRepeatedly(Return(&zipInstance));
-		EXPECT_CALL(lib, close(&zipInstance)).WillRepeatedly(Return());
-		EXPECT_CALL(lib, get_num_entries(&zipInstance)).WillRepeatedly(Return(1));
-		EXPECT_CALL(lib, stat(&zipInstance, Eq(itemPath))).WillRepeatedly(Return(itemStat));
-		EXPECT_CALL(lib, get_name(&zipInstance, 0)).WillRepeatedly(Return(itemPath));
+		EXPECT_CALL(fs, last_write_time(Eq(ByRef(fakeZip)))).Times(AtLeast(1)).WillRepeatedly(Return(now));
+		EXPECT_CALL(lib, open(Eq(ByRef(fakeZip)))).Times(AtLeast(1)).WillRepeatedly(Return(&zipInstance));
+		EXPECT_CALL(lib, close(&zipInstance)).Times(AtLeast(1)).WillRepeatedly(Return());
+		EXPECT_CALL(lib, get_num_entries(&zipInstance)).Times(AtLeast(1)).WillRepeatedly(Return(1));
+		EXPECT_CALL(lib, stat(&zipInstance, Eq(itemPath))).Times(AtLeast(1)).WillRepeatedly(Return(itemStat));
+		EXPECT_CALL(lib, get_name(&zipInstance, 0)).Times(AtLeast(1)).WillRepeatedly(Return(itemPath));
 		int statResult(-1);
 		struct stat stbuf
 		{
