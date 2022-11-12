@@ -1,3 +1,11 @@
+zipdirfs (2.1.2) unstable; urgency=low
+
+  * Fix building
+  * Fix #10 Failure in ZipFactory when no free file handle available
+  * Feature #9 Direct IO for non compressed files
+
+ -- Pierrick Caillon <pierrick.caillon+zipdirfs@megami.fr>  Sat, 12 Nov 2022 20:26:13 +0100
+
 zipdirfs (2.1.1) unstable; urgency=low
 
   * Fix minimal environment build

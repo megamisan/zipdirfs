@@ -3,20 +3,9 @@
 set -e
 set -u
 
-count="$1"
-shift
-packages=()
+distribution="$1"
+endpoint="$2"
+password="$3"
 
-while [ "${count}" -gt 0 ]; do
-  packages+=("$1")
-  shift
-  count=$((count - 1))
-done
-
-repository="$1"
-distribution="$2"
-endpoint="$3"
-password="$4"
-
-aptly repo add -force-replace "${repository}" "${packages[@]}"
+aptly repo include -accept-unsigned -force-replace -ignore-signatures /tmp
 aptly publish update -batch -passphrase="${password}" "${distribution}" "${endpoint}"

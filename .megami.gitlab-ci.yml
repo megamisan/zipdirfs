@@ -4,13 +4,13 @@ stages:
 
 run_tests:
   stage: test
-  except:
-    refs:
-      - tags
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   image:
     name: registry.megami.fr:443/management/runner-images/native-cpp:latest
   cache:
-    key: intermediate-$CI_COMMIT_REF_SLUG
+    key: intermediate-${CI_COMMIT_REF_SLUG}
     paths:
       - "**/m4"
       - "**/*.lo"
@@ -27,13 +27,13 @@ run_tests:
 
 generate_builds:
   stage: build
-  only:
-    refs:
-      - tags
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
+    - if: '$CI_COMMIT_TAG'
   image:
     name: registry.megami.fr:443/management/runner-images/native-cpp:latest
   cache:
-    key: generate-$CI_COMMIT_REF_SLUG
+    key: generate-${CI_COMMIT_REF_SLUG}
     paths:
       - "**/m4"
       - "**/*.lo"
@@ -55,9 +55,8 @@ generate_builds:
 
 run_build:
   stage: .post
-  only:
-    refs:
-      - tags
+  rules:
+    - if: '$CI_COMMIT_TAG'
   trigger:
     include:
       - artifact: generated-commands.yml
