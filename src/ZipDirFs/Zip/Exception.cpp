@@ -10,6 +10,11 @@ namespace ZipDirFs::Zip
 		: Exception(s, m, 0)
 	{
 	}
+	Exception::Exception(const std::string& s, const std::string& m, const int zipErrorCode,
+		const int zipSystemCode) _GLIBCXX_USE_NOEXCEPT
+		: Exception(s, m, (zipErrorCode << 8) + zipSystemCode)
+	{
+	}
 	Exception::Exception(const std::string& s, const std::string& m,
 		const int errorno) _GLIBCXX_USE_NOEXCEPT : source(s),
 												   message(m),
@@ -35,5 +40,9 @@ namespace ZipDirFs::Zip
 	{
 		return out << ex.source << ": " << ex.message;
 	}
+
+	const int zipErrorCode(const int code) _GLIBCXX_USE_NOEXCEPT { return code >> 8; }
+
+	const int zipSystemCode(const int code) _GLIBCXX_USE_NOEXCEPT { return code & 255; }
 
 } // namespace ZipDirFs::Zip

@@ -64,7 +64,20 @@
         "ios": "cpp",
         "unordered_set": "cpp",
         "codecvt": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "bit": "cpp",
+        "cassert": "cpp",
+        "cerrno": "cpp",
+        "cfloat": "cpp",
+        "ciso646": "cpp",
+        "climits": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "locale": "cpp",
+        "queue": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp",
+        "version": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [
