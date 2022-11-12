@@ -7,6 +7,7 @@
 #include "StateReporter.h"
 #include "ZipDirFs/Containers/Helpers/Changed.h"
 #include "ZipDirFs/Containers/Helpers/Factory.h"
+#include "ZipDirFs/Zip/Exception.h"
 #include "ZipDirFs/Zip/Factory.h"
 #include <boost/filesystem.hpp>
 
@@ -35,7 +36,30 @@ namespace ZipDirFs::Components
 		const mapped_type create(const key_type& name)
 		{
 			auto innerPath = inner + name;
-			auto item = RealFactory::getInstance().get(archive)->open(innerPath);
+			auto item = [](auto archive, auto innerPath) -> auto
+			{
+				while (true)
+				{
+					try
+					{
+						return RealFactory::getInstance().get(archive)->open(innerPath);
+					}
+					catch (::ZipDirFs::Zip::Exception zipErr)
+					{
+						const auto systemCode = ::ZipDirFs::Zip::zipSystemCode(zipErr.code());
+						if (systemCode == EMFILE || systemCode == ENFILE)
+						{
+							std::this_thread::sleep_for(
+								std::chrono::milliseconds((std::rand() % 100) * 10));
+						}
+						else
+						{
+							throw;
+						}
+					}
+				}
+			}
+			(archive, innerPath);
 			if (item != nullptr)
 			{
 				if (item->isDir())

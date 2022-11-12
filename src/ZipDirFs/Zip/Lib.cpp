@@ -47,7 +47,19 @@ namespace ZipDirFs::Zip
 			ZipError(std::int32_t);
 			ZipError(::zip*);
 			ZipError(::zip_file*);
-			operator std::string() const { return message; }
+			operator std::string() const
+			{
+				std::stringstream ret;
+				ret << message;
+				if (zipError || systemError)
+				{
+					ret << " (" << zipError << '/' << systemError << ')';
+				}
+				return ret.str();
+			}
+			int zipCode() const { return zipError; }
+			int systemCode() const { return systemError; }
+			std::string error() const { return message; }
 
 		protected:
 			int zipError;
@@ -181,7 +193,8 @@ namespace ZipDirFs::Zip
 				ZipError err(error);
 				StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Error opening file ("
 													 << err << ")";
-				throw Exception("ZipFile::Zip::Lib::open", err);
+				throw Exception(
+					"ZipFile::Zip::Lib::open", err.error(), err.zipCode(), err.systemCode());
 			}
 		}
 		else
@@ -193,7 +206,8 @@ namespace ZipDirFs::Zip
 				StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Error opening file ("
 													 << err << ")";
 				::close(handle);
-				throw Exception("ZipFile::Zip::Lib::open", err);
+				throw Exception(
+					"ZipFile::Zip::Lib::open", err.error(), err.zipCode(), err.systemCode());
 			}
 		}
 		StateReporter::Log("zip-lib").stream << "Open zip " << p << ": Success at " << std::hex
@@ -225,7 +239,8 @@ namespace ZipDirFs::Zip
 			StateReporter::Log("zip-lib").stream << "Stat zip file " << n << " of " << std::hex
 												 << (void*)l << ": Error retrieving stat (" << err
 												 << ")";
-			throw Exception("ZipFile::Zip::Lib::stat", err);
+			throw Exception(
+				"ZipFile::Zip::Lib::stat", err.error(), err.zipCode(), err.systemCode());
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
@@ -248,7 +263,8 @@ namespace ZipDirFs::Zip
 			StateReporter::Log("zip-lib").stream << "Stat zip file index " << i << " of "
 												 << std::hex << (void*)l
 												 << ": Error retrieving stat (" << err << ")";
-			throw Exception("ZipFile::Zip::Lib::stat_index", err);
+			throw Exception(
+				"ZipFile::Zip::Lib::stat_index", err.error(), err.zipCode(), err.systemCode());
 		}
 		if ((stats.valid & ZIP_STAT_EXPECTED_FIELDS) != ZIP_STAT_EXPECTED_FIELDS)
 		{
@@ -269,7 +285,8 @@ namespace ZipDirFs::Zip
 			ZipError err(lw->zip);
 			StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
 												 << std::hex << (void*)l << ": " << err;
-			throw Exception("ZipFile::Zip::Lib::get_name", err);
+			throw Exception(
+				"ZipFile::Zip::Lib::get_name", err.error(), err.zipCode(), err.systemCode());
 		}
 		StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
 											 << std::hex << (void*)l << ": Succes (" << name << ")";
@@ -285,7 +302,8 @@ namespace ZipDirFs::Zip
 			ZipError err(lw->zip);
 			StateReporter::Log("zip-lib").stream << "Open zip file index " << i << " of "
 												 << std::hex << (void*)l << ": " << err << ')';
-			throw Exception("ZipFile::Zip::Lib::fopen_index", err);
+			throw Exception(
+				"ZipFile::Zip::Lib::fopen_index", err.error(), err.zipCode(), err.systemCode());
 		}
 		StateReporter::Log("zip-lib").stream << "Get zip file name index " << i << " of "
 											 << std::hex << (void*)l << ": Success at " << std::hex

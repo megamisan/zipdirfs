@@ -18,6 +18,8 @@ namespace ZipDirFs::Zip
 	{
 	public:
 		Exception(const std::string&, const std::string&) _GLIBCXX_USE_NOEXCEPT;
+		Exception(const std::string&, const std::string&, const int zipErrCode,
+			const int zipSystemCode) _GLIBCXX_USE_NOEXCEPT;
 		~Exception() _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT;
 		const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT;
 		int code() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT;
@@ -33,6 +35,8 @@ namespace ZipDirFs::Zip
 	};
 
 	std::ostream& operator<<(std::ostream&, const Exception&);
+	const int zipErrorCode(const int code) _GLIBCXX_USE_NOEXCEPT;
+	const int zipSystemCode(const int code) _GLIBCXX_USE_NOEXCEPT;
 
 } // namespace ZipDirFs::Zip
 

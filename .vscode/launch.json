@@ -40,6 +40,22 @@
             ]
         },
         {
+            "name": "Core dump",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/zipdirfs",
+            "coreDumpPath": "${input:coreFileName}",
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "Unit tests",
             "type": "cppdbg",
             "request": "launch",
@@ -80,6 +96,13 @@
                     "ignoreFailures": true
                 }
             ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "coreFileName",
+            "type": "promptString",
+            "description": "Enter core file path"
         }
     ]
 }

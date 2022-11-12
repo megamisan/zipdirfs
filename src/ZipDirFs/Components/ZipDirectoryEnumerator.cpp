@@ -59,6 +59,31 @@ namespace ZipDirFs::Components
 		};
 		std::shared_ptr<Cleaner> Cleaner::cleaner;
 		std::mutex Cleaner::access;
+
+		std::shared_ptr<Archive> getArchiveRetry(const boost::filesystem::path& path)
+		{
+			while (true)
+			{
+				try
+				{
+					return Factory::getInstance().get(path);
+				}
+				catch (Zip::Exception zipErr)
+				{
+					const auto systemCode = zipSystemCode(zipErr.code());
+					if (systemCode == EMFILE || systemCode == ENFILE)
+					{
+						Cleaner::CollectAllKeepSome();
+						std::this_thread::sleep_for(
+							std::chrono::milliseconds((std::rand() % 100) * 10));
+					}
+					else
+					{
+						throw;
+					}
+				}
+			}
+		}
 	} // namespace
 
 	extern std::time_t zipDirectoryEnumeratorDelay;
@@ -237,34 +262,14 @@ namespace ZipDirFs::Components
 	void ZipDirectoryEnumerator::reset()
 	{
 		Cleaner::Add(std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
-		auto setup = [this]()
+		atEnd = false;
+		auto archive = getArchiveRetry(path);
+		auto instance = new Holder(archive->begin(item), archive->end());
+		holder = std::unique_ptr<HolderBase>(std::unique_ptr<Holder>(instance));
+		if (instance->currentIt == instance->endIt)
 		{
-			auto archive = Factory::getInstance().get(path);
-			auto instance = new Holder(archive->begin(item), archive->end());
-			holder = std::unique_ptr<HolderBase>(std::unique_ptr<Holder>(instance));
-			if (instance->currentIt == instance->endIt)
-			{
-				Cleaner::Add(
-					std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
-				atEnd = true;
-			}
-		};
-		try
-		{
-			setup();
-		}
-		catch (ZipDirFs::Zip::Exception ex)
-		{
-			Cleaner::CollectAllKeepSome();
-			try
-			{
-				setup();
-			}
-			catch (ZipDirFs::Zip::Exception ex)
-			{
-				atEnd = false;
-				throw;
-			}
+			Cleaner::Add(std::unique_ptr<Holder>(dynamic_cast<Holder*>(holder.release())), this);
+			atEnd = true;
 		}
 	}
 	void ZipDirectoryEnumerator::next()
